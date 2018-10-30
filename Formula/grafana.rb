@@ -1,15 +1,15 @@
 class Grafana < Formula
   desc "Gorgeous metric visualizations and dashboards for timeseries databases"
   homepage "https://grafana.com"
-  url "https://github.com/grafana/grafana/archive/v5.0.0.tar.gz"
-  sha256 "fe06eeef2d15c019ae777c6a27c6b392a3ccdfb0d63dead67e50f6ff2e34f881"
+  url "https://github.com/grafana/grafana/archive/v5.3.2.tar.gz"
+  sha256 "f92e184507bee9717336400b0717faf269abcfabe44af6fbb4273df00dc8942d"
   head "https://github.com/grafana/grafana.git"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "201db6804813ae14cb9724e1617e39c94789476b0188498f9abd4b06e8790e15" => :high_sierra
-    sha256 "0f024d15a7ef22f76ec4c94753514b30fa592677f1c5ee9b79076374483d196f" => :sierra
-    sha256 "a4210ed77b076e80760f3328243ebad5685db9599c745c0fa1a484b152cbd452" => :el_capitan
+    sha256 "a42424ac58bfe97afd7dc850c60bf0e974ed576350d11778b2696f605df32a73" => :mojave
+    sha256 "17fee26fa1176eb58b44c3ae690d5fa038454ca987f5e60c87c4b2b4eeaaae34" => :high_sierra
+    sha256 "c8512abf229870dbaf8761963fd0b3572d98fef60ecfd1f918443562a8626c7d" => :sierra
   end
 
   depends_on "go" => :build
@@ -31,13 +31,13 @@ class Grafana < Formula
       args << "--force" unless build.bottle?
       system "node_modules/grunt-cli/bin/grunt", *args
 
-      bin.install "bin/grafana-cli"
-      bin.install "bin/grafana-server"
+      bin.install "bin/darwin-amd64/grafana-cli"
+      bin.install "bin/darwin-amd64/grafana-server"
       (etc/"grafana").mkpath
       cp("conf/sample.ini", "conf/grafana.ini.example")
       etc.install "conf/sample.ini" => "grafana/grafana.ini"
       etc.install "conf/grafana.ini.example" => "grafana/grafana.ini.example"
-      pkgshare.install "conf", "vendor", "public"
+      pkgshare.install "conf", "public", "tools", "vendor"
       prefix.install_metafiles
     end
   end
@@ -87,7 +87,7 @@ class Grafana < Formula
         </dict>
       </dict>
     </plist>
-   EOS
+  EOS
   end
 
   test do
@@ -120,7 +120,7 @@ class Grafana < Formula
     listening = Timeout.timeout(5) do
       li = false
       r.each do |l|
-        if l =~ /Initializing HTTP Server/
+        if l =~ /Initializing HTTPServer/
           li = true
           break
         end

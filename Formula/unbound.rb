@@ -1,21 +1,18 @@
 class Unbound < Formula
   desc "Validating, recursive, caching DNS resolver"
   homepage "https://www.unbound.net"
-  url "https://www.unbound.net/downloads/unbound-1.6.8.tar.gz"
-  sha256 "e3b428e33f56a45417107448418865fe08d58e0e7fea199b855515f60884dd49"
+  url "https://www.unbound.net/downloads/unbound-1.8.1.tar.gz"
+  sha256 "c362b3b9c35d1b8c1918da02cdd5528d729206c14c767add89ae95acae363c5d"
+  head "https://github.com/NLnetLabs/unbound.git"
 
   bottle do
-    sha256 "14bb3f5ce9567f835522a4cf278e843602def948c9c139c0dbe660dad666b6e9" => :high_sierra
-    sha256 "aa344f2853ef983890eed1eecd53c06e0c41e491253f8480bc944c62edc7ccc4" => :sierra
-    sha256 "8854838cff0d79d0b855b95c588588dc95b5eb1bda3a1db019717d832eebf35b" => :el_capitan
+    sha256 "30f001903153859ba2e755086320d037163d925965e77aefd5e9675e7c5eaa9d" => :mojave
+    sha256 "59ccc8d8381ba9cc6eb89640e99f0378879d55b2c0aa07c029c0f64ecc80b65e" => :high_sierra
+    sha256 "fcc55406d9a0c2ac95df9914629456510b73948bd62c6042fc22720ed3e4a85f" => :sierra
   end
 
-  deprecated_option "with-python" => "with-python@2"
-
-  depends_on "openssl"
   depends_on "libevent"
-  depends_on "python@2" => :optional
-  depends_on "swig" if build.with? "python@2"
+  depends_on "openssl"
 
   def install
     args = %W[
@@ -25,16 +22,7 @@ class Unbound < Formula
       --with-ssl=#{Formula["openssl"].opt_prefix}
     ]
 
-    if build.with? "python@2"
-      ENV.prepend "LDFLAGS", `python-config --ldflags`.chomp
-      ENV.prepend "PYTHON_VERSION", "2.7"
-
-      args << "--with-pyunbound"
-      args << "--with-pythonmodule"
-      args << "PYTHON_SITE_PKG=#{lib}/python2.7/site-packages"
-    end
-
-    args << "--with-libexpat=#{MacOS.sdk_path}/usr" unless MacOS::CLT.installed?
+    args << "--with-libexpat=#{MacOS.sdk_path}/usr" if MacOS.sdk_path_if_needed
     system "./configure", *args
 
     inreplace "doc/example.conf", 'username: "unbound"', 'username: "@@HOMEBREW-UNBOUND-USER@@"'
@@ -79,7 +67,7 @@ class Unbound < Formula
         <string>/dev/null</string>
       </dict>
     </plist>
-    EOS
+  EOS
   end
 
   test do

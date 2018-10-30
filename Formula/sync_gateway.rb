@@ -1,6 +1,6 @@
 class SyncGateway < Formula
   desc "Make Couchbase Server a replication endpoint for Couchbase Lite"
-  homepage "http://docs.couchbase.com/sync-gateway"
+  homepage "https://docs.couchbase.com/sync-gateway"
   url "https://github.com/couchbase/sync_gateway.git",
       :tag => "1.3.1",
       :revision => "660b1c92fadce1a9c7e692dfe7c5b741772d1dd2"
@@ -14,8 +14,8 @@ class SyncGateway < Formula
     sha256 "1f72bc0d2674b891e8107d3c6fc21a13d6d86e47ba5077eed63245735e31ac7e" => :el_capitan
   end
 
-  depends_on "go" => :build
   depends_on "gnupg" => :build
+  depends_on "go" => :build
 
   resource "depot_tools" do
     url "https://chromium.googlesource.com/chromium/tools/depot_tools.git",

@@ -3,27 +3,29 @@ class SvtplayDl < Formula
 
   desc "Download videos from https://www.svtplay.se/"
   homepage "https://svtplay-dl.se/"
-  url "https://files.pythonhosted.org/packages/47/d5/8153a3183b1e44df71696e851a13abfb40005088af13c1b3485a91bdd8a1/svtplay-dl-1.9.9.tar.gz"
-  sha256 "4a4ac9a8589a49dedaec125c67a045a27ccf89b88944bd73cd388c613d8ba83e"
-  revision 1
+  url "https://files.pythonhosted.org/packages/bb/be/1306d71f18f5734b3ea5d0fe17492b42f81ae5d0d19682a05741b7858459/svtplay-dl-2.0.tar.gz"
+  sha256 "3234ba78c86f5049d59435931ba2e21d4195a46eb68e4cafc9750fc223c85a27"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "da37a86e0001d343ed3b91037f149843b32d5c0aa50e7225f6f8e1b239971a04" => :high_sierra
-    sha256 "cafa6a290edc23b77f1ad29869e9ab717db0a5bd9d2aa160c581deb23e74b9b4" => :sierra
-    sha256 "da2c64dec4771bd197e8887be39312a474457018b4d2ac05ea97dd05caf001e5" => :el_capitan
+    sha256 "96aa59529a974f5d0c771b9ad50120489e1be90bcf6d8a9e07f58f0a81eea03b" => :mojave
+    sha256 "9f090e7ce1ee778440d61006dba57b3a058b085f69485004804beab550887615" => :high_sierra
+    sha256 "d5105e033b738d80c8ece2d47cf0628a8bb04855a7a392a787c68cb957541771" => :sierra
+    sha256 "85d7bb2d9674c45dc6c3605b44dd361a80ea0c9553d1ac5311f9fde63e7515ad" => :el_capitan
   end
 
-  # The dependencies differ for Python <= 2.7.9.
-  # Mavericks ships Python 2.7.5; Yosemite, 2.7.10.
-  depends_on "python@2" if MacOS.version <= :mavericks
-
-  depends_on "rtmpdump"
   depends_on "openssl"
+  depends_on "python"
+  depends_on "rtmpdump"
+
+  resource "pycryptodome" do
+    url "https://files.pythonhosted.org/packages/94/7f/33b748dd22ea889fcb1a6c6f1f30ad1e5a70066cd7615dbce7d9a6392106/pycryptodome-3.6.6.tar.gz"
+    sha256 "b3cb4af317d9b84f6df50f0cfa6840ba69556af637a83fd971537823e13d601a"
+  end
 
   resource "certifi" do
-    url "https://files.pythonhosted.org/packages/15/d4/2f888fc463d516ff7bf2379a4e9a552fef7f22a94147655d9b1097108248/certifi-2018.1.18.tar.gz"
-    sha256 "edbc3f203427eef571f79a7692bb160a2b0f7ccaa31953e99bd17e307cf63f7d"
+    url "https://files.pythonhosted.org/packages/e1/0f/f8d5e939184547b3bdc6128551b831a62832713aa98c2ccdf8c47ecc7f17/certifi-2018.8.24.tar.gz"
+    sha256 "376690d6f16d32f9d1fe8932551d80b23e9d393a8578c5633a2ed39a64861638"
   end
 
   resource "chardet" do
@@ -32,8 +34,8 @@ class SvtplayDl < Formula
   end
 
   resource "idna" do
-    url "https://files.pythonhosted.org/packages/f4/bd/0467d62790828c23c47fc1dfa1b1f052b24efdf5290f071c7a91d0d82fd3/idna-2.6.tar.gz"
-    sha256 "2c6a5de3089009e3da7c5dde64a141dbc8551d5b7f6cf4ed7c2568d0cc520a8f"
+    url "https://files.pythonhosted.org/packages/65/c4/80f97e9c9628f3cac9b98bfca0402ede54e0563b56482e3e6e45c43c4935/idna-2.7.tar.gz"
+    sha256 "684a38a6f903c1d71d6d5fac066b58d7768af4de2b832e426ec79c30daa94a16"
   end
 
   resource "PySocks" do
@@ -42,20 +44,21 @@ class SvtplayDl < Formula
   end
 
   resource "requests" do
-    url "https://files.pythonhosted.org/packages/b0/e1/eab4fc3752e3d240468a8c0b284607899d2fbfb236a56b7377a329aa8d09/requests-2.18.4.tar.gz"
-    sha256 "9c443e7324ba5b85070c4a818ade28bfabedf16ea10206da1132edaa6dda237e"
+    url "https://files.pythonhosted.org/packages/54/1f/782a5734931ddf2e1494e4cd615a51ff98e1879cbe9eecbdfeaf09aa75e9/requests-2.19.1.tar.gz"
+    sha256 "ec22d826a36ed72a7358ff3fe56cbd4ba69dd7a6718ffd450ff0e9df7a47ce6a"
   end
 
   resource "urllib3" do
-    url "https://files.pythonhosted.org/packages/ee/11/7c59620aceedcc1ef65e156cc5ce5a24ef87be4107c2b74458464e437a5d/urllib3-1.22.tar.gz"
-    sha256 "cc44da8e1145637334317feebd728bd869a35285b93cbb4cca2577da7e62db4f"
+    url "https://files.pythonhosted.org/packages/3c/d2/dc5471622bd200db1cd9319e02e71bc655e9ea27b8e0ce65fc69de0dac15/urllib3-1.23.tar.gz"
+    sha256 "a68ac5e15e76e7e5dd2b8f94007233e01effe3e50e8daddf69acfd81cb686baf"
+  end
+
+  resource "pyyaml" do
+    url "https://files.pythonhosted.org/packages/9e/a3/1d13970c3f36777c583f136c136f804d70f500168edc1edea6daa7200769/PyYAML-3.13.tar.gz"
+    sha256 "3ef3092145e9b70e3ddd2c7ad59bdd0252a94dfe3949721633e41344de00a6bf"
   end
 
   def install
-    if MacOS.version <= :mavericks
-      ENV.prepend_path "PATH", Formula["python"].opt_libexec/"bin"
-    end
-
     virtualenv_install_with_resources
   end
 
@@ -67,6 +70,11 @@ class SvtplayDl < Formula
 
   test do
     url = "https://tv.aftonbladet.se/abtv/articles/244248"
-    assert_match "m3u8", shell_output("#{bin}/svtplay-dl -g #{url}")
+    match = <<~EOS
+      https://absvpvod-vh.akamaihd.net/i/2018/02/cdaefe0533c2561f00a41c52a2d790bd
+      /,1280_720_2800,960_540_1500,640_360_800,480_270_300,.mp4.csmil
+      /index_0_av.m3u8
+    EOS
+    assert_match match.delete!("\n"), shell_output("#{bin}/svtplay-dl -g #{url}")
   end
 end

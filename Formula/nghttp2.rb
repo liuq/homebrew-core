@@ -1,44 +1,52 @@
 class Nghttp2 < Formula
   desc "HTTP/2 C Library"
   homepage "https://nghttp2.org/"
-  url "https://github.com/nghttp2/nghttp2/releases/download/v1.31.0/nghttp2-1.31.0.tar.xz"
-  sha256 "36573c2dc74f0da872b02a3ccf1f1419d6b992dd4703dc866e5a289d36397ac7"
+
+  stable do
+    url "https://github.com/nghttp2/nghttp2/releases/download/v1.34.0/nghttp2-1.34.0.tar.xz"
+    sha256 "ecb0c013141495e24bd6deca022b5a92097a7848a0c17c4e5af1243a97fa622e"
+
+    # apply upstream patch to fix compilation on macOS, remove in next release
+    patch do
+      url "https://github.com/nghttp2/nghttp2/commit/153531d4d0ebe00ac95047dbf1fec1d9d694f29f.patch?full_index=1"
+      sha256 "7b520ff66699dd41a84cbd287c06ed474ef21ce2b2fab34152267ac1d8ec07da"
+    end
+  end
 
   bottle do
-    sha256 "68df2e5d01922df3b756e173bf14f17963948bc6a042d91c6a46030a1642cee8" => :high_sierra
-    sha256 "cc35f4a95b57efa63a837cab62678f8c015755ff79200787e76f147b2c72560e" => :sierra
-    sha256 "fee924a6d7490c0fc9b9d95923f2d49b9794a9f394770d643a9ee1539055b8c7" => :el_capitan
+    sha256 "a882c48e3d738c192cdd535ff785a96e9d77d87d894e53a75e2533742277fdba" => :mojave
+    sha256 "1668315be30654d2cce6a8e4f7036f7460ad72be418070106a0a9a706c347db2" => :high_sierra
+    sha256 "87b22ce014eb075dd0c0723b5921f1d6e8136270343dd90d36232010fd552725" => :sierra
   end
 
   head do
     url "https://github.com/nghttp2/nghttp2.git"
 
-    depends_on "automake" => :build
     depends_on "autoconf" => :build
+    depends_on "automake" => :build
     depends_on "libtool" => :build
   end
 
-  option "with-examples", "Compile and install example programs"
   option "with-python", "Build python3 bindings"
 
   deprecated_option "with-python3" => "with-python"
 
-  depends_on "python" => :optional
-  depends_on "sphinx-doc" => :build
-  depends_on "libxml2" if MacOS.version <= :lion
-  depends_on "pkg-config" => :build
   depends_on "cunit" => :build
-  depends_on "c-ares"
-  depends_on "libev"
-  depends_on "openssl"
-  depends_on "libevent"
-  depends_on "jansson"
+  depends_on "pkg-config" => :build
+  depends_on "sphinx-doc" => :build
   depends_on "boost"
-  depends_on "jemalloc" => :recommended
+  depends_on "c-ares"
+  depends_on "jansson"
+  depends_on "jemalloc"
+  depends_on "libev"
+  depends_on "libevent"
+  depends_on "libxml2" if MacOS.version <= :lion
+  depends_on "openssl"
+  depends_on "python" => :optional
 
   resource "Cython" do
-    url "https://files.pythonhosted.org/packages/ee/2a/c4d2cdd19c84c32d978d18e9355d1ba9982a383de87d0fcb5928553d37f4/Cython-0.27.3.tar.gz"
-    sha256 "6a00512de1f2e3ce66ba35c5420babaef1fe2d9c43a8faab4080b0dbcc26bc64"
+    url "https://files.pythonhosted.org/packages/f0/66/6309291b19b498b672817bd237caec787d1b18013ee659f17b1ec5844887/Cython-0.29.tar.gz"
+    sha256 "94916d1ede67682638d3cc0feb10648ff14dc51fb7a7f147f4fedce78eaaea97"
   end
 
   # https://github.com/tatsuhiro-t/nghttp2/issues/125
@@ -58,23 +66,15 @@ class Nghttp2 < Formula
       --disable-python-bindings
     ]
 
-    args << "--enable-examples" if build.with? "examples"
+    # requires thread-local storage features only available in 10.11+
+    args << "--disable-threads" if MacOS.version < :el_capitan
     args << "--with-xml-prefix=/usr" if MacOS.version > :lion
-    args << "--without-jemalloc" if build.without? "jemalloc"
 
     system "autoreconf", "-ivf" if build.head?
     system "./configure", *args
     system "make"
     system "make", "check"
-
-    # Currently this is not installed by the make install stage.
-    if build.with? "docs"
-      system "make", "html"
-      doc.install Dir["doc/manual/html/*"]
-    end
-
     system "make", "install"
-    libexec.install "examples" if build.with? "examples"
 
     if build.with? "python"
       pyver = Language::Python.major_minor_version "python3"

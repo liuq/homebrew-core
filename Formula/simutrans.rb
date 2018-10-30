@@ -1,41 +1,31 @@
 class Simutrans < Formula
   desc "Transport simulator"
   homepage "https://www.simutrans.com/"
+  url "https://downloads.sourceforge.net/project/simutrans/simutrans/120-4/simutrans-src-120-4.zip"
+  version "120.4"
+  sha256 "cf0f364a26d178d9fbee8ec59196b308c811f1c1c69f45c05cdb554e58b61898"
   head "https://github.com/aburch/simutrans.git"
-
-  stable do
-    url "https://downloads.sourceforge.net/project/simutrans/simutrans/120-1-3/simutrans-src-120-1-3.zip"
-    version "120.1.3"
-    sha256 "2d29b849fc39d25a0580091e1377270bddb2cae36c0fc32bd7c2d0f1d7ccfb84"
-
-    # Port Mac audio code from QTKit to AVFoundation
-    # Required since 10.12 SDK no longer includes QTKit.
-    # Submitted upstream: https://forum.simutrans.com/index.php?topic=16675.0
-    patch do
-      url "https://raw.githubusercontent.com/Homebrew/formula-patches/bea80842a6ccc5639341add0d8abbca2d49b04c2/simutrans/avfoundation.patch"
-      sha256 "9b9c9e6d89de49f152faaf584fcbbeec628bb07315b7c767e1f8b6791ad1e3ee"
-    end
-  end
 
   bottle do
     cellar :any
-    sha256 "d07c63fcaa13fa5c670f27603cc0609a46da912374e30bd1e785329db26e7651" => :sierra
-    sha256 "36961b1c305e6c2081447e54a274d0e118df63eb771626be1dc511b9c34811ed" => :el_capitan
-    sha256 "200ce8fa5e825a6f49ac4f6d87a014bad0d6a4a16a7640a71261ac7680472ab1" => :yosemite
+    sha256 "5a6c026584d0519b0b7adf626a4f7b0b7d7689615de27241232593569a906868" => :mojave
+    sha256 "d20fe9c5a2039bd438fd6f96e24979424acc9c1e7e442d9496ecd1a244640211" => :high_sierra
+    sha256 "e4ac8b4e3ece8ee265e46419db351cba744c6b66b89683d3443ab35e65b936cd" => :sierra
+    sha256 "0c7270b180b815014d92577de3e255d247f422ada4545e0c836bcaafa9a0b94b" => :el_capitan
   end
 
-  depends_on :macos => :lion
   depends_on "libpng"
+  depends_on :macos => :lion
   depends_on "sdl2"
 
   resource "pak64" do
-    url "https://downloads.sourceforge.net/project/simutrans/pak64/120-1/simupak64-120-1-2.zip"
-    sha256 "125fa5c13a51bb0630ca651fddb8af06a823e8c4d4638bfa1bb2d89e92cc1d54"
+    url "https://downloads.sourceforge.net/project/simutrans/pak64/120-4/simupak64-120-4.zip"
+    sha256 "b1dba2876838fcda6fb1b90c9b981e2aa490c1b0a81bab7c53b8bd50f59c0ffd"
   end
 
   resource "text" do
     url "https://simutrans-germany.com/translator/data/tab/language_pack-Base+texts.zip"
-    sha256 "202816f67750cfb9decdfca3bacfebbc5bfc3474c8703239418edc093ce3774d"
+    sha256 "44caa98599089f55d5cfef34d24f9b8ae362d0b41c784ca1b649270436cdea02"
   end
 
   def install
@@ -44,6 +34,7 @@ class Simutrans < Formula
       COLOUR_DEPTH=16
       OSTYPE=mac
     ]
+    args << "AV_FOUNDATION=1" if MacOS.version >= :sierra
     system "make", *args
     libexec.install "build/default/sim" => "simutrans"
     libexec.install Dir["simutrans/*"]

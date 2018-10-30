@@ -3,22 +3,23 @@ require "language/node"
 class Chronograf < Formula
   desc "Open source monitoring and visualization UI for the TICK stack"
   homepage "https://docs.influxdata.com/chronograf/latest/"
-  url "https://github.com/influxdata/chronograf/archive/1.4.2.1.tar.gz"
-  sha256 "a8549af8d748d3e89e966450d708705128320aafab11d11d46fc4b8904b289de"
+  url "https://github.com/influxdata/chronograf/archive/1.6.2.tar.gz"
+  sha256 "78e2999fe2344ce3386c98d47a24396605816e216f7b8b9087e629917af75378"
   head "https://github.com/influxdata/chronograf.git"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "561d5d1dc2a7b9e8a8773ff526a53a1a4a2176007d579be19716718dba5421e3" => :high_sierra
-    sha256 "230b44a76ac298d6c038cbecf3545a76bca9c31c64edaf4b9cef7eb59abe6209" => :sierra
-    sha256 "29395681e61925fd30c16de15dd6f19a29f7285d05eb161f8bd7da7ff48bc6fa" => :el_capitan
+    sha256 "fb4bc64fb654cad7ca9234aec3a9ea9531439ea68d33b4029b09c1aea4139a5d" => :mojave
+    sha256 "c0068a11373bf063ec27edae51f4f7687bb6e8356148dcec9a80647e5da43f31" => :high_sierra
+    sha256 "28873e1d05a6ff217fb8ba26d7015680a508390afc2f3bc8a7914f7a21d4d89d" => :sierra
+    sha256 "e90632fa7a4d9c127d535acda9ee8f0045b84384b02376a5958d20c2725968d1" => :el_capitan
   end
 
   depends_on "go" => :build
   depends_on "node" => :build
   depends_on "yarn" => :build
-  depends_on "influxdb" => :recommended
-  depends_on "kapacitor" => :recommended
+  depends_on "influxdb"
+  depends_on "kapacitor"
 
   def install
     ENV["GOPATH"] = buildpath
@@ -26,6 +27,9 @@ class Chronograf < Formula
     Language::Node.setup_npm_environment
     chronograf_path = buildpath/"src/github.com/influxdata/chronograf"
     chronograf_path.install buildpath.children
+
+    # fixes yarn + upath@1.0.4 incompatibility, remove once upath is upgraded to 1.0.5+
+    Pathname.new("#{ENV["HOME"]}/.yarnrc").write("ignore-engines true\n")
 
     cd chronograf_path do
       system "make", "dep"
@@ -64,7 +68,7 @@ class Chronograf < Formula
         <string>#{var}/log/chronograf.log</string>
       </dict>
     </plist>
-    EOS
+  EOS
   end
 
   test do

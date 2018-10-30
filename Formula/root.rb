@@ -1,32 +1,51 @@
 class Root < Formula
   desc "Object oriented framework for large scale data analysis"
-  homepage "https://root.cern.ch"
-  url "https://root.cern.ch/download/root_v6.12.06.source.tar.gz"
-  version "6.12.06"
-  sha256 "aedcfd2257806e425b9f61b483e25ba600eb0ea606e21262eafaa9dc745aa794"
-  head "http://root.cern.ch/git/root.git"
+  homepage "https://root.cern.ch/"
+  url "https://root.cern.ch/download/root_v6.14.04.source.tar.gz"
+  version "6.14.04"
+  sha256 "463ec20692332a422cfb5f38c78bedab1c40ab4d81be18e99b50cf9f53f596cf"
+  revision 2
+  head "https://github.com/root-project/root.git"
 
   bottle do
-    sha256 "26c632e4a43db19c05cb4680feb9769d07d167e2df8faaa60b218b6784d134c4" => :high_sierra
-    sha256 "7a4b7823f8a2af91ebe3cc42ef96a4d6766fff7a0928c2b853bd00297eb1efa7" => :sierra
-    sha256 "0d60e875c6b6a135ca98ead7436ca3cf8a073e2a2c5fe5aef64867d24da52ce5" => :el_capitan
+    sha256 "ca72af676d7c91ce31dcc96d475f3fc5d7653b8412f6e02bdc5e1df58d85ff24" => :mojave
+    sha256 "3ae6464e7850068f4b86bad5abaa521bb5f681c3eb7218bcc3adc43796a72618" => :high_sierra
+    sha256 "d3ef8ca60ceeaf453006b137740274979548b1443ff0d1383450ece038194330" => :sierra
+  end
+
+  # https://github.com/Homebrew/homebrew-core/issues/30726
+  # strings libCling.so | grep Xcode:
+  #  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1
+  #  /Applications/Xcode.app/Contents/Developer
+  pour_bottle? do
+    reason "The bottle hardcodes locations inside Xcode.app"
+    satisfy do
+      MacOS::Xcode.installed? &&
+        MacOS::Xcode.prefix.to_s.include?("/Applications/Xcode.app/")
+    end
   end
 
   depends_on "cmake" => :build
+  depends_on "davix"
   depends_on "fftw"
-  depends_on "gcc" # for gfortran.
+  depends_on "gcc" # for gfortran
   depends_on "graphviz"
   depends_on "gsl"
+  # Temporarily depend on Homebrew libxml2 to work around a brew issue:
+  # https://github.com/Homebrew/brew/issues/5068
+  depends_on "libxml2" if MacOS.version >= :mojave
+  depends_on "lz4"
   depends_on "openssl"
   depends_on "pcre"
+  depends_on "tbb"
   depends_on "xrootd"
-  depends_on "xz" # For LZMA.
+  depends_on "xz" # for LZMA
   depends_on "python" => :recommended
   depends_on "python@2" => :optional
 
-  needs :cxx11
-
   skip_clean "bin"
+
+  needs :cxx11
 
   def install
     # Work around "error: no member named 'signbit' in the global namespace"
@@ -43,16 +62,23 @@ class Root < Formula
     args = std_cmake_args + %W[
       -Dgnuinstall=ON
       -DCMAKE_INSTALL_ELISPDIR=#{elisp}
+      -DCLING_CXX_PATH=clang++
       -Dbuiltin_freetype=ON
+      -Dbuiltin_cfitsio=OFF
+      -Ddavix=ON
+      -Dfitsio=OFF
       -Dfftw3=ON
       -Dfortran=ON
       -Dgdml=ON
       -Dmathmore=ON
       -Dminuit2=ON
       -Dmysql=OFF
+      -Dpgsql=OFF
       -Droofit=ON
       -Dssl=ON
+      -Dimt=ON
       -Dxrootd=ON
+      -Dtmva=ON
     ]
 
     if build.with?("python") && build.with?("python@2")
@@ -117,7 +143,7 @@ class Root < Formula
       pushd #{HOMEBREW_PREFIX} >/dev/null; . bin/thisroot.sh; popd >/dev/null
     For csh/tcsh users:
       source #{HOMEBREW_PREFIX}/bin/thisroot.csh
-    EOS
+  EOS
   end
 
   test do

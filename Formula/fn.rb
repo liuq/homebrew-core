@@ -1,14 +1,14 @@
 class Fn < Formula
   desc "Command-line tool for the fn project"
-  homepage "https://fnproject.github.io"
-  url "https://github.com/fnproject/cli/archive/0.4.61.tar.gz"
-  sha256 "3e83da932f5d06f9f9bc5c00b8bc7904a6e692b7b44892d0adc7178878f02178"
+  homepage "https://fnproject.io"
+  url "https://github.com/fnproject/cli/archive/0.5.20.tar.gz"
+  sha256 "cf41845a71911a36869874ae9fa292dc841eb1bd440fd59d3ec235feb030a927"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "ddc4a99597b3f667318c5798a9080b6167899cf23eadc1d260c78ba5234e31cc" => :high_sierra
-    sha256 "815290e99fab4cfe4f6ced2da8201a22a4b40ab80c8e16e90a0ab3cb952541f0" => :sierra
-    sha256 "54f846fa81d6b3e2a2018bc618c2fd46366e9f9472cb61db0cc024341ff8ef74" => :el_capitan
+    sha256 "ce97e19dfef3d01553d76b3441e3f91f2a682521e691b24f80cdd66b46f29b80" => :mojave
+    sha256 "b9937c851bc87f910aebbfd1db165e389f12b176cbac4ea5940eab5ab625d62b" => :high_sierra
+    sha256 "8cce920e55c19e27b4598af2a9dc022db78fe1ff1237ea2bbe31cc3fa34e267e" => :sierra
   end
 
   depends_on "dep" => :build
@@ -19,7 +19,7 @@ class Fn < Formula
     dir = buildpath/"src/github.com/fnproject/cli"
     dir.install Dir["*"]
     cd dir do
-      system "dep", "ensure"
+      system "dep", "ensure", "-vendor-only"
       system "go", "build", "-o", "#{bin}/fn"
       prefix.install_metafiles
     end
@@ -36,7 +36,7 @@ class Fn < Formula
     pid = fork do
       loop do
         socket = server.accept
-        response = '{"route": {"path": "/myfunc", "image": "fnproject/myfunc"} }'
+        response = '{"id":"01CQNY9PADNG8G00GZJ000000A","name":"myapp","created_at":"2018-09-18T08:56:08.269Z","updated_at":"2018-09-18T08:56:08.269Z"}'
         socket.print "HTTP/1.1 200 OK\r\n" \
                     "Content-Length: #{response.bytesize}\r\n" \
                     "Connection: close\r\n"
@@ -48,8 +48,8 @@ class Fn < Formula
     begin
       ENV["FN_API_URL"] = "http://localhost:#{port}"
       ENV["FN_REGISTRY"] = "fnproject"
-      expected = "/myfunc created with fnproject/myfunc"
-      output = shell_output("#{bin}/fn routes create myapp myfunc --image fnproject/myfunc:0.0.1")
+      expected = "Successfully created app:  myapp"
+      output = shell_output("#{bin}/fn create app myapp")
       assert_match expected, output.chomp
     ensure
       Process.kill("TERM", pid)

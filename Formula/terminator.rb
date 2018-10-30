@@ -1,7 +1,7 @@
 class Terminator < Formula
   desc "Multiple terminals in one window"
   homepage "https://gnometerminator.blogspot.com/p/introduction.html"
-  revision 1
+  revision 2
   head "lp:terminator", :using => :bzr
 
   stable do
@@ -16,18 +16,19 @@ class Terminator < Formula
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "b2e67f305f175629b8a4673adbfee6da0db29d3d994d68363a458af47f8bd04e" => :high_sierra
-    sha256 "b2e67f305f175629b8a4673adbfee6da0db29d3d994d68363a458af47f8bd04e" => :sierra
-    sha256 "b2e67f305f175629b8a4673adbfee6da0db29d3d994d68363a458af47f8bd04e" => :el_capitan
+    sha256 "684029ff528fce3fc54d7449574539948d0d53255e3ad7f58ec679af58c2c96e" => :mojave
+    sha256 "00e85432871cb5e7df4bcbe8e835cf9ad619f772de9018c41ed781bef4fa6643" => :high_sierra
+    sha256 "00e85432871cb5e7df4bcbe8e835cf9ad619f772de9018c41ed781bef4fa6643" => :sierra
+    sha256 "00e85432871cb5e7df4bcbe8e835cf9ad619f772de9018c41ed781bef4fa6643" => :el_capitan
   end
 
-  depends_on "pkg-config" => :build
   depends_on "intltool" => :build
-  depends_on "python@2" if MacOS.version <= :snow_leopard
-  depends_on "vte"
-  depends_on "pygtk"
-  depends_on "pygobject"
+  depends_on "pkg-config" => :build
   depends_on "pango"
+  depends_on "pygobject"
+  depends_on "pygtk"
+  depends_on "python@2"
+  depends_on "vte"
 
   def install
     ENV.prepend_create_path "PYTHONPATH", lib/"python2.7/site-packages"

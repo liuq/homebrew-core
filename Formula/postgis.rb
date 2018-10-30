@@ -1,15 +1,14 @@
 class Postgis < Formula
   desc "Adds support for geographic objects to PostgreSQL"
   homepage "https://postgis.net/"
-  url "https://download.osgeo.org/postgis/source/postgis-2.4.3.tar.gz"
-  sha256 "ea5374c5db6b645ba5628ddcb08f71d3b3d90a464d366b4e1d20d5a268bde4b9"
-  revision 1
+  url "https://download.osgeo.org/postgis/source/postgis-2.5.0.tar.gz"
+  sha256 "be73abd747e9665f29748e0e7dc6b3f7b1ce98f32e3567f08259420ca10e36d5"
 
   bottle do
     cellar :any
-    sha256 "fbed2b89a7d387e0daf26a706ac59fc461494cf14e207f57730bd6ee12f1cb79" => :high_sierra
-    sha256 "3f8c3abc7e8e1a37591cb15881499559370ad4d8b91b9954aa7ebbaeebb3572f" => :sierra
-    sha256 "422cb06464cab2d785684c743e57c2f25ad14a36b62dc63e20e45a5d605bca6f" => :el_capitan
+    sha256 "32fb1898e0968379c3f389f367ded066b0a8a7480b8215019fa8855e56c25ee6" => :mojave
+    sha256 "b215ee5f65c4303ecff061913bf943837bdd93b647dce31836f71fed0fd3b356" => :high_sierra
+    sha256 "3fff4467b70a0320fc9e99a72e256a957cc1d8bfcaeac1b3bdbf25d20baed435" => :sierra
   end
 
   head do
@@ -21,37 +20,18 @@ class Postgis < Formula
   end
 
   option "with-gui", "Build shp2pgsql-gui in addition to command line tools"
-  option "without-gdal", "Disable postgis raster support"
-  option "with-html-docs", "Generate multi-file HTML documentation"
-  option "with-api-docs", "Generate developer API documentation (long process)"
   option "with-protobuf-c", "Build with protobuf-c to enable Geobuf and Mapbox Vector Tile support"
 
-  depends_on "pkg-config" => :build
   depends_on "gpp" => :build
+  depends_on "pkg-config" => :build
+  depends_on "gdal" # for GeoJSON and raster handling
+  depends_on "geos"
+  depends_on "gtk+" if build.with? "gui"
+  depends_on "json-c" # for GeoJSON and raster handling
+  depends_on "pcre"
   depends_on "postgresql"
   depends_on "proj"
-  depends_on "geos"
-
-  depends_on "gtk+" if build.with? "gui"
-
-  # For GeoJSON and raster handling
-  depends_on "json-c"
-  depends_on "gdal" => :recommended
-  depends_on "pcre" if build.with? "gdal"
-
-  # For advanced 2D/3D functions
-  depends_on "sfcgal" => :recommended
-
-  if build.with? "html-docs"
-    depends_on "imagemagick"
-    depends_on "docbook-xsl"
-  end
-
-  if build.with? "api-docs"
-    depends_on "graphviz"
-    depends_on "doxygen"
-  end
-
+  depends_on "sfcgal" # for advanced 2D/3D functions
   depends_on "protobuf-c" => :optional
 
   def install
@@ -69,28 +49,11 @@ class Postgis < Formula
     ]
 
     args << "--with-gui" if build.with? "gui"
-    args << "--without-raster" if build.without? "gdal"
-    args << "--with-xsldir=#{Formula["docbook-xsl"].opt_prefix}/docbook-xsl" if build.with? "html-docs"
     args << "--with-protobufdir=#{Formula["protobuf-c"].opt_bin}" if build.with? "protobuf-c"
 
     system "./autogen.sh" if build.head?
     system "./configure", *args
     system "make"
-
-    if build.with? "html-docs"
-      cd "doc" do
-        ENV["XML_CATALOG_FILES"] = "#{etc}/xml/catalog"
-        system "make", "chunked-html"
-        doc.install "html"
-      end
-    end
-
-    if build.with? "api-docs"
-      cd "doc" do
-        system "make", "doxygen"
-        doc.install "doxygen/html" => "api"
-      end
-    end
 
     mkdir "stage"
     system "make", "install", "DESTDIR=#{buildpath}/stage"
@@ -133,7 +96,7 @@ class Postgis < Formula
         #{HOMEBREW_PREFIX}/lib
       PostGIS extension modules installed to:
         #{HOMEBREW_PREFIX}/share/postgresql/extension
-      EOS
+    EOS
   end
 
   test do

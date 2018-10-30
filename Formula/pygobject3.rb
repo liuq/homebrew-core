@@ -1,38 +1,38 @@
 class Pygobject3 < Formula
   desc "GNOME Python bindings (based on GObject Introspection)"
-  homepage "https://live.gnome.org/PyGObject"
-  url "https://download.gnome.org/sources/pygobject/3.26/pygobject-3.26.1.tar.xz"
-  sha256 "f5577b9b9c70cabb9a60d81b855d488b767c66f867432e7fb64aa7269b04d1a9"
+  homepage "https://wiki.gnome.org/Projects/PyGObject"
+  url "https://download.gnome.org/sources/pygobject/3.30/pygobject-3.30.1.tar.xz"
+  sha256 "e1335b70e36885bf1ae207ec1283a369b8fc3e080688046c1edb5a676edc11ce"
 
   bottle do
-    cellar :any
-    rebuild 1
-    sha256 "9bada550c6806e5f89394a760bd35614de8210490f5c788aa5ff8dacf4393247" => :high_sierra
-    sha256 "2a44945bb6d8c0f58856b1812c4e8a2232341ab022d433ea6734e742587894e3" => :sierra
-    sha256 "dfff2dc9f1e74b0320cf53e11966c84a5b54136d51874f2b3563ef5be031ccaf" => :el_capitan
+    sha256 "d2f915f9926b904ca20f3976c003be9f777403f4f0ac76646c6c410990a34285" => :mojave
+    sha256 "4d929370081936dfebf95767696c62be500c1e3197ee38d1b6cc6468f432daca" => :high_sierra
+    sha256 "9c9c97adeff1513f3f14f84dc6d1f17aea83dc322efea5c3733603e18b246947" => :sierra
+    sha256 "61a4cb205453ebb9c2e9bc1c9c92d7a93fb26b7886c94a7e03406c7f1541a72a" => :el_capitan
   end
 
-  option "without-python@2", "Build without python2 support"
+  option "without-python", "Build without python3 support"
+  option "with-python@2", "Build with python2 support"
 
-  deprecated_option "with-python3" => "with-python"
-  deprecated_option "without-python" => "without-python@2"
-
+  depends_on "meson" => :build
+  depends_on "ninja" => :build
   depends_on "pkg-config" => :build
-  depends_on "libffi" => :optional
-  depends_on "glib"
-  depends_on "python@2" if MacOS.version <= :snow_leopard
-  depends_on "python" => :optional
-  depends_on "py2cairo" if build.with? "python@2"
-  depends_on "py3cairo" if build.with? "python"
+  depends_on "python" => [:build, :recommended]
   depends_on "gobject-introspection"
+  depends_on "py3cairo" if build.with? "python"
+  depends_on "python@2" => :optional
+  depends_on "py2cairo" if build.with? "python@2"
 
   def install
-    Language::Python.each_python(build) do |python, _version|
-      system "./configure", "--disable-dependency-tracking",
-                            "--prefix=#{prefix}",
-                            "PYTHON=#{python}"
-      system "make", "install"
-      system "make", "clean"
+    Language::Python.each_python(build) do |python, version|
+      mkdir "build#{version}" do
+        system "meson", "--prefix=#{prefix}",
+                        "-Dpycairo=true",
+                        "-Dpython=#{python}",
+                        ".."
+        system "ninja", "-v"
+        system "ninja", "install"
+      end
     end
   end
 

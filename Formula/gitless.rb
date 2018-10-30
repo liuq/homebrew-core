@@ -2,19 +2,20 @@ class Gitless < Formula
   include Language::Python::Virtualenv
 
   desc "Simplified version control system on top of git"
-  homepage "http://gitless.com/"
+  homepage "https://gitless.com/"
   url "https://github.com/sdg-mit/gitless/archive/v0.8.6.tar.gz"
   sha256 "e1d009bf9d7c89428d7029394cc85a0d91bd2af73f019508ddc92c98faeed8e5"
+  revision 2
 
   bottle do
     cellar :any
-    sha256 "61a08eb451abe8bdbb8150f18de71281fdc4bd87d752e500e2a066cbdbe04bbc" => :high_sierra
-    sha256 "ffa5383d713facc865249064e16289f4d38c6d29234decaf3fbf58a43a9038e6" => :sierra
-    sha256 "080a6ac35724acf0e10a3e113c16d2a06f66f5d3e49b3af745b057205998200f" => :el_capitan
+    sha256 "0d80d148f18f3ac01af5593573eeb8570d1cadeaecaac4d6a00d51d7ef82c44c" => :mojave
+    sha256 "d424d1d7ccb79d9ad9cd4cc3a6d52e4571eb6f23fcb5de9772292d77315e510e" => :high_sierra
+    sha256 "8c307b1ee20d519c8bb8658c9ceab72fefbf3095d6296b2347875ae9f4095dcf" => :sierra
   end
 
-  depends_on "python@2" if MacOS.version <= :snow_leopard
   depends_on "libgit2"
+  depends_on "python"
 
   resource "args" do
     url "https://files.pythonhosted.org/packages/e5/1c/b701b3f4bd8d3667df8342f311b3efaeab86078a840fb826bd204118cc6b/args-0.1.0.tar.gz"
@@ -37,8 +38,8 @@ class Gitless < Formula
   end
 
   resource "pygit2" do
-    url "https://files.pythonhosted.org/packages/29/78/c2d5c7b0394e99cf20c683927871e676ff796d69d8c2c322e0edabb6e9c6/pygit2-0.26.3.tar.gz"
-    sha256 "29baa530d6fcbf7cca6a75cf9c78fb88613ca81afb39c62fe492f226f6b61800"
+    url "https://files.pythonhosted.org/packages/3b/0d/c11844421c7c3b9cb84c5503185bbb5ba780144fd64f5adde572bcdcdd8a/pygit2-0.27.0.tar.gz"
+    sha256 "6febce4aea72f12ed5a1e7529b91119f21d93cb2ccb3f834eea26af76cc9a4cb"
   end
 
   resource "sh" do

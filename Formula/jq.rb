@@ -3,24 +3,14 @@ class Jq < Formula
   homepage "https://stedolan.github.io/jq/"
   url "https://github.com/stedolan/jq/releases/download/jq-1.5/jq-1.5.tar.gz"
   sha256 "c4d2bfec6436341113419debf479d833692cc5cdab7eb0326b5a4d4fbe9f493c"
-  revision 2
+  revision 3
 
   bottle do
     cellar :any
-    sha256 "0da7ed90f4bf73aeea7079ab46e5b765491f3929be6d55651dd80cfc9dc32d53" => :high_sierra
-    sha256 "f3a31965bcaf187dae9a46b8f7acf02af7d9bbadb21bd834197ed12699b63c25" => :sierra
-    sha256 "16fd34adec21188f7e13655cde69289acf0a87f4241395357f1c4d47f492eda1" => :el_capitan
-    sha256 "8fbfede40ab806d8a93c1551a00af4aa46f7289d47fbb96836c58197f33e13a5" => :yosemite
-    sha256 "b55d226db14edc9ada42ecfd00ae64497702c616247fc8d5d7c35c01d25b26e5" => :mavericks
-  end
-
-  devel do
-    url "https://github.com/stedolan/jq.git", :tag => "jq-1.6rc1"
-    version "1.6rc1"
-
-    depends_on "autoconf" => :build
-    depends_on "automake" => :build
-    depends_on "libtool" => :build
+    sha256 "e76e19d5bcf1a6eebae188846f5656b5f615771beed5748897f4eb0fabd3151b" => :mojave
+    sha256 "25be689b9bca3cef2ee0cb647388200d25f045f651679ef8871b8a86100f9e43" => :high_sierra
+    sha256 "11e169f340dc1f93fbb3c21a87c3aaa7d1242967ed11672663e6e827e622ef0d" => :sierra
+    sha256 "b3f95569c5d67db9c9c1e9eeff670e8769bd5b40ebf1e170bd64be7e62b8e576" => :el_capitan
   end
 
   head do
@@ -34,7 +24,7 @@ class Jq < Formula
   depends_on "oniguruma" # jq depends > 1.5
 
   def install
-    system "autoreconf", "-iv" unless build.stable?
+    system "autoreconf", "-iv" if build.head?
     system "./configure", "--disable-dependency-tracking",
                           "--disable-silent-rules",
                           "--disable-maintainer-mode",

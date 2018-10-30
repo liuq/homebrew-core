@@ -1,15 +1,15 @@
 class DnscryptProxy < Formula
   desc "Secure communications between a client and a DNS resolver"
   homepage "https://github.com/jedisct1/dnscrypt-proxy"
-  url "https://github.com/jedisct1/dnscrypt-proxy/archive/2.0.5.tar.gz"
-  sha256 "5cee67756cb8e2357a05c43a47f89c24bb76a8677f6ffce0613e951cb45b6863"
+  url "https://github.com/jedisct1/dnscrypt-proxy/archive/2.0.17.tar.gz"
+  sha256 "7c4ffcc7b8b07474622e728f1c019b79bd2d35be074cbeddcfa49cd83c7179b0"
   head "https://github.com/jedisct1/dnscrypt-proxy.git"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "8cfd9c2ca81970ce1603e7ba400a379c274f34a1eefb1d85c6aac0d752ccf0a9" => :high_sierra
-    sha256 "84e42490ed403f72da818bdcdf43f9079c4c4302309b59286ce9438415f76bf0" => :sierra
-    sha256 "fa8411fa34fae582013c563e4a39c57e6454cf2d02ed74e00f64319e18f2411d" => :el_capitan
+    sha256 "d99c182407f2d5a83dbb26bd12c09c373fa3a2d1ab8f682bdd73d7acdb236a46" => :mojave
+    sha256 "f468249162bdbffcd3ec0acbb089d38676e645363281c8591f56a8a2acb3371c" => :high_sierra
+    sha256 "8fa74e6406bbd0a0b52edf1887cd5f2a4bad7e09db57c448bdfa0c1780e05ff4" => :sierra
   end
 
   depends_on "go" => :build
@@ -37,8 +37,8 @@ class DnscryptProxy < Formula
     can click "+" and enter 127.0.0.1 in the "DNS Servers" section.
 
     By default, dnscrypt-proxy runs on localhost (127.0.0.1), port 53,
-    using a random resolver. If you would like to change these settings,
-    you will have to edit the configuration file:
+    balancing traffic across a set of resolvers. If you would like to
+    change these settings, you will have to edit the configuration file:
       #{etc}/dnscrypt-proxy.toml
 
     To check that dnscrypt-proxy is working correctly, open Terminal and enter the
@@ -79,7 +79,7 @@ class DnscryptProxy < Formula
         <string>/dev/null</string>
       </dict>
     </plist>
-    EOS
+  EOS
   end
 
   test do

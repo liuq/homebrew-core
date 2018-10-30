@@ -1,38 +1,40 @@
 class Osquery < Formula
   desc "SQL powered operating system instrumentation and analytics"
   homepage "https://osquery.io"
-  # pull from git tag to get submodules
-  url "https://github.com/facebook/osquery/archive/3.1.0.tar.gz"
-  sha256 "dd8ddbb30d9f965fd999b2a3dc70a36944bd97adb198059995f3b42f211be75b"
+  url "https://github.com/facebook/osquery/archive/3.3.0.tar.gz"
+  sha256 "b633b41bd9ec7a8569eb03060cc22dd53a36d3ba4ca7fb66a976d7f9f800bf52"
 
   bottle do
     cellar :any
-    sha256 "3ea2fa9fb604f473c6ba853750cc3a041456093f86853693088d707f594c4be5" => :high_sierra
-    sha256 "a6c107f4e2ae53ccd6412924ff34639d8289aca5c2c0ed2cfb76f953c544cb64" => :sierra
+    sha256 "6a72b32baee92352531bf8b2b65384affdc66217c68688859b65d094d2630621" => :mojave
+    sha256 "8aa49f8ab62b8132333ade19ae7c07fac43ea01f3e02592b64fb5caea9a695b0" => :high_sierra
+    sha256 "d1d464d11894f3dd91946aa03d0178baf6fa5b9cd2623d6544e42d1c295e0d5a" => :sierra
   end
 
-  fails_with :gcc => "6"
-
-  # osquery only supports macOS 10.12 and above. Do not remove this.
-  depends_on :macos => :sierra
   depends_on "bison" => :build
   depends_on "cmake" => :build
+  depends_on "python@2" => :build
   depends_on "augeas"
   depends_on "boost"
   depends_on "gflags"
   depends_on "glog"
   depends_on "libarchive"
   depends_on "libmagic"
-  depends_on "lldpd"
   depends_on "librdkafka"
+  depends_on "lldpd"
+  # osquery only supports macOS 10.12 and above. Do not remove this.
+  depends_on :macos => :sierra
   depends_on "openssl"
   depends_on "rapidjson"
   depends_on "rocksdb"
   depends_on "sleuthkit"
+  depends_on "ssdeep"
   depends_on "thrift"
-  depends_on "yara"
   depends_on "xz"
+  depends_on "yara"
   depends_on "zstd"
+
+  fails_with :gcc => "6"
 
   resource "MarkupSafe" do
     url "https://files.pythonhosted.org/packages/c0/41/bae1254e0396c0cc8cf1751cb7d9afc90a602353695af5952530482c963f/MarkupSafe-0.23.tar.gz"
@@ -79,6 +81,10 @@ class Osquery < Formula
     # Skip test and benchmarking.
     ENV["SKIP_TESTS"] = "1"
     ENV["SKIP_DEPS"] = "1"
+
+    # Skip SMART drive tables.
+    # SMART requires a dependency that isn't packaged by brew.
+    ENV["SKIP_SMART"] = "1"
 
     # Link dynamically against brew-installed libraries.
     ENV["BUILD_LINK_SHARED"] = "1"

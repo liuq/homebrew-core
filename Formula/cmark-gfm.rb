@@ -1,15 +1,16 @@
 class CmarkGfm < Formula
   desc "C implementation of GitHub Flavored Markdown"
   homepage "https://github.com/github/cmark"
-  url "https://github.com/github/cmark/archive/0.28.3.gfm.12.tar.gz"
-  version "0.28.3.gfm.12"
-  sha256 "7f53d060a82df012859ae3493c62e2d63b8146cbea8af77e696cde41a62d7246"
+  url "https://github.com/github/cmark/archive/0.28.3.gfm.16.tar.gz"
+  version "0.28.3.gfm.16"
+  sha256 "5594e42f13e529e2530bcc8e4681832e888714d5c89f4eaf3adefc731e21a3e2"
 
   bottle do
     cellar :any
-    sha256 "f8fb24d78f6a8e48aef311e5623a98cef25fc0f12c88742964b3ba7194831b60" => :high_sierra
-    sha256 "b94090c9e3be2b4699c17059d5c57b2c732c2d274f90d80cadb049c3c1556ab7" => :sierra
-    sha256 "e5f4de22de172dec649fcc453022fe33840d3b0596b2ab830d2a0525d5c02ccd" => :el_capitan
+    sha256 "7dccae726f0a0c40db8d58f3de0bdf91b88f1ca8417e46edf088ce75ea045c0a" => :mojave
+    sha256 "ee27c6d97d907803261684e2e66b33eaba0f1c9a5178061b89edc9fdb4cd1102" => :high_sierra
+    sha256 "b2093ad9e295ff9a466c01b9fb77d3a5965b4a791071360f4d1fcaec08a4b0e7" => :sierra
+    sha256 "12651aa1954ef96a027b484011d1426b35868f4d11a4bdaf845f67cdf7e10d26" => :el_capitan
   end
 
   depends_on "cmake" => :build

@@ -1,34 +1,25 @@
 class Zookeeper < Formula
   desc "Centralized server for distributed coordination of services"
   homepage "https://zookeeper.apache.org/"
-  url "https://www.apache.org/dyn/closer.cgi?path=zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz"
-  mirror "https://archive.apache.org/dist/zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz"
-  sha256 "7f7f5414e044ac11fee2a1e0bc225469f51fb0cdf821e67df762a43098223f27"
+  url "https://www.apache.org/dyn/closer.cgi?path=zookeeper/zookeeper-3.4.13/zookeeper-3.4.13.tar.gz"
+  sha256 "7ced798e41d2027784b8fd55c908605ad5bd94a742d5dab2506be8f94770594d"
 
   bottle do
     cellar :any
-    rebuild 1
-    sha256 "08431d9c2f04f5a735149f374975df4f2e0d8140b1cc901f505d379ef7e20fe0" => :high_sierra
-    sha256 "8c7304be183d4c28c0f5d88e22626188c76794bee004e1b330c3e79bf5ae9d53" => :sierra
-    sha256 "2d792cb3963a7caf57922635888ae4e3cf363ef5a81d23f13a11d0ee42a780cf" => :el_capitan
+    sha256 "d1e4e7738cd147dceb3d91b32480c20ac5da27d129905f336ba51c0c01b8a476" => :mojave
+    sha256 "806ec4f5c3c63387ffa3d1934764b3ebedcacdeffaa26661ae203c71be7d707b" => :high_sierra
+    sha256 "ea14de526563c5a1d5edd84c40383c75bef5dcf135b80dbc54af14f8b70cc68f" => :sierra
   end
 
   head do
     url "https://svn.apache.org/repos/asf/zookeeper/trunk"
 
     depends_on "ant" => :build
-    depends_on "cppunit" => :build
-    depends_on "libtool" => :build
     depends_on "autoconf" => :build
     depends_on "automake" => :build
+    depends_on "cppunit" => :build
+    depends_on "libtool" => :build
   end
-
-  option "with-perl", "Build Perl bindings"
-
-  deprecated_option "perl" => "with-perl"
-  deprecated_option "with-python" => "with-python@2"
-
-  depends_on "python@2" => :optional
 
   def shim_script(target)
     <<~EOS
@@ -74,22 +65,6 @@ class Zookeeper < Formula
                             "--prefix=#{prefix}",
                             "--without-cppunit"
       system "make", "install"
-    end
-
-    if build.with? "python@2"
-      cd "src/contrib/zkpython" do
-        system "python", "src/python/setup.py", "build"
-        system "python", "src/python/setup.py", "install", "--prefix=#{prefix}"
-      end
-    end
-
-    if build.with? "perl"
-      cd "src/contrib/zkperl" do
-        system "perl", "Makefile.PL", "PREFIX=#{prefix}",
-                                      "--zookeeper-include=#{include}",
-                                      "--zookeeper-lib=#{lib}"
-        system "make", "install"
-      end
     end
 
     rm_f Dir["bin/*.cmd"]
@@ -157,7 +132,7 @@ class Zookeeper < Formula
         <string>#{var}</string>
       </dict>
     </plist>
-    EOS
+  EOS
   end
 
   test do

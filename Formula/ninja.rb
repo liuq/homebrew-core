@@ -7,29 +7,19 @@ class Ninja < Formula
 
   bottle do
     cellar :any_skip_relocation
+    sha256 "b40a7da5db26b6bb32537185bd79861cce13f723cc02ad503e8501b6fca2d6f4" => :mojave
     sha256 "eeba4fff08b3ed4b308250fb650f7d06630acd18465900ba0e27cecfe925a6cc" => :high_sierra
     sha256 "90ecf90948f0fa65c82011d79338d7c5ca2a4d0cb7cb8dc3892243f749fbe2eb" => :sierra
     sha256 "675165ce642fa811e1a0a363be0ba66a7b907d46056f89fd20938aa33e7d59f7" => :el_capitan
   end
 
-  option "without-test", "Don't run build-time tests"
-
-  deprecated_option "without-tests" => "without-test"
-
-  resource "gtest" do
-    url "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/googletest/gtest-1.7.0.zip"
-    sha256 "247ca18dd83f53deb1328be17e4b1be31514cedfc1e3424f672bf11fd7e0d60d"
-  end
-
   def install
     system "python", "configure.py", "--bootstrap"
 
-    if build.with? "test"
-      (buildpath/"gtest").install resource("gtest")
-      system "./configure.py", "--with-gtest=gtest"
-      system "./ninja", "ninja_test"
-      system "./ninja_test", "--gtest_filter=-SubprocessTest.SetWithLots"
-    end
+    # Quickly test the build
+    system "./configure.py"
+    system "./ninja", "ninja_test"
+    system "./ninja_test", "--gtest_filter=-SubprocessTest.SetWithLots"
 
     bin.install "ninja"
     bash_completion.install "misc/bash-completion" => "ninja-completion.sh"

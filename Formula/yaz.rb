@@ -1,21 +1,20 @@
 class Yaz < Formula
   desc "Toolkit for Z39.50/SRW/SRU clients/servers"
   homepage "https://www.indexdata.com/yaz"
-  url "http://ftp.indexdata.dk/pub/yaz/yaz-5.23.1.tar.gz"
-  sha256 "4fb3b1ffcec4b9a56b892c47a0a645142e45418ce5ef6a835aeebc723f7d147e"
-  revision 2
+  url "http://ftp.indexdata.dk/pub/yaz/yaz-5.27.0.tar.gz"
+  sha256 "3db834b30aad941aaee67a3daf0cfc33d6f81e724dd8d54227be201ad93c18f3"
 
   bottle do
     cellar :any
-    sha256 "f0c08571d5eb5ec506e76b675f96b36f355f5bf2e7f91bcccfa463573449ba79" => :high_sierra
-    sha256 "0578e44aff8a426b3936633ca29e8693860941f4d693c37e8e9491fe9d9cf2fa" => :sierra
-    sha256 "a0c3051306314ba99073719706fd57c40c432a9c83dcbef9b6aaee52bc49f3ef" => :el_capitan
+    sha256 "f6a495cbf1329a891f669166dbde293ee4785bce25702a6ed3ac09aee20e0537" => :mojave
+    sha256 "f01d2081e79f177aa68afc78d2e51db95659f3c5f50e6966b3af26aaa99c31dd" => :high_sierra
+    sha256 "f1ca38fa8084d942398ef11c6393bd1ae9c91c0b7f8374e90113366267b2363f" => :sierra
   end
 
   head do
     url "https://github.com/indexdata/yaz.git"
-    depends_on "automake" => :build
     depends_on "autoconf" => :build
+    depends_on "automake" => :build
     depends_on "libtool" => :build
   end
 

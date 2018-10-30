@@ -1,14 +1,14 @@
 class Gecode < Formula
   desc "Toolkit for developing constraint-based systems and applications"
-  homepage "http://www.gecode.org/"
-  url "http://www.gecode.org/download/gecode-6.0.0.tar.gz"
-  sha256 "da41a39f96a6c00f9890d3878a35bfaeb1129d0359129f8ce912a4334d5de736"
+  homepage "https://www.gecode.org/"
+  url "https://github.com/Gecode/gecode/archive/release-6.1.0.tar.gz"
+  sha256 "e02e48aa90870a25509de2aeb99662d8b51c1de60cae4a34a78d4b6e9321e7ae"
 
   bottle do
     cellar :any
-    sha256 "2d060e1fb1c00e96a71b8cab6ef55f1ca5bfdfb9f1055cba9ab912ec3390723f" => :high_sierra
-    sha256 "56f0ad61ca96479733c686a0bcf94640d88ab08a5931a216355db3e27aa320fc" => :sierra
-    sha256 "a56de24c36f255f23ed845f582498fa8987f0b485bcc13de49bd5fdf715b6bbc" => :el_capitan
+    sha256 "2bc4fdd0449bfaa2240096cc0cb4c41410bbd98ca5f5aecd17ad447c75de15e5" => :mojave
+    sha256 "429df4b22ad12271341419dc6872e65ffac5b70b9815dd9274914209370c701b" => :high_sierra
+    sha256 "a91ba1e8e0ee585a8bea0adbfe4c9242bf30f61bce3cf50a4d0cfff4088b568b" => :sierra
   end
 
   deprecated_option "with-qt5" => "with-qt"

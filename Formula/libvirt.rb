@@ -1,17 +1,16 @@
 class Libvirt < Formula
   desc "C virtualization API"
   homepage "https://www.libvirt.org"
-  url "https://libvirt.org/sources/libvirt-4.1.0.tar.xz"
-  sha256 "8a2fa4826f311a936be8b7d4c8d76516c29417a593b1d1bb8641a8caaa316439"
+  url "https://libvirt.org/sources/libvirt-4.8.0.tar.xz"
+  sha256 "c2fd7112d6689fbb4d700b31c01aadd8a0eb275e127dc959cdc166f5f60b3032"
+  revision 1
   head "https://github.com/libvirt/libvirt.git"
 
   bottle do
-    sha256 "c1b14d187a175405ff0fc7b6a77c349346e0488705bc51242668a107b6ee21ec" => :high_sierra
-    sha256 "56b11e108a50b9bb50a3c2b3a0d48ac0a22c7f6518f793270de1f88bbaab011a" => :sierra
-    sha256 "3bb799d750a3aa7e9417ebdd7f766f3d3f629b8d77dcd8cbf5493201cd61578b" => :el_capitan
+    sha256 "82b492f1b78ff924c2f17a271c5d24b8147ef5d1350fc7ded796edf7241306a3" => :mojave
+    sha256 "b8d09cc19613f1bae96c986caf24bf9f0485e479bdfdf8a141a1b157e3346b14" => :high_sierra
+    sha256 "c884c9f923fb6c5dd124c8802dbeb0bad7b46f58ba64462747c6794c67bccf55" => :sierra
   end
-
-  option "without-libvirtd", "Build only the virsh client and development libraries"
 
   depends_on "pkg-config" => :build
   depends_on "gnutls"
@@ -38,12 +37,10 @@ class Libvirt < Formula
       --with-test
       --with-vbox
       --with-vmware
-      --with-yajl
-      --without-qemu
+      --with-qemu
     ]
 
     args << "ac_cv_path_RPCGEN=#{Formula["rpcgen"].opt_prefix}/bin/rpcgen" if build.head?
-    args << "--without-libvirtd" if build.without? "libvirtd"
 
     system "./autogen.sh" if build.head?
     system "./configure", *args
@@ -55,14 +52,38 @@ class Libvirt < Formula
     # Update the SASL config file with the Homebrew prefix
     inreplace "#{etc}/sasl2/libvirt.conf", "/etc/", "#{HOMEBREW_PREFIX}/etc/"
 
-    # If the libvirt daemon is built, update its config file to reflect
-    # the Homebrew prefix
-    if build.with? "libvirtd"
-      inreplace "#{etc}/libvirt/libvirtd.conf" do |s|
-        s.gsub! "/etc/", "#{HOMEBREW_PREFIX}/etc/"
-        s.gsub! "/var/", "#{HOMEBREW_PREFIX}/var/"
-      end
+    # Update the libvirt daemon config file to reflect the Homebrew prefix
+    inreplace "#{etc}/libvirt/libvirtd.conf" do |s|
+      s.gsub! "/etc/", "#{HOMEBREW_PREFIX}/etc/"
+      s.gsub! "/var/", "#{HOMEBREW_PREFIX}/var/"
     end
+  end
+
+  plist_options :manual => "libvirtd"
+
+  def plist; <<~EOS
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+    <plist version="1.0">
+      <dict>
+        <key>EnvironmentVariables</key>
+        <dict>
+          <key>PATH</key>
+          <string>#{HOMEBREW_PREFIX}/bin</string>
+        </dict>
+        <key>Label</key>
+        <string>#{plist_name}</string>
+        <key>ProgramArguments</key>
+        <array>
+          <string>#{sbin}/libvirtd</string>
+        </array>
+        <key>KeepAlive</key>
+        <true/>
+        <key>RunAtLoad</key>
+        <true/>
+      </dict>
+    </plist>
+  EOS
   end
 
   test do

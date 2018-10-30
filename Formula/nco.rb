@@ -1,14 +1,15 @@
 class Nco < Formula
   desc "Command-line operators for netCDF and HDF files"
   homepage "https://nco.sourceforge.io/"
-  url "https://downloads.sourceforge.net/project/nco/nco-4.7.3.tar.gz"
-  sha256 "c79fcfc291976466070e0da04c9ea57924feb7f41e4d89a27f313c465e42b381"
+  url "https://downloads.sourceforge.net/project/nco/nco-4.7.6.tar.gz"
+  sha256 "c7926163b204573b7bf7b6e3c9bcfa15b2cc04c0f494dbc0c6829ee8c2f015b3"
+  revision 3
 
   bottle do
     cellar :any
-    sha256 "ba0586276dcd8216c92e1b667664ecc485c91396caf761e094b7bfd1ace447a7" => :high_sierra
-    sha256 "7de2fbd91043617bd1a5865bf9f7fbea5f2c82b99eae70989550b3eb8d49f6be" => :sierra
-    sha256 "18bd84803a3021374a4f143a76fae14b6805d2c905fc8a26b3a7a06e275b86d8" => :el_capitan
+    sha256 "32ed25d57c795ffb7a56eac923c4b2e908e80cc72cab884524ba242474443be8" => :mojave
+    sha256 "dbc34488e46c857ff3ee4e8a805a085b82fb331aa6f502d1c69303a07525307c" => :high_sierra
+    sha256 "7e6e460c005e785a0673fe910d455518010d0ae72ead58ff1bf6d972d2887b65" => :sierra
   end
 
   head do
@@ -23,18 +24,13 @@ class Nco < Formula
   depends_on "texinfo"
   depends_on "udunits"
 
-  resource("example_nc") do
+  resource "example_nc" do
     url "https://www.unidata.ucar.edu/software/netcdf/examples/WMI_Lear.nc"
     sha256 "e37527146376716ef335d01d68efc8d0142bdebf8d9d7f4e8cbe6f880807bdef"
   end
 
   def install
     system "./autogen.sh" if build.head?
-
-    inreplace "configure" do |s|
-      # The Antlr 2.x program installed by Homebrew is called antlr2
-      s.gsub! "for ac_prog in runantlr antlr", "for ac_prog in runantlr antlr2"
-    end
 
     system "./configure", "--disable-dependency-tracking",
                           "--prefix=#{prefix}",

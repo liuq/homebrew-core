@@ -1,14 +1,15 @@
 class Vtk < Formula
   desc "Toolkit for 3D computer graphics, image processing, and visualization"
   homepage "https://www.vtk.org/"
-  url "https://www.vtk.org/files/release/8.1/VTK-8.1.0.tar.gz"
-  sha256 "6e269f07b64fb13774f5925161fb4e1f379f4e6a0131c8408c555f6b58ef3cb7"
+  url "https://www.vtk.org/files/release/8.1/VTK-8.1.1.tar.gz"
+  sha256 "71a09b4340f0a9c58559fe946dc745ab68a866cf20636a41d97b6046cb736324"
+  revision 2
   head "https://github.com/Kitware/VTK.git"
 
   bottle do
-    sha256 "bd0c1cacabb157928251455e38dff513fb9ea68865ddef7c623e91cb20722713" => :high_sierra
-    sha256 "a4eb2f81607d7c9ab1643cbf8b07607cb2b3ac62033c875f3488c642103cdc06" => :sierra
-    sha256 "9e8ab70c3e26b72de63bda9bead81582876c2b2830ff1bf9f2808dc9c2960b7c" => :el_capitan
+    sha256 "9ebecbab78563a12b4a55f62d7c15afeab7b288891ba2b71d8f461b1d77b8b33" => :mojave
+    sha256 "f17ccc19e0183f06c07e6d7b2ac23f21a5056bb8b8bcb57f5411f656639d168a" => :high_sierra
+    sha256 "b0cce7d37ebea9901e98519412b7d8078499ca03ee4cc6ec283525ba9dd2f121" => :sierra
   end
 
   option "without-python@2", "Build without python2 support"
@@ -23,7 +24,7 @@ class Vtk < Formula
   depends_on "libpng"
   depends_on "libtiff"
   depends_on "netcdf"
-  depends_on "python@2" => :recommended if MacOS.version <= :snow_leopard
+  depends_on "python@2" => :recommended
   depends_on "python" => :optional
   depends_on "qt" => :optional
   depends_on "pyqt" if build.with? "qt"
@@ -49,15 +50,7 @@ class Vtk < Formula
       -DVTK_USE_SYSTEM_PNG=ON
       -DVTK_USE_SYSTEM_TIFF=ON
       -DVTK_USE_SYSTEM_ZLIB=ON
-      -DVTK_WRAP_TCL=ON
     ]
-
-    unless MacOS::CLT.installed?
-      # We are facing an Xcode-only installation, and we have to keep
-      # vtk from using its internal Tk headers (that differ from OSX's).
-      args << "-DTK_INCLUDE_PATH:PATH=#{MacOS.sdk_path}/System/Library/Frameworks/Tk.framework/Headers"
-      args << "-DTK_INTERNAL_PATH:PATH=#{MacOS.sdk_path}/System/Library/Frameworks/Tk.framework/Headers/tk-private"
-    end
 
     mkdir "build" do
       if build.with?("python") && build.with?("python@2")
@@ -99,14 +92,28 @@ class Vtk < Formula
       system "make"
       system "make", "install"
     end
+
+    # Avoid hard-coding Python 2 or 3's Cellar paths
+    inreplace Dir["#{lib}/cmake/**/vtkPython.cmake"].first do |s|
+      if build.with? "python"
+        s.gsub! Formula["python"].prefix.realpath, Formula["python"].opt_prefix
+      end
+      if build.with? "python@2"
+        s.gsub! Formula["python@2"].prefix.realpath, Formula["python@2"].opt_prefix
+      end
+    end
+
+    # Avoid hard-coding HDF5's Cellar path
+    inreplace Dir["#{lib}/cmake/**/vtkhdf5.cmake"].first,
+      Formula["hdf5"].prefix.realpath, Formula["hdf5"].opt_prefix
   end
 
   def caveats; <<~EOS
     Even without the --with-qt option, you can display native VTK render windows
     from python. Alternatively, you can integrate the RenderWindowInteractor
-    in PyQt5, Tk or Wx at runtime. Read more:
+    in PyQt5 or Wx at runtime. Read more:
       import vtk.qt5; help(vtk.qt5) or import vtk.wx; help(vtk.wx)
-    EOS
+  EOS
   end
 
   test do

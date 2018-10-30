@@ -1,36 +1,28 @@
 class Ice < Formula
   desc "Comprehensive RPC framework"
   homepage "https://zeroc.com"
-  url "https://github.com/zeroc-ice/ice/archive/v3.7.0.tar.gz"
-  sha256 "809fff14a88a7de1364c846cec771d0d12c72572914e6cc4fb0b2c1861c4a1ee"
-  revision 2
+  url "https://github.com/zeroc-ice/ice/archive/v3.7.1.tar.gz"
+  sha256 "b1526ab9ba80a3d5f314dacf22674dff005efb9866774903d0efca5a0fab326d"
+  revision 1
 
   bottle do
     cellar :any
-    sha256 "f0f7026dee2641341b7ad0afdb2171b3fc9346780cfd41d43d68e000a413ef9e" => :high_sierra
-    sha256 "8f88952025f7617e3e9b3812524b9ee05d58c7439f0c2b309a45a6ac9f6cb1fe" => :sierra
-    sha256 "5cfc10f845ecf06b9177e1ec7223513e977bb70680a756b906b3b6beaf045bc6" => :el_capitan
+    sha256 "6078f948a29465feb24209e56ab6e2a98cdf81200c362c391492fe2f0a89e734" => :mojave
+    sha256 "5e82eaebcc364dda7720231d272636d799d3287869d7f56be68141427641efdf" => :high_sierra
+    sha256 "1c1f3181f3e8b82cda5810b4317edd4a40b4185700c2f7b095d1be970d4c539b" => :sierra
   end
 
-  # Xcode 9 support
-  patch do
-    url "https://github.com/zeroc-ice/ice/commit/3a55ebb51b8914b60d308a0535d9abf97567138d.patch?full_index=1"
-    sha256 "d95e76acebdae69edf3622f5141ea32bbbd5844be7c29d88e6e985d14a5d5dd4"
-  end
-
-  #
-  # NOTE: we don't build slice2py, slice2js, slice2rb by default to prevent clashes with
-  # the translators installed by the PyPI/GEM/npm packages.
-  #
-
-  option "with-additional-compilers", "Build additional Slice compilers (slice2py, slice2js, slice2rb)"
   option "with-java", "Build Ice for Java and the IceGrid GUI app"
-  option "without-xcode-sdk", "Build without the Xcode SDK for iOS development (includes static libs)"
 
-  depends_on "mcpp"
   depends_on "lmdb"
-  depends_on :java => ["1.8+", :optional]
   depends_on :macos => :mavericks
+  depends_on "mcpp"
+  depends_on :java => ["1.8+", :optional]
+
+  patch do
+    url "https://github.com/zeroc-ice/ice/compare/v3.7.1..v3.7.1-xcode10.patch?full_index=1"
+    sha256 "28eff5dd6cb6065716a7664f3973213a2e5186ddbdccb1c1c1d832be25490f1b"
+  end
 
   def install
     ENV.O2 # Os causes performance issues
@@ -42,9 +34,11 @@ class Ice < Formula
       "V=1",
       "MCPP_HOME=#{Formula["mcpp"].opt_prefix}",
       "LMDB_HOME=#{Formula["lmdb"].opt_prefix}",
-      "CONFIGS=shared cpp11-shared #{build.with?("xcode-sdk") ? "xcodesdk cpp11-xcodesdk" : ""}",
+      "CONFIGS=shared cpp11-shared xcodesdk cpp11-xcodesdk",
       "PLATFORMS=all",
-      "SKIP=slice2confluence #{build.without?("additional-compilers") ? "slice2py slice2rb slice2js" : ""}",
+      # We don't build slice2py, slice2js, slice2rb to prevent clashes with
+      # the translators installed by the PyPI/GEM/npm packages.
+      "SKIP=slice2confluence slice2py slice2rb slice2js",
       "LANGUAGES=cpp objective-c #{build.with?("java") ? "java java-compat" : ""}",
     ]
     system "make", "install", *args

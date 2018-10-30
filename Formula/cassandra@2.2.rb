@@ -5,10 +5,18 @@ class CassandraAT22 < Formula
   mirror "https://archive.apache.org/dist/cassandra/2.2.11/apache-cassandra-2.2.11-bin.tar.gz"
   sha256 "866e1acd88e6e2ec0c3d201bea4c3e4494c5f6189dd810366ec9b6154bad6964"
 
-  bottle :unneeded
+  bottle do
+    cellar :any_skip_relocation
+    rebuild 1
+    sha256 "686148484fd214ef747ca608490003c4c146e01dd9a088132eaf53e0fb46daa6" => :mojave
+    sha256 "966571457ede3a2376f92f3837eaa16276b267c93bcb3a660cdf721cb5315493" => :high_sierra
+    sha256 "fca0ff60134260f53cec82c02c7c338ea0f978aa2f7ae2d451fe465d7c0966b6" => :sierra
+  end
+
+  keg_only :versioned_formula
 
   depends_on "cython" => :build
-  depends_on "python@2" if MacOS.version <= :snow_leopard
+  depends_on "python@2" # does not support Python 3.7
 
   # Only >=Yosemite has new enough setuptools for successful compile of the below deps.
   resource "setuptools" do
@@ -110,7 +118,7 @@ class CassandraAT22 < Formula
         <string>#{var}/lib/cassandra</string>
       </dict>
     </plist>
-    EOS
+  EOS
   end
 
   test do

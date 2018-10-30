@@ -5,27 +5,30 @@ class Sile < Formula
   url "https://github.com/simoncozens/sile.git",
       :revision => "befcd813e1dd46f7af6d11ffd0b0ee525e8db1fc"
   version "0.9.5-alpha"
-  revision 3
+  revision 5
   head "https://github.com/simoncozens/sile.git"
 
   bottle do
     cellar :any
-    sha256 "ed43b2bcde68a99ba7002877ebb05c516771b1f0fcfa0540b58f2688beb8bfc6" => :high_sierra
-    sha256 "7968513be7f808313f6cb19cdca6fcfe974bf204b2df3b0d3281cf90e52de243" => :sierra
-    sha256 "4caa22e0950091f53a9f36e5135bfe50ab04e554c2adcc08999d359ec7ab4f0e" => :el_capitan
+    rebuild 1
+    sha256 "960cd69d010b4519bfdec271b83d8a45b1284d1c1dc859a82aacaac2e0ba9238" => :mojave
+    sha256 "949bf321f680df35a69a49c4c129815cefa396cd58f4e4dd538b99ad25176ffc" => :high_sierra
+    sha256 "243d2626d6d80f1083f049b7561818ace9330958358e617fcfb5ff3dde3fbbed" => :sierra
+    sha256 "28ac8b22cdd7cfd21a48d5632b780bc6c613319190785549a17b99f8d9ed93da" => :el_capitan
   end
 
   # These three should return to being head-only when >0.9.4 is released.
-  depends_on "automake" => :build
   depends_on "autoconf" => :build
+  depends_on "automake" => :build
   depends_on "libtool" => :build
 
+  depends_on "luarocks" => :build
   depends_on "pkg-config" => :build
-  depends_on "harfbuzz"
   depends_on "fontconfig"
+  depends_on "harfbuzz"
+  depends_on "icu4c"
   depends_on "libpng"
   depends_on "lua"
-  depends_on "icu4c"
 
   resource "lpeg" do
     url "http://www.inf.puc-rio.br/~roberto/lpeg/lpeg-1.0.1.tar.gz"

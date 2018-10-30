@@ -1,24 +1,17 @@
 class Ruby < Formula
   desc "Powerful, clean, object-oriented scripting language"
   homepage "https://www.ruby-lang.org/"
-  url "https://cache.ruby-lang.org/pub/ruby/2.5/ruby-2.5.0.tar.xz"
-  sha256 "1da0afed833a0dab94075221a615c14487b05d0c407f991c8080d576d985b49b"
-  revision 2
+  url "https://cache.ruby-lang.org/pub/ruby/2.5/ruby-2.5.3.tar.xz"
+  sha256 "1cc9d0359a8ea35fc6111ec830d12e60168f3b9b305a3c2578357d360fcf306f"
 
   bottle do
-    sha256 "8b7172fc5e08f11a70946e7513d8f1676b7a175f3d365e1fdc19ad6e50b2be6e" => :high_sierra
-    sha256 "5291ebf740c494f2a06c310059bcebeb5c5d01f958b209ba301bd6d36296c48a" => :sierra
-    sha256 "8368496c8b9254d2fa4c701aaef70777fd4488890653a1c40b817e269f545800" => :el_capitan
-  end
-
-  devel do
-    url "https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.0-preview1.tar.xz"
-    version "2.6.0-preview1"
-    sha256 "1d99139116e4e245ce543edb137b2a8873c26e9f0bde88d8cee6789617cc8d0e"
+    sha256 "6c620464fee701978124bdb9ef12179fb55ba62e73222ed42d59e6c07d25a04a" => :mojave
+    sha256 "4973d5cabcb8b53ab892a331e6c02b8230e9c8ef7a69f6a96d0aec69d3099831" => :high_sierra
+    sha256 "df8aabed70a29a81ca6f1d5e6a4fcbc0de999cab09b6377b1f61b9dde29b5b21" => :sierra
   end
 
   head do
-    url "https://svn.ruby-lang.org/repos/ruby/trunk/"
+    url "https://github.com/ruby/ruby.git"
     depends_on "autoconf" => :build
   end
 
@@ -31,8 +24,8 @@ class Ruby < Formula
   # The exception is Rubygem security fixes, which mandate updating this
   # formula & the versioned equivalents and bumping the revisions.
   resource "rubygems" do
-    url "https://rubygems.org/rubygems/rubygems-2.7.6.tgz"
-    sha256 "67f714a582a9ce471bbbcb417374ea9cf9c061271c865dbb0d093f3bc3371eeb"
+    url "https://rubygems.org/rubygems/rubygems-2.7.7.tgz"
+    sha256 "4cb2c9a36c0e4a3d5c20eb6795638632858fd72236d281963140221946ab55cb"
   end
 
   def api_version
@@ -188,7 +181,7 @@ class Ruby < Formula
         "#{opt_bin}/ruby"
       end
     end
-    EOS
+  EOS
   end
 
   test do

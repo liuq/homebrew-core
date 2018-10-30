@@ -1,27 +1,18 @@
 class Git < Formula
   desc "Distributed revision control system"
   homepage "https://git-scm.com"
-  url "https://www.kernel.org/pub/software/scm/git/git-2.16.2.tar.xz"
-  sha256 "5560578bd21468d98637f41515c165d32f69caff0838b8989dee5ce10022c717"
+  url "https://www.kernel.org/pub/software/scm/git/git-2.19.1.tar.xz"
+  sha256 "345056aa9b8084280b1b9fe1374d232dec05a34e8849028a20bfdb56e920dbb5"
   head "https://github.com/git/git.git", :shallow => false
 
   bottle do
-    sha256 "0222b2e2fef8adff1feb479c003987c392c7a4eb9b23eccd6160d56aa732e1c2" => :high_sierra
-    sha256 "7770770f5f29100a9b9142239d1dc2a8d68d457c4d3ef1fcfc0f694ba2e9f8d4" => :sierra
-    sha256 "206d2a21710b4b4d914343f531529c74234f668950dc89788492cb9f6242c4cb" => :el_capitan
+    sha256 "003dd1860023d20655740cc5ca1e2699910bd99d824d530a3b8f29d91f02dd42" => :mojave
+    sha256 "20a44d52c512481f0b56f3280e9dcf6b2ec6d6935b6fbd0a6f6dc346b07807b5" => :high_sierra
+    sha256 "debff9bff0889579d54bdd69c630bdafbced59ae44534dddeb04e9d5b8599f54" => :sierra
   end
 
-  option "with-blk-sha1", "Compile with the block-optimized SHA1 implementation"
-  option "without-completions", "Disable bash/zsh completions from 'contrib' directory"
-  option "with-subversion", "Use Homebrew's version of SVN"
-  option "with-persistent-https", "Build git-remote-persistent-https from 'contrib' directory"
-
-  deprecated_option "with-brewed-svn" => "with-subversion"
-  deprecated_option "with-pcre" => "with-pcre2"
-
-  depends_on "pcre2" => :optional
-  depends_on "gettext" => :optional
-  depends_on "go" => :build if build.with? "persistent-https"
+  depends_on "gettext"
+  depends_on "pcre2"
 
   if MacOS.version < :yosemite
     depends_on "openssl"
@@ -37,44 +28,31 @@ class Git < Formula
     depends_on "curl" => :optional
   end
 
-  if build.with? "subversion"
-    depends_on "subversion"
-    depends_on "perl" => :recommended
-  else
-    option "with-perl", "Build against Homebrew's Perl rather than system default"
-    depends_on "perl" => :optional
-  end
-
   resource "html" do
-    url "https://www.kernel.org/pub/software/scm/git/git-htmldocs-2.16.2.tar.xz"
-    sha256 "dbaf94de882e6ad6827a79935e6982021f0908bd7cccf984d3130fc77ecccb19"
+    url "https://www.kernel.org/pub/software/scm/git/git-htmldocs-2.19.1.tar.xz"
+    sha256 "7252eb32735ca60f86d0a2081891c8cc5937a2e03373c92e8eaf657029776482"
   end
 
   resource "man" do
-    url "https://www.kernel.org/pub/software/scm/git/git-manpages-2.16.2.tar.xz"
-    sha256 "42eee5134cc8b3b64c736025edfbfee86c2ecb76e37980a0aff26c86b5abcb05"
+    url "https://www.kernel.org/pub/software/scm/git/git-manpages-2.19.1.tar.xz"
+    sha256 "27af909c7a43ffc8b1736af19a6a68d8a5b177963ec4ddd2b2f9f0ed53bcc6ee"
   end
 
   def install
     # If these things are installed, tell Git build system not to use them
     ENV["NO_FINK"] = "1"
     ENV["NO_DARWIN_PORTS"] = "1"
-    ENV["V"] = "1" # build verbosely
     ENV["NO_R_TO_GCC_LINKER"] = "1" # pass arguments to LD correctly
     ENV["PYTHON_PATH"] = which("python")
     ENV["PERL_PATH"] = which("perl")
+    ENV["USE_LIBPCRE2"] = "1"
+    ENV["INSTALL_SYMLINKS"] = "1"
+    ENV["LIBPCREDIR"] = Formula["pcre2"].opt_prefix
+    ENV["V"] = "1" # build verbosely
 
     perl_version = Utils.popen_read("perl --version")[/v(\d+\.\d+)(?:\.\d+)?/, 1]
-    # If building with a non-system Perl search everywhere declared in @INC.
-    perl_inc = Utils.popen_read("perl -e 'print join\":\",@INC'").sub(":.", "")
 
-    if build.with? "subversion"
-      ENV["PERLLIB_EXTRA"] = %W[
-        #{Formula["subversion"].opt_lib}/perl5/site_perl
-      ].join(":")
-    elsif build.with? "perl"
-      ENV["PERLLIB_EXTRA"] = perl_inc
-    elsif MacOS.version >= :mavericks
+    if MacOS.version >= :mavericks
       ENV["PERLLIB_EXTRA"] = %W[
         #{MacOS.active_developer_dir}
         /Library/Developer/CommandLineTools
@@ -86,14 +64,6 @@ class Git < Formula
 
     unless quiet_system ENV["PERL_PATH"], "-e", "use ExtUtils::MakeMaker"
       ENV["NO_PERL_MAKEMAKER"] = "1"
-    end
-
-    ENV["BLK_SHA1"] = "1" if build.with? "blk-sha1"
-    ENV["NO_GETTEXT"] = "1" if build.without? "gettext"
-
-    if build.with? "pcre2"
-      ENV["USE_LIBPCRE2"] = "1"
-      ENV["LIBPCREDIR"] = Formula["pcre2"].opt_prefix
     end
 
     args = %W[
@@ -143,23 +113,11 @@ class Git < Formula
       git_core.install "git-subtree"
     end
 
-    if build.with? "persistent-https"
-      cd "contrib/persistent-https" do
-        system "make"
-        git_core.install "git-remote-persistent-http",
-                         "git-remote-persistent-https",
-                         "git-remote-persistent-https--proxy"
-      end
-    end
-
-    if build.with? "completions"
-      # install the completion script first because it is inside "contrib"
-      bash_completion.install "contrib/completion/git-completion.bash"
-      bash_completion.install "contrib/completion/git-prompt.sh"
-
-      zsh_completion.install "contrib/completion/git-completion.zsh" => "_git"
-      cp "#{bash_completion}/git-completion.bash", zsh_completion
-    end
+    # install the completion script first because it is inside "contrib"
+    bash_completion.install "contrib/completion/git-completion.bash"
+    bash_completion.install "contrib/completion/git-prompt.sh"
+    zsh_completion.install "contrib/completion/git-completion.zsh" => "_git"
+    cp "#{bash_completion}/git-completion.bash", zsh_completion
 
     elisp.install Dir["contrib/emacs/*.el"]
     (share/"git-core").install "contrib"

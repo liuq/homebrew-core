@@ -1,25 +1,21 @@
 class JsonFortran < Formula
   desc "Fortran 2008 JSON API"
   homepage "https://github.com/jacobwilliams/json-fortran"
-  url "https://github.com/jacobwilliams/json-fortran/archive/6.1.0.tar.gz"
-  sha256 "95afb978ada157a19aeb45fb234ed8f4abf2a76749d212d77a31972cc47b8b3e"
-  revision 1
+  url "https://github.com/jacobwilliams/json-fortran/archive/6.10.0.tar.gz"
+  sha256 "8a383e454b39c821e2f53c6aea2a5390a3bcc12949c9d289780ab11dc081302a"
   head "https://github.com/jacobwilliams/json-fortran.git"
 
   bottle do
     cellar :any
-    sha256 "3421989b35f3f93e05d9150a482ccca217ab74840844817d44ce7d182cfca5d1" => :high_sierra
-    sha256 "48401b56deb1efde18b05fafef29b23eae1a8998fa975637407c5351d5ae2159" => :sierra
-    sha256 "41068b91a80f1a451d83d5389210d8313b9391fde897a19f87884a5aea79dbda" => :el_capitan
+    sha256 "f98191c2916fde89d4ab0f519c68503363f89e26ac3bd4ffe5ca3f8c7847ade8" => :mojave
+    sha256 "a44bc978afd9ce07c610ed63dcd9e5dea7a070a5bc225be412f5a6046f0e2df2" => :high_sierra
+    sha256 "27eeca7326c6348a816d0804cc720da5c3ed15e611a23e6666059e175f09af37" => :sierra
   end
 
   option "with-unicode-support", "Build json-fortran to support unicode text in json objects and files"
-  option "without-docs", "Do not build and install FORD generated documentation for json-fortran"
-
-  deprecated_option "without-robodoc" => "without-docs"
 
   depends_on "cmake" => :build
-  depends_on "ford" => :build if build.with? "docs"
+  depends_on "ford" => :build
   depends_on "gcc" # for gfortran
 
   def install
@@ -27,7 +23,6 @@ class JsonFortran < Formula
       args = std_cmake_args
       args << "-DUSE_GNU_INSTALL_CONVENTION:BOOL=TRUE" # Use more GNU/Homebrew-like install layout
       args << "-DENABLE_UNICODE:BOOL=TRUE" if build.with? "unicode-support"
-      args << "-DSKIP_DOC_GEN:BOOL=TRUE" if build.without? "docs"
       system "cmake", "..", *args
       system "make", "install"
     end

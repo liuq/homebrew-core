@@ -9,21 +9,22 @@ class DosboxX < Formula
   bottle do
     cellar :any
     rebuild 1
+    sha256 "5bccafd80948d5ef2ef3059eae718d1c025880a83c065533daa7befe1bd4cae2" => :mojave
     sha256 "8cbaa0cf9658118b4b4ba32f4d1718f9bf49d0aec71cc7846463f37966559656" => :high_sierra
     sha256 "d3fc4b2bd340ed6f7d2624b8daf95397891f8e142d6219437f2cae215f538216" => :sierra
     sha256 "0b5098e3397a15804a300540be53c98f862c4f7276eb4c1de7966152421a9392" => :el_capitan
   end
 
+  depends_on "fluid-synth"
+  depends_on "libpng"
   depends_on "sdl"
   depends_on "sdl_net"
   depends_on "sdl_sound"
-  depends_on "libpng"
-  depends_on "fluid-synth"
+
+  conflicts_with "dosbox", :because => "both install `dosbox` binaries"
 
   # Otherwise build failure on Moutain Lion (#311)
   needs :cxx11
-
-  conflicts_with "dosbox", :because => "both install `dosbox` binaries"
 
   def install
     ENV.cxx11
@@ -38,15 +39,11 @@ class DosboxX < Formula
                 "setCD(clientsocket > 0)", "setCD(clientsocket != 0)"
     end
 
-    args = %W[
-      --prefix=#{prefix}
-      --disable-dependency-tracking
-      --disable-sdltest
-      --enable-core-inline
-    ]
-    args << "--enable-debug" if build.with? "debugger"
+    system "./configure", "--prefix=#{prefix}",
+                          "--disable-dependency-tracking",
+                          "--disable-sdltest",
+                          "--enable-core-inline"
 
-    system "./configure", *args
     chmod 0755, "install-sh"
     system "make", "install"
   end

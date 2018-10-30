@@ -1,14 +1,13 @@
 class Dnsmasq < Formula
   desc "Lightweight DNS forwarder and DHCP server"
   homepage "http://www.thekelleys.org.uk/dnsmasq/doc.html"
-  url "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-2.78.tar.gz"
-  sha256 "c92e5d78aa6353354d02aabf74590d08980bb1385d8a00b80ef9bc80430aa1dc"
+  url "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-2.80.tar.gz"
+  sha256 "9e4a58f816ce0033ce383c549b7d4058ad9b823968d352d2b76614f83ea39adc"
 
   bottle do
-    rebuild 1
-    sha256 "29b9a8f0b872785a893a2446098ea979a4172938aac84d4dcbc42e55ffb15e73" => :high_sierra
-    sha256 "8ec8cbc805daeeba93b450ec5c5fea02cdcc7978cf93a4e8032bb836c83c5f03" => :sierra
-    sha256 "84a562c8c0ff1a83cabfaa0bf50c9a05169715ce879c4308efbc132e66302120" => :el_capitan
+    sha256 "1cdcb702a0dbfd1b22daac69f4e52953ffbae60292211a3df61e3b904838aa3d" => :mojave
+    sha256 "d151f9072dd7e594caf4852107a4361e52d895ab2038308c83af53c37ded6608" => :high_sierra
+    sha256 "c5aedeadca97702f5c0e4beb335f4e3f93de4ef6e3522fbd2399bc084cc78512" => :sierra
   end
 
   option "with-libidn", "Compile with IDN support"
@@ -17,9 +16,9 @@ class Dnsmasq < Formula
   deprecated_option "with-idn" => "with-libidn"
 
   depends_on "pkg-config" => :build
+  depends_on "nettle" if build.with? "dnssec"
   depends_on "libidn" => :optional
   depends_on "gettext" if build.with? "libidn"
-  depends_on "nettle" if build.with? "dnssec"
 
   def install
     ENV.deparallelize
@@ -81,7 +80,7 @@ class Dnsmasq < Formula
   def caveats; <<~EOS
     To configure dnsmasq, take the default example configuration at
       #{etc}/dnsmasq.conf and edit to taste.
-    EOS
+  EOS
   end
 
   plist_options :startup => true
@@ -106,7 +105,7 @@ class Dnsmasq < Formula
         <true/>
       </dict>
     </plist>
-    EOS
+  EOS
   end
 
   test do

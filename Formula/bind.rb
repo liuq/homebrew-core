@@ -1,19 +1,18 @@
 class Bind < Formula
   desc "Implementation of the DNS protocols"
   homepage "https://www.isc.org/downloads/bind/"
-  url "https://ftp.isc.org/isc/bind9/9.12.0/bind-9.12.0.tar.gz"
-  mirror "https://fossies.org/linux/misc/dns/bind9/9.12.0/bind-9.12.0.tar.gz"
-  sha256 "29870e9bf9dcc31ead3793ca754a7b0236a0785a7a9dc0f859a0bc42e19b3c82"
-  head "https://source.isc.org/git/bind9.git"
+  url "https://ftp.isc.org/isc/bind9/9.12.3/bind-9.12.3.tar.gz"
+  sha256 "0e80762631258e1c193552efa7c56c05ec5e8c2f98e4b2a3b91a61fd8d96b938"
+  head "https://gitlab.isc.org/isc-projects/bind9.git"
 
   bottle do
-    sha256 "2e9e7021db9b2481d21fedae0da783e8ce8851446cd9bf952cf2473bda000cee" => :high_sierra
-    sha256 "4ba3299e7d563a64f1b8b937b4c24859e8cbb2627cb5aacd43478a20f3384698" => :sierra
-    sha256 "2bf6150639acd3d541a83d2bd90a7618c03257204fe97aea287c3dfb7e430684" => :el_capitan
+    sha256 "ea7c774094ff642788c460e1d8f938f62f45b0a0b61576984a491cfa6970f569" => :mojave
+    sha256 "a4011cad7b46fa077b1b6e9058b5178a2fbcced0ceab8122e90dfa81f36a01ab" => :high_sierra
+    sha256 "59c17273bdb7c3a8a74e4bd8330b4b98519ce24ffa247962e63046dc2aae2c3b" => :sierra
   end
 
+  depends_on "json-c"
   depends_on "openssl"
-  depends_on "json-c" => :optional
 
   def install
     # Fix "configure: error: xml2-config returns badness"
@@ -24,14 +23,13 @@ class Bind < Formula
     # enable DNSSEC signature chasing in dig
     ENV["STD_CDEFINES"] = "-DDIG_SIGCHASE=1"
 
-    json = build.with?("json-c") ? "yes" : "no"
     system "./configure", "--prefix=#{prefix}",
                           "--enable-threads",
                           "--enable-ipv6",
                           "--with-openssl=#{Formula["openssl"].opt_prefix}",
-                          "--with-libjson=#{json}"
+                          "--with-libjson=#{Formula["json-c"].opt_prefix}"
 
-    # From the bind9 README: "Do not use a parallel "make"."
+    # From the bind9 README: "Do not use a parallel "make"
     ENV.deparallelize
     system "make"
     system "make", "install"
@@ -110,7 +108,7 @@ class Bind < Formula
                     print-time yes;
             };
     };
-    EOS
+  EOS
   end
 
   def localhost_zone; <<~EOS
@@ -125,7 +123,7 @@ class Bind < Formula
 
                 1D IN NS    @
                 1D IN A        127.0.0.1
-    EOS
+  EOS
   end
 
   def named_local; <<~EOS
@@ -139,7 +137,7 @@ class Bind < Formula
                   IN      NS      localhost.
 
     1       IN      PTR     localhost.
-    EOS
+  EOS
   end
 
   plist_options :startup => true
@@ -166,7 +164,7 @@ class Bind < Formula
       <false/>
     </dict>
     </plist>
-    EOS
+  EOS
   end
 
   test do

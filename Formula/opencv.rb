@@ -1,14 +1,13 @@
 class Opencv < Formula
   desc "Open source computer vision library"
   homepage "https://opencv.org/"
-  url "https://github.com/opencv/opencv/archive/3.4.1.tar.gz"
-  sha256 "f1b87684d75496a1054405ae3ee0b6573acaf3dad39eaf4f1d66fdd7e03dc852"
-  revision 2
+  url "https://github.com/opencv/opencv/archive/3.4.3.tar.gz"
+  sha256 "4eef85759d5450b183459ff216b4c0fa43e87a4f6aa92c8af649f89336f002ec"
 
   bottle do
-    sha256 "53b96688ef9738e17b20339b21c46d14abf62983e99e601560f6641a80988d2b" => :high_sierra
-    sha256 "b944d135014d64352d7c3a120811960f552e26cbf29db15bb1174f4e6af387ce" => :sierra
-    sha256 "b2322e9c0c5469549b8e8f1dc08820f2bfa8083d40d071347bc05877ac3221b9" => :el_capitan
+    sha256 "51a8a66a237ced772a7cd4ce73e2e777b92be15dd40291461b8f27cdf278ddcd" => :mojave
+    sha256 "0719a197f00254a5924db6f771f760df306ec6761e202f68dd1f15ddb8398be3" => :high_sierra
+    sha256 "c76c436b7f97eed2b2f3cbd2cae34b07dfb7f8640d6baa72c5eab3232b7321e7" => :sierra
   end
 
   depends_on "cmake" => :build
@@ -18,18 +17,18 @@ class Opencv < Formula
   depends_on "jpeg"
   depends_on "libpng"
   depends_on "libtiff"
+  depends_on "numpy"
   depends_on "openexr"
   depends_on "python"
   depends_on "python@2"
-  depends_on "numpy"
   depends_on "tbb"
 
-  needs :cxx11
-
   resource "contrib" do
-    url "https://github.com/opencv/opencv_contrib/archive/3.4.1.tar.gz"
-    sha256 "298c69ee006d7675e1ff9d371ba8b0d9e7e88374bb7ba0f9d0789851d352ec6e"
+    url "https://github.com/opencv/opencv_contrib/archive/3.4.3.tar.gz"
+    sha256 "6dfb51326f3dfeb659128df952edecd45683626a965aa4a8e1e9c970c40fb636"
   end
+
+  needs :cxx11
 
   def install
     ENV.cxx11
@@ -57,7 +56,9 @@ class Opencv < Formula
       -DBUILD_TESTS=OFF
       -DBUILD_TIFF=OFF
       -DBUILD_ZLIB=OFF
+      -DBUILD_opencv_hdf=OFF
       -DBUILD_opencv_java=OFF
+      -DBUILD_opencv_text=OFF
       -DOPENCV_ENABLE_NONFREE=ON
       -DOPENCV_EXTRA_MODULES_PATH=#{buildpath}/opencv_contrib/modules
       -DWITH_1394=OFF
@@ -91,6 +92,11 @@ class Opencv < Formula
       system "cmake", "..", *args
       system "make"
       system "make", "install"
+      system "make", "clean"
+      system "cmake", "..", "-DBUILD_SHARED_LIBS=OFF", *args
+      system "make"
+      lib.install Dir["lib/*.a"]
+      lib.install Dir["3rdparty/**/*.a"]
     end
   end
 

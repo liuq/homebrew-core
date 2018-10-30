@@ -1,29 +1,26 @@
 class Gwyddion < Formula
   desc "Scanning Probe Microscopy visualization and analysis tool"
   homepage "http://gwyddion.net/"
-  url "http://gwyddion.net/download/2.50/gwyddion-2.50.tar.gz"
-  sha256 "f3834dae31d9bf696e8d59e2aa79a373a30d5f6caa6033601d2f9d57afa154f3"
+  url "http://gwyddion.net/download/2.51/gwyddion-2.51.tar.gz"
+  sha256 "67c1319b3a3e5682a37390b34d2580208a624c7d56dae8b5a3389fa5856508ee"
   revision 1
 
   bottle do
-    sha256 "2ed8543022428b822bb0dac471903457148a7a358fb1d38e09afb1f98be46415" => :high_sierra
-    sha256 "d62de4048a135e8f8683d3d319bce0019fb6e140fad4576a5a370b87e26b0d8e" => :sierra
-    sha256 "659a1211206d02ba4e967643925fe6fcd12ee0cd1f0d647961d76c243baed079" => :el_capitan
+    sha256 "a0cdc1c579926f9f9e8bc42c98d287b4312257b8bad06570d64e90cf97fa7068" => :mojave
+    sha256 "29e031b68d9a65cec743209a818efd48a0acad4dfba11e7b266cfc00a81ef809" => :high_sierra
+    sha256 "259250a3db045fe51b5086b8fbba50e94e673bcb729519c669ff22d72e2886fd" => :sierra
   end
-
-  deprecated_option "with-python" => "with-python@2"
 
   depends_on "pkg-config" => :build
   depends_on "fftw"
   depends_on "gtk+"
   depends_on "gtk-mac-integration"
   depends_on "gtkglext"
+  depends_on "gtksourceview"
   depends_on "libxml2"
   depends_on "minizip"
-
-  depends_on "python@2" => :optional
-  depends_on "pygtk" if build.with? "python@2"
-  depends_on "gtksourceview" if build.with? "python@2"
+  depends_on "pygtk"
+  depends_on "python@2"
 
   def install
     system "./configure", "--disable-dependency-tracking",

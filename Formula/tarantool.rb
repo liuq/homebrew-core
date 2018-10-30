@@ -1,14 +1,14 @@
 class Tarantool < Formula
   desc "In-memory database and Lua application server"
   homepage "https://tarantool.org/"
-  url "https://download.tarantool.org/tarantool/1.9/src/tarantool-1.9.0.0.tar.gz"
-  sha256 "749c0207da2a2d3838e3c9619d33c56dc3fc515738885c798d728ed506be4717"
+  url "https://download.tarantool.org/tarantool/1.10/src/tarantool-1.10.2.1.tar.gz"
+  sha256 "2d077978a65e785349883ef3c98c46d35af26bcc10dae58eabfca27cfbcc6c6b"
   head "https://github.com/tarantool/tarantool.git", :branch => "2.0", :shallow => false
 
   bottle do
-    sha256 "3aaab86529a9a676ca66f84a15dea7700e70ae68d2722dbf222c51e83faefda9" => :high_sierra
-    sha256 "3584b932f7f04786313f2b385ac6db5880ebdbaa1e023ebccb82ca70ca1bad70" => :sierra
-    sha256 "37717b48bf4228c7806ec7200ed8fc0e2015e772983a04e2b487dc872b5be3c2" => :el_capitan
+    sha256 "9c881185602894a1c795bac55e714bfe4971e035aa03f1cf4ae0ae1592640c87" => :mojave
+    sha256 "d893c055938419f3d60319a8abd815a151459520ee2283fc5b3fe437a7538c53" => :high_sierra
+    sha256 "b4ddd59d9478c553c2bff11bcb0cbc0d52ab05560d1a7fd3a0b69c02386da2e5" => :sierra
   end
 
   depends_on "cmake" => :build
@@ -19,8 +19,10 @@ class Tarantool < Formula
   def install
     sdk = MacOS::CLT.installed? ? "" : MacOS.sdk_path
 
-    args = std_cmake_args
+    # Necessary for luajit to build on macOS Mojave (see luajit formula)
+    ENV["MACOSX_DEPLOYMENT_TARGET"] = MacOS.version
 
+    args = std_cmake_args
     args << "-DCMAKE_INSTALL_MANDIR=#{doc}"
     args << "-DCMAKE_INSTALL_SYSCONFDIR=#{etc}"
     args << "-DCMAKE_INSTALL_LOCALSTATEDIR=#{var}"

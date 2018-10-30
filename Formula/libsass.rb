@@ -2,15 +2,16 @@ class Libsass < Formula
   desc "C implementation of a Sass compiler"
   homepage "https://github.com/sass/libsass"
   url "https://github.com/sass/libsass.git",
-      :tag => "3.5.0",
-      :revision => "60f839158eff1f1bb84cb44f0f0c4bce3ed86a6d"
+      :tag => "3.5.4",
+      :revision => "1e52b74306b7d73a617396c912ca436dc55fd4d8"
   head "https://github.com/sass/libsass.git"
 
   bottle do
     cellar :any
-    sha256 "1781a67932d37b3069a759f80a63f010445f3741b667fbe1ac815c75d31cba0f" => :high_sierra
-    sha256 "68ac4ce77020cf3bea7f0e53c0c525b7bfdc12fb4dbaee85d2d24f7e1b06ca13" => :sierra
-    sha256 "eadba244cba65c67514c9c7618fc95045925a8810cb8d1ff6b1e836f29065c6a" => :el_capitan
+    sha256 "7168ae526553313df04fe97200a079e67cb086552b7aada4b34294af8c3ea519" => :mojave
+    sha256 "6264a337eee7d1ebcf58df8040f4c84bdde0e94e863f6f7c08522b475ada6d68" => :high_sierra
+    sha256 "a544a47112dc4774528288db9373c1489500e82a5afd68c05c57fe5d7ab5e269" => :sierra
+    sha256 "eb7f2898f0027eec8f37d3e51d9b18e84215b6d1f8c5c1e7bdb9f85d5922fc5d" => :el_capitan
   end
 
   depends_on "autoconf" => :build

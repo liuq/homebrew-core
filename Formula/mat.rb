@@ -3,23 +3,22 @@ class Mat < Formula
   homepage "https://mat.boum.org/"
   url "https://mat.boum.org/files/mat-0.6.1.tar.xz"
   sha256 "0782e7db554ad1dddefd71c9c81e36a05464d73ab54ee2a474ea6ac90e8e51b9"
+  revision 2
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "2ff667933d3ed9542e39d129f4b81d47918ecd768430a80616306922aba56d4e" => :high_sierra
-    sha256 "6cc51d125ec0093a4c4bca86c371461bb7bbf454a95267521b8e5dd64a12f12e" => :sierra
-    sha256 "c9a7a83fc8822a6bb0bcedb4222e09ef8a19cbe21c39ef8b95be4faa3b230ed6" => :el_capitan
+    rebuild 1
+    sha256 "564d84f0aa5dcce93fca87d91859cc87afbea8d9f915e4cc235117aa0f196d05" => :mojave
+    sha256 "b283b291b6bf2c328a5c47c0eff442eb757575e3572071ec17ee7aed5e8e39e7" => :high_sierra
+    sha256 "e03173ae8fc422f595f67c2b878e4e984592b0fa0aba15b1bf1138e8e37c6839" => :sierra
   end
 
-  deprecated_option "with-python" => "with-python@2"
-
-  depends_on "python@2" => :optional
-  depends_on "coreutils"
-  depends_on "poppler"
-  depends_on "pygobject3"
-  depends_on "exiftool" => :optional
   depends_on "gettext" => :build
   depends_on "intltool" => :build
+  depends_on "coreutils"
+  depends_on "poppler"
+  depends_on "py2cairo"
+  depends_on "pygobject3" => "with-python@2"
 
   resource "hachoir-core" do
     url "https://files.pythonhosted.org/packages/source/h/hachoir-core/hachoir-core-1.3.3.tar.gz"

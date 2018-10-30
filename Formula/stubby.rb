@@ -1,15 +1,15 @@
 class Stubby < Formula
   desc "DNS privacy enabled stub resolver service based on getdns"
   homepage "https://dnsprivacy.org/wiki/display/DP/DNS+Privacy+Daemon+-+Stubby"
-  url "https://github.com/getdnsapi/stubby/archive/v0.2.2.tar.gz"
-  sha256 "d1418d2c4df3b2f32fac668423630f07dbfb38f6f8d402ddfda9304f16263b03"
+  url "https://github.com/getdnsapi/stubby/archive/v0.2.3.tar.gz"
+  sha256 "5fbe10f421f1313b5e2259b0eec96785af0c5b460431cf86bb6450a11cb3f473"
   revision 1
   head "https://github.com/getdnsapi/stubby.git", :branch => "develop"
 
   bottle do
-    sha256 "b5bd281d34b4d50884c1c02de667d9eb0e0be97f6c8605950b8c5996372ce2bb" => :high_sierra
-    sha256 "be244926aa3a00bcba605e7f99fa62e82f52ee532b8d74d0c1e75ba05cc898b0" => :sierra
-    sha256 "72723b5aa058b5ccd165cab74f472ac726b8ce860b6a9544542778853b9cf0f3" => :el_capitan
+    sha256 "e40466bb416aa54ad666c666776054e9377110a2840c32bb4a8f440dfd47085f" => :mojave
+    sha256 "b277d4481f2c96b9216263e2cd097aa9c474142b400fd4da5bd54dcc425de51e" => :high_sierra
+    sha256 "fbc6353984eb3fe1b9e6175b2dd450542f888fc8ac71047fec0e50f8a228eceb" => :sierra
   end
 
   depends_on "autoconf" => :build
@@ -53,7 +53,7 @@ class Stubby < Formula
         <string>#{var}/log/stubby/stubby.log</string>
       </dict>
     </plist>
-    EOS
+  EOS
   end
 
   test do

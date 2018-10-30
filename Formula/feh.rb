@@ -1,23 +1,21 @@
 class Feh < Formula
   desc "X11 image viewer"
   homepage "https://feh.finalrewind.org/"
-  url "https://feh.finalrewind.org/feh-2.25.tar.bz2"
-  sha256 "063bec0138103cf5c52594c6ffe8946d6c48cf5a664f03634634010b46e45980"
+  url "https://feh.finalrewind.org/feh-2.28.tar.bz2"
+  sha256 "13d22d7c5fe5057612ce3df88857aee89fcab9c8cd6fd4f95a42fe6bf851d3d9"
 
   bottle do
-    sha256 "b79277f27b31d4307b109cde7b7a7d205afb4bfd2392131b8e3c384e9fffcc20" => :high_sierra
-    sha256 "bc261c7ca1385e9ea87ee569dadfe21cd15e59fd4f2491d2338cb447d6ac0847" => :sierra
-    sha256 "9b0caf610a74b9ffe126bd63b4d5214cf5c16eaef290a6ca6ca75c5e220810e6" => :el_capitan
+    sha256 "89f7c4eb397616415e1d3bf4e2b9e1fc101f9beae8edc4076da0e76775423398" => :mojave
+    sha256 "f69b4b8f44e56f4a4c147e11bef18c1cf8a6ee7582f72305ff1487ca10a12a06" => :high_sierra
+    sha256 "2a4581cdf48afb72a2b2f3e0c1a7f8139af065fd4051bcc89b6ce2102b6797ef" => :sierra
   end
 
-  depends_on :x11
   depends_on "imlib2"
-  depends_on "libexif" => :recommended
+  depends_on "libexif"
+  depends_on :x11
 
   def install
-    args = ["verscmp=0"]
-    args << "exif=1" if build.with? "libexif"
-    system "make", "PREFIX=#{prefix}", *args
+    system "make", "PREFIX=#{prefix}", "verscmp=0", "exif=1"
     system "make", "PREFIX=#{prefix}", "install"
   end
 

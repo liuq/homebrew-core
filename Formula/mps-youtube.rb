@@ -5,13 +5,14 @@ class MpsYoutube < Formula
   homepage "https://github.com/mps-youtube/mps-youtube"
   url "https://github.com/mps-youtube/mps-youtube/archive/v0.2.8.tar.gz"
   sha256 "d5f2c4bc1f57f0566242c4a0a721a5ceaa6d6d407f9d6dd29009a714a0abec74"
-  revision 1
+  revision 4
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "9230b079bce80602e9f731eafe98e05407e707e7317be2b34a8b393b416104b9" => :high_sierra
-    sha256 "c102888a9840b3c766d642d13158e8824213524e8a422a27aa16ac7c1e0c765e" => :sierra
-    sha256 "ef1fe1b556d1ee281d641e84ec22a4298d43738f3d8f3d1d9686ed6f50199ba6" => :el_capitan
+    sha256 "0ea34a095f7f53773519e9a36a198ddc71eabb60b87537d126d02ff084646055" => :mojave
+    sha256 "e8bda076e052abeae08101720c9117c24baa4a5f561e544ef870ba97c76b98e4" => :high_sierra
+    sha256 "fec849d308e04483377b412ed2ea2b6061420cbfb266947f57226e607368545f" => :sierra
+    sha256 "9761dff9eb00b7d03ae4e45eb2c1285e3f9f7e139bed5f98bce1523bffe4039d" => :el_capitan
   end
 
   depends_on "python"
@@ -24,8 +25,8 @@ class MpsYoutube < Formula
   end
 
   resource "youtube_dl" do
-    url "https://files.pythonhosted.org/packages/bb/6c/d7af4a0008fee9c9eccd2dc7d4b6dba008f2b31c19c7003f5af98560188e/youtube_dl-2018.2.11.tar.gz"
-    sha256 "80da352d7da4cff7e591a8ab70262fceceaf561b86ec72c0dc86891b31e07090"
+    url "https://files.pythonhosted.org/packages/97/b2/4848a0e67c29dcda416b018ac83883e8c0dc478de432d9043b86abcfd6f2/youtube_dl-2018.9.8.tar.gz"
+    sha256 "42c2e82280c943ce618969c3ceeea56666554f311e86a8082c72ec91a63885a9"
   end
 
   def install
@@ -39,7 +40,7 @@ class MpsYoutube < Formula
   end
 
   test do
-    Open3.popen3("#{bin}/mpsyt", "/september,", "da 1,", "q") do |_, _, stderr|
+    Open3.popen3("#{bin}/mpsyt", "/Drop4Drop x Ed Sheeran,", "da 1,", "q") do |_, _, stderr|
       assert_empty stderr.read, "Some warnings were raised"
     end
   end

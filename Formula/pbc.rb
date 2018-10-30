@@ -3,10 +3,11 @@ class Pbc < Formula
   homepage "https://crypto.stanford.edu/pbc/"
   url "https://crypto.stanford.edu/pbc/files/pbc-0.5.14.tar.gz"
   sha256 "772527404117587560080241cedaf441e5cac3269009cdde4c588a1dce4c23d2"
-  head "http://repo.or.cz/r/pbc.git"
+  head "https://repo.or.cz/pbc.git"
 
   bottle do
     cellar :any
+    sha256 "3d34df3cd1f1d357a3893f53d19496721d3dfb04b86b1d22b87fb88df27746c1" => :mojave
     sha256 "f737a917951f31a9477b2ee46761eb3d9323ca96d77b5b0ab78d7566eb743213" => :high_sierra
     sha256 "9ec971f355f67d0faf644e955a26e9a86b667066eac0791288b802bbe7c0f4aa" => :sierra
     sha256 "5295bb2d5b2698685ff7ff8b64e0578a5b8c9b9f9602fc51583cae058ee24b81" => :el_capitan

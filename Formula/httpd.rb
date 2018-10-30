@@ -1,14 +1,13 @@
 class Httpd < Formula
   desc "Apache HTTP server"
   homepage "https://httpd.apache.org/"
-  url "https://www.apache.org/dyn/closer.cgi?path=httpd/httpd-2.4.29.tar.bz2"
-  sha256 "777753a5a25568a2a27428b2214980564bc1c38c1abf9ccc7630b639991f7f00"
-  revision 2
+  url "https://www.apache.org/dyn/closer.cgi?path=httpd/httpd-2.4.37.tar.bz2"
+  sha256 "3498dc5c6772fac2eb7307dc7963122ffe243b5e806e0be4fb51974ff759d726"
 
   bottle do
-    sha256 "bcfce40b1789e34e69440c31279cb542a8834e87239b5b4be50f1ba022841d58" => :high_sierra
-    sha256 "5fc3be303352d6b34f1277b07230582a989acf425bffba434786e4058db5f7fb" => :sierra
-    sha256 "2ad9466ab83385e747e8a6c3555d9832fff5d00cbbd41e84769a03c6f02657dd" => :el_capitan
+    sha256 "ebdc934511011232b124591665679a583b412768f711c698105f73e7049872df" => :mojave
+    sha256 "b18fa371fe65ee49728f0c894c1b450125fe298b4b0201e0442c012855d94b32" => :high_sierra
+    sha256 "371da89cc70df87d592050dccf534b4b898c065a78d44830154cbb4f924c7846" => :sierra
   end
 
   depends_on "apr"
@@ -62,7 +61,10 @@ class Httpd < Formula
                           "--with-mpm=prefork",
                           "--with-nghttp2=#{Formula["nghttp2"].opt_prefix}",
                           "--with-ssl=#{Formula["openssl"].opt_prefix}",
-                          "--with-pcre=#{Formula["pcre"].opt_prefix}"
+                          "--with-pcre=#{Formula["pcre"].opt_prefix}",
+                          "--disable-lua",
+                          "--disable-luajit"
+    system "make"
     system "make", "install"
 
     # suexec does not install without root
@@ -99,6 +101,11 @@ class Httpd < Formula
     end
   end
 
+  def post_install
+    (var/"cache/httpd").mkpath
+    (var/"www").mkpath
+  end
+
   def caveats
     <<~EOS
       DocumentRoot is #{var}/www.
@@ -106,11 +113,6 @@ class Httpd < Formula
       The default ports have been set in #{etc}/httpd/httpd.conf to 8080 and in
       #{etc}/httpd/extra/httpd-ssl.conf to 8443 so that httpd can run without sudo.
     EOS
-  end
-
-  def post_install
-    (var/"cache/httpd").mkpath
-    (var/"www").mkpath
   end
 
   plist_options :manual => "apachectl start"
@@ -132,17 +134,25 @@ class Httpd < Formula
       <true/>
     </dict>
     </plist>
-    EOS
+  EOS
   end
 
   test do
     begin
+      require "socket"
+
+      server = TCPServer.new(0)
+      port = server.addr[1]
+      server.close
+
       expected_output = "Hello world!"
       (testpath/"index.html").write expected_output
       (testpath/"httpd.conf").write <<~EOS
-        Listen 8080
+        Listen #{port}
+        ServerName localhost:#{port}
         DocumentRoot "#{testpath}"
         ErrorLog "#{testpath}/httpd-error.log"
+        PidFile "#{testpath}/httpd.pid"
         LoadModule authz_core_module #{lib}/httpd/modules/mod_authz_core.so
         LoadModule unixd_module #{lib}/httpd/modules/mod_unixd.so
         LoadModule dir_module #{lib}/httpd/modules/mod_dir.so
@@ -154,7 +164,7 @@ class Httpd < Formula
       end
       sleep 3
 
-      assert_match expected_output, shell_output("curl -s 127.0.0.1:8080")
+      assert_match expected_output, shell_output("curl -s 127.0.0.1:#{port}")
     ensure
       Process.kill("TERM", pid)
       Process.wait(pid)

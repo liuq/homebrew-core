@@ -1,17 +1,17 @@
 class Traefik < Formula
   desc "Modern reverse proxy"
   homepage "https://traefik.io/"
-  url "https://github.com/containous/traefik/releases/download/v1.5.3/traefik-v1.5.3.src.tar.gz"
-  version "1.5.3"
-  sha256 "3194e721dd739e7be09fdecdf5ec1a70a55f019a773f1698b9d642583668288f"
+  url "https://github.com/containous/traefik/releases/download/v1.6.5/traefik-v1.6.5.src.tar.gz"
+  version "1.6.5"
+  sha256 "f1c421276155be4b5989312ae22960684df1d2a5e738bf55efda211cd22d5782"
   head "https://github.com/containous/traefik.git"
 
   bottle do
     cellar :any_skip_relocation
-    rebuild 1
-    sha256 "e03833a08674dacb0c498869be4a00f471c046c9d0ec0136a2d6502a0f1eb34f" => :high_sierra
-    sha256 "a419b68a45d103000db77949b1fe8e3e4b59e68e24a4bed412d9ab1b6a27e1ad" => :sierra
-    sha256 "d67ca87eb2d0f7ec2e173ac0f0d89a17752362c88b72cd07c820274f2cd9e49d" => :el_capitan
+    sha256 "71aed9e1a81aad49de4be1b06ddf4e01420beb22501c7f1c356bc3230cf31275" => :mojave
+    sha256 "ee37d2fed9ea55a94c5f06a3fc4af3f64993b6efa2d8cd03764731e605e0391d" => :high_sierra
+    sha256 "49d15e73f4ab56ca96edc312be1a8413b96ea669362747150ac6f5f64d54408b" => :sierra
+    sha256 "7998339d54a85fb94ef97dfcd2a364a1941dfa9a08a8c0ba0c4794d18119f293" => :el_capitan
   end
 
   depends_on "go" => :build
@@ -22,6 +22,9 @@ class Traefik < Formula
   def install
     ENV["GOPATH"] = buildpath
     (buildpath/"src/github.com/containous/traefik").install buildpath.children
+
+    # Fix yarn + upath@1.0.4 incompatibility; remove once upath is upgraded to 1.0.5+
+    Pathname.new("#{ENV["HOME"]}/.yarnrc").write("ignore-engines true\n")
 
     cd "src/github.com/containous/traefik" do
       cd "webui" do

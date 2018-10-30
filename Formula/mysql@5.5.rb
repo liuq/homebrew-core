@@ -1,29 +1,25 @@
 class MysqlAT55 < Formula
   desc "Open source relational database management system"
   homepage "https://dev.mysql.com/doc/refman/5.5/en/"
-  url "https://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.59.tar.gz"
-  sha256 "ee920177c9dec770c30b673a21143d5e92a67e8207f9b720d41d51cda05d8513"
+  url "https://dev.mysql.com/get/Downloads/MySQL-5.5/mysql-5.5.62.tar.gz"
+  sha256 "b1e7853bc1f04aabf6771e0ad947f35ac8d237f4b35d0706d1095c9526ff99d7"
 
   bottle do
-    sha256 "0f3e0b62063f28d43ad0e14e2d5a30c341e4c556a6b7bfc43130dec765d7cd65" => :high_sierra
-    sha256 "10ec1d0e791a67f21ea30cdb6bdb9d5672f3a9deb7cc1c298f63822f76da11ba" => :sierra
-    sha256 "d1dafa246bc2153d33af3ad12e55dfc72cc8e73d4d66274459b9acd76684539f" => :el_capitan
+    sha256 "57dd41d4774c5af3d9cdaed1da54bc1345264757f2ed72bc4f0cda8538fd05b3" => :mojave
+    sha256 "c29aae5efdf9e1c0769d92b3625c142777daf7a720b71bb2d4735ef9af8a4d8d" => :high_sierra
+    sha256 "a2411ac400eab800f60e19bb70875c0912f18e038557201324310a7dc79a42dd" => :sierra
   end
 
   keg_only :versioned_formula
 
-  option "with-test", "Build with unit tests"
   option "with-embedded", "Build the embedded server"
   option "with-archive-storage-engine", "Compile with the ARCHIVE storage engine enabled"
   option "with-blackhole-storage-engine", "Compile with the BLACKHOLE storage engine enabled"
   option "with-local-infile", "Build with local infile loading support"
   option "with-memcached", "Enable innodb-memcached support"
-  option "with-debug", "Build with debug support"
 
   deprecated_option "enable-local-infile" => "with-local-infile"
   deprecated_option "enable-memcached" => "with-memcached"
-  deprecated_option "enable-debug" => "with-debug"
-  deprecated_option "with-tests" => "with-test"
 
   depends_on "cmake" => :build
   depends_on "pidof" unless MacOS.version >= :mountain_lion
@@ -54,14 +50,8 @@ class MysqlAT55 < Formula
       -DSYSCONFDIR=#{etc}
       -DCOMPILATION_COMMENT=Homebrew
       -DWITH_EDITLINE=system
+      -DWITH_UNIT_TESTS=OFF
     ]
-
-    # To enable unit testing at build, we need to download the unit testing suite
-    if build.with? "tests"
-      args << "-DENABLE_DOWNLOADS=ON"
-    else
-      args << "-DWITH_UNIT_TESTS=OFF"
-    end
 
     # Build the embedded server
     args << "-DWITH_EMBEDDED_SERVER=ON" if build.with? "embedded"
@@ -77,9 +67,6 @@ class MysqlAT55 < Formula
 
     # Build with memcached support
     args << "-DWITH_INNODB_MEMCACHED=1" if build.with? "memcached"
-
-    # Build with debug support
-    args << "-DWITH_DEBUG=1" if build.with? "debug"
 
     system "cmake", ".", *std_cmake_args, *args
     system "make"
@@ -120,7 +107,7 @@ class MysqlAT55 < Formula
   def post_install
     # Make sure the datadir exists
     datadir.mkpath
-    unless (datadir/"mysql/user.frm").exist?
+    unless (datadir/"mysql/general_log.CSM").exist?
       ENV["TMPDIR"] = nil
       system bin/"mysql_install_db", "--verbose", "--user=#{ENV["USER"]}",
         "--basedir=#{prefix}", "--datadir=#{datadir}", "--tmpdir=/tmp"
@@ -135,7 +122,7 @@ class MysqlAT55 < Formula
 
     To connect:
         #{opt_bin}/mysql -uroot
-    EOS
+  EOS
   end
 
   plist_options :manual => "#{HOMEBREW_PREFIX}/opt/mysql@5.5/bin/mysql.server start"
@@ -160,7 +147,7 @@ class MysqlAT55 < Formula
       <string>#{datadir}</string>
     </dict>
     </plist>
-    EOS
+  EOS
   end
 
   test do

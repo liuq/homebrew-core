@@ -10,26 +10,24 @@
 class Mutt < Formula
   desc "Mongrel of mail user agents (part elm, pine, mush, mh, etc.)"
   homepage "http://www.mutt.org/"
-  url "https://bitbucket.org/mutt/mutt/downloads/mutt-1.9.4.tar.gz"
-  # HTTP is preferred over FTP; Please keep the protocol part below.
-  mirror "http://ftp.mutt.org/pub/mutt/mutt-1.9.4.tar.gz"
-  sha256 "f4d1bf26350c1ac81b551f98e5a4fd80d7fecd86919aa8165e69fde87de1b5df"
+  url "https://bitbucket.org/mutt/mutt/downloads/mutt-1.10.1.tar.gz"
+  sha256 "734a3883158ec3d180cf6538d8bd7f685ce641d2cdef657aa0038f76e79a54a0"
 
   bottle do
-    sha256 "ddae32bf370c47511107aaf4f7ef86bf7f826b09f327c94ec5d5db78f2af266f" => :high_sierra
-    sha256 "105372b36da65bcef11199c054051a3463f54177eb4e2dcc39c493a80e1b7973" => :sierra
-    sha256 "7f94df72f16c322fac0b4c77206e3289a1be4c573402f70f9d35f33302102034" => :el_capitan
+    sha256 "389639d2cfb581fbf101df8e0c9eecb255314f1be38864acc7bf2c1c9a2c4a11" => :mojave
+    sha256 "ba0ec065c7692ce00cbf5cc47cb4804253c6fd388b3cbdcea0a65a20ef1bc616" => :high_sierra
+    sha256 "34d1cd11dc3d60fd6ae0365b90e7ab03e73e16494c1b31ec853741984207a6b1" => :sierra
+    sha256 "56802f8c1f2646be1ee70e3ea3ad711546a8e359d6a24b27a506bab24a845809" => :el_capitan
   end
 
   head do
     url "https://gitlab.com/muttmua/mutt.git"
 
     resource "html" do
-      url "https://dev.mutt.org/doc/manual.html", :using => :nounzip
+      url "https://muttmua.gitlab.io/mutt/manual-dev.html"
     end
   end
 
-  option "with-debug", "Build with debug option enabled"
   option "with-s-lang", "Build against slang instead of ncurses"
 
   depends_on "autoconf" => :build
@@ -51,15 +49,16 @@ class Mutt < Formula
       --disable-dependency-tracking
       --disable-warnings
       --prefix=#{prefix}
-      --with-ssl=#{Formula["openssl"].opt_prefix}
-      --with-sasl
-      --with-gss
-      --enable-imap
-      --enable-smtp
-      --enable-pop
+      --enable-debug
       --enable-hcache
-      --with-tokyocabinet
+      --enable-imap
+      --enable-pop
       --enable-sidebar
+      --enable-smtp
+      --with-gss
+      --with-sasl
+      --with-ssl=#{Formula["openssl"].opt_prefix}
+      --with-tokyocabinet
     ]
 
     # This is just a trick to keep 'make install' from trying
@@ -70,12 +69,6 @@ class Mutt < Formula
     args << "--disable-nls" if build.without? "gettext"
     args << "--enable-gpgme" if build.with? "gpgme"
     args << "--with-slang" if build.with? "s-lang"
-
-    if build.with? "debug"
-      args << "--enable-debug"
-    else
-      args << "--disable-debug"
-    end
 
     system "./prepare", *args
     system "make"

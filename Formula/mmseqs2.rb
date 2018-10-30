@@ -1,15 +1,16 @@
 class Mmseqs2 < Formula
   desc "Software suite for very fast protein sequence search and clustering"
   homepage "https://mmseqs.org/"
-  url "https://github.com/soedinglab/MMseqs2/archive/1-c7a89.tar.gz"
-  version "1-c7a89"
-  sha256 "e756a0e5cb3aa8e1e5a5b834a58ae955d9594be1806f0f32800427c55f3a45d5"
+  url "https://github.com/soedinglab/MMseqs2/archive/5-9375b.tar.gz"
+  version "5-9375b"
+  sha256 "3f2905b01ab61d2ce0c30acbf53ed7eb3b36171da748d327da5edcbf1472bf59"
 
   bottle do
     cellar :any
-    sha256 "f1e551d41c5508ddb96b2b603d2b7df320e8d304a927d5591bc7ecd02211fd58" => :high_sierra
-    sha256 "d324056b3fd47e0aa73ba4d8293b2a7248b4dcbe8daf0ff906201019d4c2efb7" => :sierra
-    sha256 "c338bc8cc6c622a5c3cbf95a6df6e472b45a92f2bca267b841f747b4ba45abcf" => :el_capitan
+    sha256 "463770152ed8e5e899b7c42b132812c48b759bd3442c3bb255c1bf4f14f6ab53" => :mojave
+    sha256 "6e07b5c3e7022c01849a81a6f93099e801298cb3a8ad422b16f607775f3e181f" => :high_sierra
+    sha256 "626935c11f55e65feb18b9ae0dd8cd51ce66a990d9dacd4de38625c31506068e" => :sierra
+    sha256 "8c59649bdd215283fae0ea307241b359aaf17634fb5c255b88f6fb86432f01c3" => :el_capitan
   end
 
   depends_on "cmake" => :build
@@ -21,15 +22,12 @@ class Mmseqs2 < Formula
 
   resource "documentation" do
     url "https://github.com/soedinglab/MMseqs2.wiki.git",
-        :revision => "6dbd3666edb64fc71173ee714014e88c1ebe2dfc"
+        :revision => "d3607c7913e67c7bb553a8dff0cc66eeb3387506"
   end
 
   def install
-    # version information is read from git by default
-    # next MMseqs2 version will include a cmake flag so we do not need this hack
-    inreplace "src/version/Version.cpp", /.+/m, "const char *version = \"#{version}\";"
-
     args = *std_cmake_args << "-DHAVE_TESTS=0" << "-DHAVE_MPI=0"
+    args << "-DVERSION_OVERRIDE=#{version}"
 
     args << "-DHAVE_SSE4_1=1" if build.bottle?
 
@@ -49,6 +47,10 @@ class Mmseqs2 < Formula
 
   test do
     system "#{bin}/mmseqs", "createdb", "#{pkgshare}/examples/QUERY.fasta", "q"
-    system "#{bin}/mmseqs", "cluster", "q", "res", "tmp", "-s", "1", "--cascaded"
+    system "#{bin}/mmseqs", "cluster", "q", "res", "tmp", "-s", "1"
+    assert_predicate testpath/"res", :exist?
+    assert_predicate (testpath/"res").size, :positive?
+    assert_predicate testpath/"res.index", :exist?
+    assert_predicate (testpath/"res.index").size, :positive?
   end
 end

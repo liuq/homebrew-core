@@ -5,23 +5,23 @@ class Alot < Formula
   homepage "https://github.com/pazz/alot"
   url "https://github.com/pazz/alot/archive/0.7.tar.gz"
   sha256 "2d49a7d61241cfadc993a8456076605b2cfe264c51f5e3f18f337bad58f29a1c"
+  revision 1
   head "https://github.com/pazz/alot.git"
 
   bottle do
     cellar :any
-    sha256 "e161f06d7042c52b042d01784adbde135ba88ac13ed5c4307d0cd485624869d1" => :high_sierra
-    sha256 "2df83f523a4167e7b86beff4c8337e34bb7a8a0e0f85bcc41691326b181d8faa" => :sierra
-    sha256 "a7e2825dcbec2bba87fad5893fd7a6c3dfa50a21ca626c1dbc52c06ee162e4bb" => :el_capitan
+    sha256 "adbbdac0378bf3c5a1d5cf86190b0bdd7bff2569fd7fb3d254fd2bd5bae1e7fe" => :mojave
+    sha256 "79c1bdd07fa75983d06f4a6c27e81741d0553e3635dd3836c65dc6f3c08c0954" => :high_sierra
+    sha256 "227895c908fda25c07555e5514b067d086d6d961f71a40c2098763cfd63deccd" => :sierra
+    sha256 "ba94977585c50e29025be7e592a31809d2f520d50fdb8f023a445dc78ca1bd9d" => :el_capitan
   end
 
-  option "without-sphinx-doc", "Don't build documentation"
-
+  depends_on "sphinx-doc" => :build
   depends_on "swig" => :build
   depends_on "gpgme"
   depends_on "libmagic"
   depends_on "notmuch"
-  depends_on "python@2" if MacOS.version <= :snow_leopard
-  depends_on "sphinx-doc" => [:build, :recommended]
+  depends_on "python@2"
 
   resource "Automat" do
     url "https://files.pythonhosted.org/packages/de/05/b8e453085cf8a7f27bb1226596f4ccf5cc9e758377d60284f990bbdc592c/Automat-0.6.0.tar.gz"
@@ -93,15 +93,13 @@ class Alot < Formula
     pkgshare.install Dir["extra/*"] - %w[extra/completion]
     zsh_completion.install "extra/completion/alot-completion.zsh" => "_alot"
 
-    if build.with? "sphinx-doc"
-      ENV["LC_ALL"] = "en_US.UTF-8"
-      ENV["SPHINXBUILD"] = Formula["sphinx-doc"].opt_bin/"sphinx-build"
-      cd "docs" do
-        system "make", "pickle"
-        system "make", "man", "html"
-        man1.install "build/man/alot.1"
-        doc.install Dir["build/html/*"]
-      end
+    ENV["LC_ALL"] = "en_US.UTF-8"
+    ENV["SPHINXBUILD"] = Formula["sphinx-doc"].opt_bin/"sphinx-build"
+    cd "docs" do
+      system "make", "pickle"
+      system "make", "man", "html"
+      man1.install "build/man/alot.1"
+      doc.install Dir["build/html/*"]
     end
   end
 

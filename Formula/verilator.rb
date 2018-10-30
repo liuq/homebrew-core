@@ -1,19 +1,20 @@
 class Verilator < Formula
   desc "Verilog simulator"
   homepage "https://www.veripool.org/wiki/verilator"
-  url "https://www.veripool.org/ftp/verilator-3.920.tgz"
-  sha256 "2b5c38aa432d0766a38475219f9548d64d18104ce8bdcb5d29e42f5da06943ff"
+  url "https://www.veripool.org/ftp/verilator-3.926.tgz"
+  sha256 "f92516ccfffa8d7edecaf85d277ab0950df673a038481c4c8b53f7fa82948a38"
 
   bottle do
-    sha256 "8e821abcf532b40e9655f0bb9e566fdde06f5959108974b7b9ffc3669877c511" => :high_sierra
-    sha256 "af74a6b0ed76ddf310cbbe879f064cdb97877be31e36ac4afcf0d5f2c73e43cd" => :sierra
-    sha256 "28e2e322cb1c3f3ec9693d711366632c285aeb2c55e6033ed3bf584056cbe2d6" => :el_capitan
+    sha256 "95501636d884bfb4ae2304c6b72bbd4eb45bfa2256708ad6631e78fd26736192" => :mojave
+    sha256 "988e548a635ea2495a37054256f44cbbee17e9bbc63ef390ebe92bcffc2a7a4e" => :high_sierra
+    sha256 "8daf899371dd789aceb61646d9fdfdb50e9b2a3f8a6a428a403ad36a5e1404df" => :sierra
+    sha256 "0fee91b2a977b76f68612bfb0308830d8d405a77415a72618a9be318f073f013" => :el_capitan
   end
 
   head do
     url "http://git.veripool.org/git/verilator", :using => :git
-    depends_on "automake" => :build
     depends_on "autoconf" => :build
+    depends_on "automake" => :build
   end
 
   skip_clean "bin" # Allows perl scripts to keep their executable flag

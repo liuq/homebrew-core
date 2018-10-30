@@ -1,16 +1,14 @@
 class ErlangAT17 < Formula
   desc "Programming language for highly scalable real-time systems"
   homepage "https://www.erlang.org/"
-  url "https://github.com/erlang/otp/archive/OTP-17.5.6.9.tar.gz"
-  sha256 "70d9d0a08969f4c51c78088f8c6b7da22a4806b1fd258a9fff1408f56553f378"
-  head "https://github.com/erlang/otp.git", :branch => "maint-17"
+  url "https://github.com/erlang/otp/archive/OTP-17.5.6.10.tar.gz"
+  sha256 "ceea65d9326a3a0324b4963a982c610692c087ab23eaf637a626370dfb81fe50"
 
   bottle do
     cellar :any
-    sha256 "de3143035b8e4861f90f3cdd2e6a518d97bc17f7b1087948026b99bc36b781fe" => :high_sierra
-    sha256 "819a566e39049cb521e3a26f39746258d333acd4ce9bc91eff2dc8969905f2fc" => :sierra
-    sha256 "e4faf6f98903c5dd7fa4894f7a61f722101119572f6d32ab9000fa47332f148d" => :el_capitan
-    sha256 "ab5c9f75b67c92c103a7712104edf8dd4f6edb52eda6d0312b50bde0e1f83780" => :yosemite
+    sha256 "3e74604837c66ac69f08d876d2a2ce1c230b6edf1e6e0b71ff8223a2d3cb592a" => :mojave
+    sha256 "417739dff9fb51fa1a6b43efc13dbae4e43fae6ca329cddb828f5deca3a170a6" => :high_sierra
+    sha256 "41f4def9a265d121a61b09043661177a16af3e600667d292f89ab40dbca01bd7" => :sierra
   end
 
   keg_only :versioned_formula
@@ -18,15 +16,24 @@ class ErlangAT17 < Formula
   option "without-hipe", "Disable building hipe; fails on various macOS systems"
   option "with-native-libs", "Enable native library compilation"
   option "with-dirty-schedulers", "Enable experimental dirty schedulers"
-  option "without-docs", "Do not install documentation"
 
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
   depends_on "openssl"
   depends_on "unixodbc" if MacOS.version >= :mavericks
-  depends_on "fop" => :optional # enables building PDF docs
   depends_on "wxmac" => :recommended # for GUI apps like observer
+  depends_on "fop" => :optional # enables building PDF docs
+
+  resource "man" do
+    url "https://www.erlang.org/download/otp_doc_man_17.5.tar.gz"
+    sha256 "85b1b2a1011fc01af550f1fe9e5a599a4c5f2a35d264d2804af1d05590a857c3"
+  end
+
+  resource "html" do
+    url "https://www.erlang.org/download/otp_doc_html_17.5.tar.gz"
+    sha256 "baba1d373c1faacf4a1a6ec1220d57d0cb2b977edb74f32cd58dc786361c6cf5"
+  end
 
   # Erlang will crash on macOS 10.13 any time the crypto lib is used.
   # The Erlang team has an open PR for the patch but it needs to be applied to
@@ -43,16 +50,6 @@ class ErlangAT17 < Formula
       url "https://github.com/erlang/otp/commit/a64c4d806fa54848c35632114585ad82b98712e8.diff?full_index=1"
       sha256 "3261400f8d7f0dcff3a52821daea3391ebfa01fd859f9f2d9cc5142138e26e15"
     end
-  end
-
-  resource "man" do
-    url "https://www.erlang.org/download/otp_doc_man_17.5.tar.gz"
-    sha256 "85b1b2a1011fc01af550f1fe9e5a599a4c5f2a35d264d2804af1d05590a857c3"
-  end
-
-  resource "html" do
-    url "https://www.erlang.org/download/otp_doc_html_17.5.tar.gz"
-    sha256 "baba1d373c1faacf4a1a6ec1220d57d0cb2b977edb74f32cd58dc786361c6cf5"
   end
 
   def install
@@ -98,10 +95,8 @@ class ErlangAT17 < Formula
     ENV.deparallelize # Install is not thread-safe; can try to create folder twice and fail
     system "make", "install"
 
-    if build.with? "docs"
-      (lib/"erlang").install resource("man").files("man")
-      doc.install resource("html")
-    end
+    (lib/"erlang").install resource("man").files("man")
+    doc.install resource("html")
   end
 
   def caveats; <<~EOS
@@ -109,7 +104,7 @@ class ErlangAT17 < Formula
       #{opt_lib}/erlang/man
 
     Access them with `erl -man`, or add this directory to MANPATH.
-    EOS
+  EOS
   end
 
   test do

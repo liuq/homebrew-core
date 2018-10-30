@@ -1,16 +1,14 @@
 class Tcc < Formula
   desc "Tiny C compiler"
   homepage "https://bellard.org/tcc/"
-  url "https://download.savannah.gnu.org/releases/tinycc/tcc-0.9.26.tar.bz2"
-  mirror "https://dl.bintray.com/homebrew/mirror/tcc-0.9.26.tar.bz2"
-  sha256 "521e701ae436c302545c3f973a9c9b7e2694769c71d9be10f70a2460705b6d71"
+  url "https://download.savannah.nongnu.org/releases/tinycc/tcc-0.9.27.tar.bz2"
+  sha256 "de23af78fca90ce32dff2dd45b3432b2334740bb9bb7b05bf60fdbfc396ceb9c"
 
   bottle do
-    sha256 "a4e987aa8ee2608b822e494d33ac049f3108a82160aaea8cb17ec0f139d12d5b" => :sierra
-    sha256 "8187fcc40ec8350469ec8a759344d2abe110ad8b3acc09deb93e1dfe3295300c" => :el_capitan
-    sha256 "6361d686961e63328e2e084e346df9a0f3bea8f4c1aa7a48b627b528b76b5622" => :yosemite
-    sha256 "d933047b24c74dc83fad767b8838ded95c1b512846960144c6442480410038eb" => :mavericks
-    sha256 "a08aa7da0eccb7c93414fd4944ce5676248869da5f62810bbe687704ba37807d" => :mountain_lion
+    rebuild 1
+    sha256 "697164b3427d1993923e2e4c446b4ea87b55916d59cfe5ba64ad04ca3d54bddc" => :mojave
+    sha256 "45a2646746c8a9766aa106ba6aaac155e8b963c2c5ea3afac0b398b0b5501430" => :high_sierra
+    sha256 "f5ce8a5801502da6c214ad9f5e9df024109bbe0c4e5380de35112f0596a373fe" => :sierra
   end
 
   option "with-cross", "Build all cross compilers"
@@ -26,9 +24,8 @@ class Tcc < Formula
 
     ENV.deparallelize
     system "./configure", *args
-    system "make"
+    system "make", "MACOSX_DEPLOYMENT_TARGET=#{MacOS.version}"
     system "make", "install"
-    system "make", "test"
   end
 
   test do

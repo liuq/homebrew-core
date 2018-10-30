@@ -6,6 +6,7 @@ class BoostAT160 < Formula
 
   bottle do
     cellar :any
+    sha256 "7a94d461c3b8a3859ad52e87ad82c7fc18f36b53a3a85dea88faa733a5c9f000" => :mojave
     sha256 "50568fe023b32cf9664b023d65d43d7f8e79bfa73415186f63a3faf0b4ae7cc8" => :high_sierra
     sha256 "8ab5b0be67a534c2340b488d27ebc51ccb088c49735949da4c0099359c6ef9f1" => :sierra
     sha256 "f6ef8ae275a8d0c03969eceb248235dbeafd4316d1c97f6a9b79d8aa4ef71027" => :el_capitan
@@ -13,6 +14,19 @@ class BoostAT160 < Formula
   end
 
   keg_only :versioned_formula
+
+  option "with-icu4c", "Build regexp engine with icu support"
+  option "without-single", "Disable building single-threading variant"
+  option "without-static", "Disable building static library variant"
+  option :cxx11
+
+  deprecated_option "with-icu" => "with-icu4c"
+
+  if build.cxx11?
+    depends_on "icu4c" => [:optional, "c++11"]
+  else
+    depends_on "icu4c" => :optional
+  end
 
   # Handle compile failure with boost/graph/adjacency_matrix.hpp
   # https://github.com/Homebrew/homebrew/pull/48262
@@ -26,19 +40,6 @@ class BoostAT160 < Formula
   patch do
     url "https://raw.githubusercontent.com/Homebrew/formula-patches/9e56b45/boost/boost1_60_0_python_class_metadata.diff"
     sha256 "1a470c3a2738af409f68e3301eaecd8d07f27a8965824baf8aee0adef463b844"
-  end
-
-  option "with-icu4c", "Build regexp engine with icu support"
-  option "without-single", "Disable building single-threading variant"
-  option "without-static", "Disable building static library variant"
-  option :cxx11
-
-  deprecated_option "with-icu" => "with-icu4c"
-
-  if build.cxx11?
-    depends_on "icu4c" => [:optional, "c++11"]
-  else
-    depends_on "icu4c" => :optional
   end
 
   needs :cxx11 if build.cxx11?

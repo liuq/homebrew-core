@@ -2,16 +2,18 @@ class Lolcat < Formula
   desc "Rainbows and unicorns in your console!"
   homepage "https://github.com/busyloop/lolcat"
   url "https://github.com/busyloop/lolcat.git",
-      :tag => "v90.8.8",
-      :revision => "d78d039699256d6280583d72117270180b8c1ec9"
+      :tag => "v99.9.19",
+      :revision => "40692d01733c5d360022a14f08a4415668544f37"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "79a876424a8942e9bd196c73778c61479d1092d96ce1833ccdecc5814a484cfc" => :high_sierra
-    sha256 "492e7fe98802675c99f981a57ad9526b248351a9c62ff4c65c92cc91a7ce7d0a" => :sierra
-    sha256 "ede0105710e8d64af8998252e978dc4983efa10a234ecdab25b6bd61a8d11a08" => :el_capitan
-    sha256 "b338cd33256e246e29f7e3c79b2442d8abb895e10e97e5fb988c7d8dced2ac36" => :yosemite
+    sha256 "f1f5edec2745ef0eff4ab1b40d654af7de06d3999aceef66670babfc66dea62d" => :mojave
+    sha256 "d240127af1150e214e42b97f1f2c5de9f69cc1e6227ade0afa4bb199136a5d09" => :high_sierra
+    sha256 "425023804e93bf8d8d5493cae02fae225c6092b659297d7d7f2186a0f7de90fc" => :sierra
+    sha256 "0651fd564ed9ced11b35475a9b3fdbbf850e95b312684c8297800ba7f56d4e6f" => :el_capitan
   end
+
+  depends_on "ruby" if MacOS.version <= :sierra
 
   def install
     ENV["GEM_HOME"] = libexec

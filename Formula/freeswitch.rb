@@ -2,15 +2,15 @@ class Freeswitch < Formula
   desc "Telephony platform to route various communication protocols"
   homepage "https://freeswitch.org"
   url "https://freeswitch.org/stash/scm/fs/freeswitch.git",
-      :tag => "v1.6.19",
-      :revision => "7a77e0bb2ca875cb977b1e698a1783e575d96563"
-  revision 2
+      :tag => "v1.6.20",
+      :revision => "987c9b9a2a2e389becf4f390feb9eb14c77e2371"
   head "https://freeswitch.org/stash/scm/fs/freeswitch.git"
 
   bottle do
-    sha256 "78670263f7413b56d7308f02311fd901dcbbdf7a67da92add4f93ed1b7cdb392" => :high_sierra
-    sha256 "580ccaf5ac6f6d8518cec9718b5310077c436950b95d14ee5a6cdebdb9a582ca" => :sierra
-    sha256 "9fcd5b9cb4606c180c2507d4cb454f95c8bb4d01d9bfce4aec1fef5b5b0f6a36" => :el_capitan
+    sha256 "52f44a6e3713c7c5d47f4fc6a78416c7ddddfdf69ee23e7c2caef02f1e47733e" => :mojave
+    sha256 "a44ff9765d3a79e6caf363f94c144ee62139320b274f70c56000d839dec618ad" => :high_sierra
+    sha256 "52aa9f65dbcff17203256154422092c74195c795f50cb10b4c7182e4dcc1361b" => :sierra
+    sha256 "f2d73136027050dc82f3ce4d9e6f131f07a6cf15fba1d2b02c2012eacd1cb525" => :el_capitan
   end
 
   option "without-moh", "Do not install music-on-hold"
@@ -18,24 +18,24 @@ class Freeswitch < Formula
   option "with-sounds-fr", "Install French (June) sounds"
   option "with-sounds-ru", "Install Russian (Elena) sounds"
 
+  depends_on "apr-util" => :build
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
   depends_on "pkg-config" => :build
-  depends_on "apr-util" => :build
   depends_on "yasm" => :build
   depends_on "jpeg"
-  depends_on "openssl"
-  depends_on "pcre"
-  depends_on "sqlite"
-  depends_on "lua"
-  depends_on "opus"
   depends_on "libsndfile"
+  depends_on "lua"
+  depends_on "openssl"
+  depends_on "opus"
+  depends_on "pcre"
   depends_on "speex"
   depends_on "speexdsp"
+  depends_on "sqlite"
 
   # https://github.com/Homebrew/homebrew/issues/42865
-  fails_with :gcc
+  fails_with :gcc_4_2
 
   #----------------------- Begin sound file resources -------------------------
   sounds_url_base = "https://files.freeswitch.org/releases/sounds"
@@ -227,7 +227,7 @@ class Freeswitch < Formula
         <true/>
     </dict>
     </plist>
-    EOS
+  EOS
   end
 
   test do

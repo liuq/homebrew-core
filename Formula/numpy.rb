@@ -1,30 +1,30 @@
 class Numpy < Formula
   desc "Package for scientific computing with Python"
-  homepage "http://www.numpy.org"
-  url "https://files.pythonhosted.org/packages/a3/99/74aa456fc740a7e8f733af4e8302d8e61e123367ec660cd89c53a3cd4d70/numpy-1.14.1.zip"
-  sha256 "fa0944650d5d3fb95869eaacd8eedbd2d83610c85e271bd9d3495ffa9bc4dc9c"
-  revision 1
+  homepage "https://www.numpy.org/"
+  url "https://files.pythonhosted.org/packages/83/6b/d03277eacf113697675cd659086a4dcf9472108e2f1a83884c0271bdca46/numpy-1.15.3.zip"
+  sha256 "1c0c80e74759fa4942298044274f2c11b08c86230b25b8b819e55e644f5ff2b6"
 
   bottle do
-    sha256 "60b6d4a20734d849394a15744341aa2919d61564d76878443a2b7dd98733abaf" => :high_sierra
-    sha256 "fa8a59395067c36d569f24d3a6f4834cdac453bd83476d722b6c1f33e8357b8a" => :sierra
-    sha256 "31c1ffd4ed481190a489049c874949cbde0d566e8603315b6c5eb863a876f4f5" => :el_capitan
+    sha256 "f09037da31fe744c79455c27993b0496e638e9e817bd1a1d6b1bd7f750b7dfcc" => :mojave
+    sha256 "c8b98a056e29916cfe172acb5426734ed136486e31476b5e932353341dbf8de8" => :high_sierra
+    sha256 "6c49d36ada8d285b711a108b0d5a7547abdc0374448437b40f508f502430d6d0" => :sierra
   end
 
   head do
     url "https://github.com/numpy/numpy.git"
 
     resource "Cython" do
-      url "https://files.pythonhosted.org/packages/ee/2a/c4d2cdd19c84c32d978d18e9355d1ba9982a383de87d0fcb5928553d37f4/Cython-0.27.3.tar.gz"
-      sha256 "6a00512de1f2e3ce66ba35c5420babaef1fe2d9c43a8faab4080b0dbcc26bc64"
+      url "https://files.pythonhosted.org/packages/f0/66/6309291b19b498b672817bd237caec787d1b18013ee659f17b1ec5844887/Cython-0.29.tar.gz"
+      sha256 "94916d1ede67682638d3cc0feb10648ff14dc51fb7a7f147f4fedce78eaaea97"
     end
   end
 
   option "without-python@2", "Build without python2 support"
 
   depends_on "gcc" => :build # for gfortran
-  depends_on "python@2" => :recommended if MacOS.version <= :snow_leopard
+  depends_on "openblas"
   depends_on "python" => :recommended
+  depends_on "python@2" => :recommended
 
   resource "nose" do
     url "https://files.pythonhosted.org/packages/58/a5/0dc93c3ec33f4e281849523a5a913fa1eea9a3068acfa754d44d88107a44/nose-1.3.7.tar.gz"
@@ -32,6 +32,19 @@ class Numpy < Formula
   end
 
   def install
+    openblas = Formula["openblas"].opt_prefix
+    ENV["ATLAS"] = "None" # avoid linking against Accelerate.framework
+    ENV["BLAS"] = ENV["LAPACK"] = "#{openblas}/lib/libopenblas.dylib"
+
+    config = <<~EOS
+      [openblas]
+      libraries = openblas
+      library_dirs = #{openblas}/lib
+      include_dirs = #{openblas}/include
+    EOS
+
+    Pathname("site.cfg").write config
+
     Language::Python.each_python(build) do |python, version|
       dest_path = lib/"python#{version}/site-packages"
       dest_path.mkpath

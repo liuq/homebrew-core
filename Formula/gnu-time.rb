@@ -1,15 +1,17 @@
 class GnuTime < Formula
   desc "GNU implementation of time utility"
   homepage "https://www.gnu.org/software/time/"
-  url "https://ftp.gnu.org/gnu/time/time-1.8.tar.gz"
-  mirror "https://ftpmirror.gnu.org/time/time-1.8.tar.gz"
-  sha256 "8a2f540155961a35ba9b84aec5e77e3ae36c74cecb4484db455960601b7a2e1b"
+  url "https://ftp.gnu.org/gnu/time/time-1.9.tar.gz"
+  mirror "https://ftpmirror.gnu.org/time/time-1.9.tar.gz"
+  sha256 "fbacf0c81e62429df3e33bda4cee38756604f18e01d977338e23306a3e3b521e"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "b3763d0f3f85e55ce1e9dabaafba0bb4e5af5706b0184dddb96e5c888310c494" => :high_sierra
-    sha256 "96e4ff64f2754423ef0e333457097c025ce77f2f8103ff1d6eb4c7e40e3e0281" => :sierra
-    sha256 "37ee681d846bb5d11a31c7d53ee877ea3d30b0946775491c7952ea59a50f3293" => :el_capitan
+    rebuild 1
+    sha256 "8869676fa19dcc2454fe3444e71aed9544639c1e2988d04c02678bad9b281e35" => :mojave
+    sha256 "22c847320019d76be1290c7e04943922bd91c39c8aaccca87e44d9a2327ceab8" => :high_sierra
+    sha256 "2fa9dd90dc13901d0bc2ab792d334a264f992ee57302bbcdc42e45135457710f" => :sierra
+    sha256 "a6ae05233326897ed622ab5c6ee63081e1c445b5e7496c68efa00dd5718b589c" => :el_capitan
   end
 
   option "with-default-names", "Do not prepend 'g' to the binary"
@@ -25,6 +27,10 @@ class GnuTime < Formula
 
     system "./configure", *args
     system "make", "install"
+
+    if build.without? "default-names"
+      (libexec/"gnubin").install_symlink bin/"gtime" => "time"
+    end
   end
 
   test do

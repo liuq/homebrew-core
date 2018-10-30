@@ -8,16 +8,12 @@ class RdiffBackup < Formula
   bottle do
     cellar :any
     rebuild 1
+    sha256 "76ac2c10776a2dcb230f07b95704c65522cae20865a9bf4e4772c86b94673bda" => :mojave
     sha256 "899687c88770af610d76f66f02da736a2a62ac4676f0f80796dbbae1d92bc47f" => :high_sierra
     sha256 "7dcf4c878ccafc113e5742c83214f946dd3a55b472e086a944e918bcee1cf2bd" => :sierra
     sha256 "f06f79bc1536dbaa990e6005565f18de05e9dc12deb09701a504ab6bfc8b8f11" => :el_capitan
     sha256 "35f6a0f726a680d639f7a1c83af8e27d046d5a68a334bf19d47eaa363748767c" => :yosemite
     sha256 "5b0eab2335afe2d298cd51737c744d052536cb0bdbee780819496e1000a3b179" => :mavericks
-  end
-
-  devel do
-    url "https://savannah.nongnu.org/download/rdiff-backup/rdiff-backup-1.3.3.tar.gz"
-    sha256 "ee030ce638df0eb1047cf72578e0de15d9a3ee9ab24da2dc0023e2978be30c06"
   end
 
   depends_on "librsync"
@@ -41,5 +37,9 @@ class RdiffBackup < Formula
     libexec.install Dir["build/scripts-*/*"]
     man1.install Dir["*.1"]
     bin.install_symlink Dir["#{libexec}/rdiff-backup*"]
+  end
+
+  test do
+    system "#{bin}/rdiff-backup", "--version"
   end
 end

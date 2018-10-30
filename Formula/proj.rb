@@ -1,13 +1,14 @@
 class Proj < Formula
   desc "Cartographic Projections Library"
-  homepage "http://proj4.org/"
-  url "https://download.osgeo.org/proj/proj-5.0.0.tar.gz"
-  sha256 "b30df08d736e69744cb255828721abb545b494d6032c13a96520f3219a444cd2"
+  homepage "https://proj4.org/"
+  url "https://download.osgeo.org/proj/proj-5.2.0.tar.gz"
+  sha256 "ef919499ffbc62a4aae2659a55e2b25ff09cccbbe230656ba71c6224056c7e60"
 
   bottle do
-    sha256 "e8593ac943fbf2911a66b300c0c3f55ec7bfb9fe1ac636ff59ac50de85d04daa" => :high_sierra
-    sha256 "13e815d8283d20e2f7a5ab1a2f3fb6a465ef67112f7dce89f4278a417469f973" => :sierra
-    sha256 "6f9e7306f404158d257bb791ff7cfc05c9b0ad98f7652adcb9e59259f94dafb9" => :el_capitan
+    sha256 "bead47d7970ed3a59ef4c9567e86cf834fcaf01a1a8b63efeb372b62e2f39b83" => :mojave
+    sha256 "80caa7d9b6ffc5cee9c397b8821b834a16b37c05cd0acd0262f825fa95eb8e08" => :high_sierra
+    sha256 "1906c694029b8a01fbd912733b3c9ba295f4b8ba9d32d0d3f8f2b549b179d04a" => :sierra
+    sha256 "9cbf5a3dfb98c5b5ee82a3e4b8d9d0f927a4d45e514d99a71ca78eb123d5cafe" => :el_capitan
   end
 
   head do
@@ -19,13 +20,22 @@ class Proj < Formula
 
   option "with-vdatum", "Install vertical datum files (~380 MB)"
 
+  conflicts_with "blast", :because => "both install a `libproj.a` library"
+
+  skip_clean :la
+
   # The datum grid files are required to support datum shifting
   resource "datumgrid" do
-    url "https://download.osgeo.org/proj/proj-datumgrid-1.5.zip"
-    sha256 "723c4017d95d7a8abdf3bda4e18d3c15d79b00f9326d453da5fdf13f96c287db"
+    url "https://download.osgeo.org/proj/proj-datumgrid-1.8.zip"
+    sha256 "b9838ae7e5f27ee732fb0bfed618f85b36e8bb56d7afb287d506338e9f33861e"
   end
 
   # Vertical datum files
+  resource "usa_geoid2012b" do
+    url "https://download.osgeo.org/proj/vdatum/usa_geoid2012b.zip"
+    sha256 "7a2bddfff18c303853b692830515b86eb46a3e6f81f14d4f193f0e28b1d57aca"
+  end
+
   resource "usa_geoid2012" do
     url "https://download.osgeo.org/proj/vdatum/usa_geoid2012.zip"
     sha256 "afe49dc2c405d19a467ec756483944a3c9148e8c1460cb7e82dc8d4a64c4c472"
@@ -61,17 +71,10 @@ class Proj < Formula
     sha256 "de648c0f6e8b5ebfc4b2d82f056c7b993ca3c37373a7f6b7844fe9bd4871821b"
   end
 
-  resource "egm96_15" do
-    url "https://download.osgeo.org/proj/vdatum/egm96_15/egm96_15.gtx"
-    sha256 "c02a6eb70a7a78efebe5adf3ade626eb75390e170bb8b3f36136a2c28f5326a0"
-  end
-
   resource "egm08_25" do
     url "https://download.osgeo.org/proj/vdatum/egm08_25/egm08_25.gtx"
     sha256 "c18f20d1fe88616e3497a3eff993227371e1d9acc76f96253e8d84b475bbe6bf"
   end
-
-  skip_clean :la
 
   def install
     resources.each do |r|

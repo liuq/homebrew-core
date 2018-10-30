@@ -1,26 +1,34 @@
 require "language/node"
+require "json"
 
 class Babel < Formula
   desc "Compiler for writing next generation JavaScript"
   homepage "https://babeljs.io/"
-  url "https://registry.npmjs.org/babel-cli/-/babel-cli-6.24.1.tgz"
-  sha256 "d69a00bdb4f35184cda1f5bfe8075cd4d569600b8e61d864d1f08e360367933b"
+  url "https://registry.npmjs.org/@babel/cli/-/cli-7.1.2.tgz"
+  sha256 "5718cca05492c71fe852ff61aae54e1dac0d15080d92c36e4fbbba1f5898b488"
 
   bottle do
-    rebuild 1
-    sha256 "fa63837b3f1351ef2d0307ab556e40bbd91c1bc383c6d4ada3a072471cb01b40" => :high_sierra
-    sha256 "102dda22f4541c686da92112bf3b7c91da7ace61e04633d19a9874ee6c3d8935" => :sierra
-    sha256 "7dde27b4e0d9901fa2b2f3051fbe5b11baa3635e7bfac15ae4a0690e0270f067" => :el_capitan
-  end
-
-  devel do
-    url "https://registry.npmjs.org/babel-cli/-/babel-cli-7.0.0-alpha.12.tgz"
-    sha256 "a81e2421486ca48d3961c4ab1fada8acd3bb3583ccfb28822cbb0b16a2635144"
+    sha256 "7c206f31b3a50e2adc07ba88267aed5424e0bd528393a8703c6e8ed5ef115e36" => :mojave
+    sha256 "289d451d748f14b88d77d356c788b91b0217c278bcd1604d13df733060004046" => :high_sierra
+    sha256 "8057b89a447b5f3bec8c8d4f3187097c85e66f468f3d010b7ae56043fbf5e983" => :sierra
   end
 
   depends_on "node"
 
+  resource "babel-core" do
+    url "https://registry.npmjs.org/@babel/core/-/core-7.1.2.tgz"
+    sha256 "d36c13e52c343412628cbc60d8c1036868e0deba361a5f11f5bac15e9464c46a"
+  end
+
   def install
+    (buildpath/"node_modules/@babel/core").install resource("babel-core")
+
+    # declare babel-core as a bundledDependency of babel-cli
+    pkg_json = JSON.parse(IO.read("package.json"))
+    pkg_json["dependencies"]["@babel/core"] = resource("babel-core").version
+    pkg_json["bundledDependencies"] = ["@babel/core"]
+    IO.write("package.json", JSON.pretty_generate(pkg_json))
+
     system "npm", "install", *Language::Node.std_npm_install_args(libexec)
     bin.install_symlink Dir["#{libexec}/bin/*"]
   end
@@ -32,5 +40,7 @@ class Babel < Formula
 
     system bin/"babel", "script.js", "--out-file", "script-compiled.js"
     assert_predicate testpath/"script-compiled.js", :exist?, "script-compiled.js was not generated"
+
+    assert_equal version, resource("babel-core").version
   end
 end

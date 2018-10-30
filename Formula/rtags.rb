@@ -2,14 +2,14 @@ class Rtags < Formula
   desc "Source code cross-referencer like ctags with a clang frontend"
   homepage "https://github.com/Andersbakken/rtags"
   url "https://github.com/Andersbakken/rtags.git",
-      :tag => "v2.18",
-      :revision => "98d668e85cf9ae84e775742752c5656dd2df2f17"
+      :tag => "v2.20",
+      :revision => "baf121831ab5b1a40f6e0b3c2771a6238a94414c"
   head "https://github.com/Andersbakken/rtags.git"
 
   bottle do
-    sha256 "8aee33be1bf067dc3a9e4706f9fe2a62cdd3a25a89d5c51da1fec4d917102775" => :high_sierra
-    sha256 "eeab6d1ad7389bce093e71c4081f78770d871f6d9c52959abdd92f7229dd3c62" => :sierra
-    sha256 "bb3c7864313ae1384e75bb57bde84527681f1f756f35df608de2fd942b175a26" => :el_capitan
+    sha256 "e728729cbc054d5c5457962b47b22d68cf02d54763f070387e1a72c58be3db25" => :mojave
+    sha256 "bbb37348cf155114f9a13733cc6b1be9aad610b5fdc4f655d3f445578452653d" => :high_sierra
+    sha256 "ae35d6315f617c5f03dcfdbe8848625f2c2a6b6879884ffa267cf4efcf7cec58" => :sierra
   end
 
   depends_on "cmake" => :build
@@ -62,7 +62,7 @@ class Rtags < Formula
       </dict>
     </dict>
     </plist>
-    EOS
+  EOS
   end
 
   test do

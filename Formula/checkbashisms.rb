@@ -1,16 +1,17 @@
 class Checkbashisms < Formula
   desc "Checks for bashisms in shell scripts"
   homepage "https://launchpad.net/ubuntu/+source/devscripts/"
-  url "https://launchpad.net/ubuntu/+archive/primary/+files/devscripts_2.17.9build1.tar.xz"
-  version "2.17.9build1"
-  sha256 "e0cb232c37eaf8a18584637b1170875b21a632bbd8a3aca2a83499e18beee0dd"
-
-  head "lp:ubuntu/devscripts", :using => :bzr
+  url "https://deb.debian.org/debian/pool/main/d/devscripts/devscripts_2.18.7.tar.xz"
+  sha256 "dfb36d50cb958dfc4a540d8d38ea2f7bf5ba01e08e99958609776318135afd0e"
 
   bottle :unneeded
 
   def install
-    inreplace "scripts/checkbashisms.pl", "###VERSION###", version
+    inreplace "scripts/checkbashisms.pl" do |s|
+      s.gsub! "###VERSION###", version
+      s.gsub! "#!/usr/bin/perl", "#!/usr/bin/perl -T"
+    end
+
     bin.install "scripts/checkbashisms.pl" => "checkbashisms"
     man1.install "scripts/checkbashisms.1"
   end

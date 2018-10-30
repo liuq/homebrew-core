@@ -1,15 +1,15 @@
 class Zsh < Formula
   desc "UNIX shell (command interpreter)"
   homepage "https://www.zsh.org/"
-  url "https://downloads.sourceforge.net/project/zsh/zsh/5.4.2/zsh-5.4.2.tar.gz"
-  mirror "https://www.zsh.org/pub/zsh-5.4.2.tar.gz"
-  sha256 "957bcdb2c57f64c02f673693ea5a7518ef24b6557aeb3a4ce222cefa6d74acc9"
-  revision 3
+  url "https://downloads.sourceforge.net/project/zsh/zsh/5.6.2/zsh-5.6.2.tar.xz"
+  mirror "https://www.zsh.org/pub/zsh-5.6.2.tar.xz"
+  sha256 "a50bd66c0557e8eca3b8fa24e85d0de533e775d7a22df042da90488623752e9e"
+  revision 1
 
   bottle do
-    sha256 "9071f9ae246b1c2d577cf0e2115f38e3612994d456a1925918c9ea25218c202d" => :high_sierra
-    sha256 "daa5e14fd14dd3051ac99e29d3c8ec5954f99e613229c200c1898d8e682549af" => :sierra
-    sha256 "1dbc516e7193753876e2d1648cfb90c0d15fb3f0c6483a929fbcc4b129be0d46" => :el_capitan
+    sha256 "f98defa16cd93ecb53d807ff1eff13a32f705dac5d22e952c620b3f30902b8ff" => :mojave
+    sha256 "051c0e25d3ffbfe0bebdeb6f6bb92f66ece53a7a29e9d72f287197327ab95731" => :high_sierra
+    sha256 "f8ab842979421326772316a82c0e486bf55cd4aef512ee476fe4a7683341436f" => :sierra
   end
 
   head do
@@ -22,13 +22,14 @@ class Zsh < Formula
 
   deprecated_option "disable-etcdir" => "without-etcdir"
 
+  depends_on "ncurses"
   depends_on "gdbm" => :optional
   depends_on "pcre" => :optional
 
   resource "htmldoc" do
-    url "https://downloads.sourceforge.net/project/zsh/zsh-doc/5.4.2/zsh-5.4.2-doc.tar.xz"
-    mirror "https://www.zsh.org/pub/zsh-5.4.2-doc.tar.xz"
-    sha256 "5229cc93ebe637a07deb5b386b705c37a50f4adfef788b3c0f6647741df4f6bd"
+    url "https://downloads.sourceforge.net/project/zsh/zsh/5.6.2/zsh-5.6.2-doc.tar.xz"
+    mirror "https://www.zsh.org/pub/zsh-5.6.2-doc.tar.xz"
+    sha256 "98973267547cbdd8471b52e3a2bbe415be2c2c473246536ed8914f685e260114"
   end
 
   def install
@@ -46,6 +47,7 @@ class Zsh < Formula
       --enable-multibyte
       --enable-zsh-secure-free
       --with-tcsetpgrp
+      DL_EXT=bundle
     ]
 
     args << "--disable-gdbm" if build.without? "gdbm"

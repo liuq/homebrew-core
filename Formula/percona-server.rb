@@ -1,33 +1,27 @@
 class PerconaServer < Formula
   desc "Drop-in MySQL replacement"
   homepage "https://www.percona.com"
-  url "https://www.percona.com/downloads/Percona-Server-5.7/Percona-Server-5.7.21-20/source/tarball/percona-server-5.7.21-20.tar.gz"
-  sha256 "842785e9b73c606be00ea74f568615d3427362fbeed5c136d8f509f03c9d43a6"
+  url "https://www.percona.com/downloads/Percona-Server-5.7/Percona-Server-5.7.22-22/source/tarball/percona-server-5.7.22-22.tar.gz"
+  sha256 "3b94644861628fa6e17b82318220327f0beb2767739c976c961c8a9eb6c9783a"
 
   bottle do
-    sha256 "f486ad7e346bc716f258eecb66fb852da697333141a286f0a0076fa48f5e743c" => :high_sierra
-    sha256 "c9cec18ec850f01cb7db22dd379aabe5bcbd00cb94269068cc1102c10c96d7c7" => :sierra
-    sha256 "e16b3560518cf0625196e0076c33176b1af5e90d57e528b726dde89704bc59d1" => :el_capitan
+    sha256 "939d9bf211128159aa8fa8063d5a2444f018c9f4c957c12aff8dfb8fbcc36d77" => :mojave
+    sha256 "b532aa8c191442279c499bf270ab0dbccbaf7f5e54cfc9540a3d825436c55e7d" => :high_sierra
+    sha256 "598e49c07d52132f8293474c57449ca4f8f92a755edb356909be3ddb51b46a1a" => :sierra
+    sha256 "8d4b7018c451090ba8af05928eee7d082f9986211ed3dc9eaf83010456a3bd5b" => :el_capitan
   end
 
-  option "with-debug", "Build with debug support"
-  option "with-embedded", "Build the embedded server"
-  option "with-local-infile", "Build with local infile loading support"
-  option "with-memcached", "Build with InnoDB Memcached plugin"
-  option "with-test", "Build with unit tests"
-
-  deprecated_option "enable-debug" => "with-debug"
-  deprecated_option "enable-local-infile" => "with-local-infile"
-  deprecated_option "enable-memcached" => "with-memcached"
-  deprecated_option "with-tests" => "with-test"
+  pour_bottle? do
+    reason "The bottle needs a var/mysql datadir (yours is var/percona)."
+    satisfy { datadir == var/"mysql" }
+  end
 
   depends_on "cmake" => :build
-  depends_on "openssl"
-
   # https://github.com/Homebrew/homebrew-core/issues/1475
   # Needs at least Clang 3.3, which shipped alongside Lion.
   # Note: MySQL themselves don't support anything below El Capitan.
   depends_on :macos => :lion
+  depends_on "openssl"
 
   conflicts_with "mariadb", "mysql", "mysql-cluster",
     :because => "percona, mariadb, and mysql install the same binaries."
@@ -46,11 +40,6 @@ class PerconaServer < Formula
   # shared with the mysql and mariadb formulae.
   def datadir
     @datadir ||= (var/"percona").directory? ? var/"percona" : var/"mysql"
-  end
-
-  pour_bottle? do
-    reason "The bottle needs a var/mysql datadir (yours is var/percona)."
-    satisfy { datadir == var/"mysql" }
   end
 
   def install
@@ -90,24 +79,7 @@ class PerconaServer < Formula
     # https://bugs.launchpad.net/percona-server/+bug/1531446
     args.concat %w[-DWITHOUT_TOKUDB=1]
 
-    # Build with debug support
-    args << "-DWITH_DEBUG=1" if build.with? "debug"
-
-    # Build the embedded server
-    args << "-DWITH_EMBEDDED_SERVER=ON" if build.with? "embedded"
-
-    # Build with local infile loading support
-    args << "-DENABLED_LOCAL_INFILE=1" if build.with? "local-infile"
-
-    # Build with InnoDB Memcached plugin
-    args << "-DWITH_INNODB_MEMCACHED=ON" if build.with? "memcached"
-
-    # To enable unit testing at build, we need to download the unit testing suite
-    if build.with? "test"
-      args << "-DENABLE_DOWNLOADS=ON"
-    else
-      args << "-DWITH_UNIT_TESTS=OFF"
-    end
+    args << "-DWITH_UNIT_TESTS=OFF"
 
     system "cmake", ".", *std_cmake_args, *args
     system "make"
@@ -117,8 +89,8 @@ class PerconaServer < Formula
       system "./mysql-test-run.pl", "status", "--vardir=#{Dir.mktmpdir}"
     end
 
-    # Remove the tests directory if they are not built
-    rm_rf prefix/"mysql-test" if build.without? "test"
+    # Remove the tests directory
+    rm_rf prefix/"mysql-test"
 
     # Don't create databases inside of the prefix!
     # See: https://github.com/Homebrew/homebrew/issues/4975
@@ -189,7 +161,7 @@ class PerconaServer < Formula
       <string>#{datadir}</string>
     </dict>
     </plist>
-    EOS
+  EOS
   end
 
   test do

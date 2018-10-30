@@ -1,23 +1,40 @@
 require "language/node"
+require "json"
 
 class Webpack < Formula
   desc "Bundler for JavaScript and friends"
   homepage "https://webpack.js.org/"
-  url "https://registry.npmjs.org/webpack/-/webpack-3.11.0.tgz"
-  sha256 "4a5850909939fee6ef646388a8cdedec75ed34b58dc662ca3c01c6568d1dc1ba"
+  url "https://registry.npmjs.org/webpack/-/webpack-4.23.1.tgz"
+  sha256 "38a2cc36ecb4f94a33f475a6d28356e5dfc70d145cd64ef247426de765fb2de1"
   head "https://github.com/webpack/webpack.git"
 
   bottle do
-    sha256 "4a959a8204df945850f4cd6713edff47ddcc89c36e3cb4204c4492f1e563e9b8" => :high_sierra
-    sha256 "0348618ee6c81fb9e096198ef6e9e898b5c43fe6bcd563f376bb8ff468f2a539" => :sierra
-    sha256 "12f3de3c3cab637647c9ea67b107590eb9f145f67bff4586f23e7f240413abf9" => :el_capitan
+    sha256 "28126280efe55111ac7a5efb1686f33115010e6d3e6b74c7634fd596ff2cee39" => :mojave
+    sha256 "c50d1d67e4a6d47a6645ae187c3fd74ab53572a174d744c5a5954f78eb17a922" => :high_sierra
+    sha256 "a2d112029573ebfdcd7a0c2a6417dc7582c1e1e0d98de8b0d070eec1fc0185a9" => :sierra
   end
 
   depends_on "node"
 
+  resource "webpack-cli" do
+    url "https://registry.npmjs.org/webpack-cli/-/webpack-cli-3.1.2.tgz"
+    sha256 "135962a43cdec4d24f68925c32e4daea600d6433d7b8fb912a9709a65712411e"
+  end
+
   def install
+    (buildpath/"node_modules/webpack").install Dir["*"]
+    buildpath.install resource("webpack-cli")
+
+    # declare webpack as a bundledDependency of webpack-cli
+    pkg_json = JSON.parse(IO.read("package.json"))
+    pkg_json["dependencies"]["webpack"] = version
+    pkg_json["bundledDependencies"] = ["webpack"]
+    IO.write("package.json", JSON.pretty_generate(pkg_json))
+
     system "npm", "install", *Language::Node.std_npm_install_args(libexec)
-    bin.install_symlink Dir["#{libexec}/bin/*"]
+
+    bin.install_symlink libexec/"bin/webpack-cli"
+    bin.install_symlink libexec/"bin/webpack-cli" => "webpack"
   end
 
   test do
@@ -31,7 +48,7 @@ class Webpack < Formula
       document.body.appendChild(component());
     EOS
 
-    system bin/"webpack", "index.js", "bundle.js"
+    system bin/"webpack", "index.js", "--output=bundle.js"
     assert_predicate testpath/"bundle.js", :exist?, "bundle.js was not generated"
   end
 end

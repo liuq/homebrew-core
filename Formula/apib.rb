@@ -4,11 +4,11 @@ class Apib < Formula
   url "https://github.com/apigee/apib/archive/APIB_1_0.tar.gz"
   sha256 "1592e55c01f2f9bc8085b39f09c49cd7b786b6fb6d02441ca665eef262e7b87e"
   revision 1
-
   head "https://github.com/apigee/apib.git"
 
   bottle do
     cellar :any
+    sha256 "6ebf28013ff33494c45a67b4e66abf15549a90cac60fc8bb0f8720ebf1387623" => :mojave
     sha256 "3ceaeadbdbd7c70211b7774ab76cff8e4d5176d4f04e4f1984043ec16002c4ec" => :high_sierra
     sha256 "f0443f15ef97284cefe199c11f7cbb14d6b41e48c5d13d6a372e9d47c1410573" => :sierra
     sha256 "cc30447ff51239eb2334d85b2f3faf0842b21ff882d8a4edb2e99155cb1dab76" => :el_capitan

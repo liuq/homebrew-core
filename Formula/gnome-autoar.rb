@@ -3,16 +3,20 @@ class GnomeAutoar < Formula
   homepage "https://github.com/GNOME/gnome-autoar"
   url "https://download.gnome.org/sources/gnome-autoar/0.2/gnome-autoar-0.2.3.tar.xz"
   sha256 "5de9db0db028cd6cab7c2fec46ba90965474ecf9cd68cfd681a6488cf1fb240a"
+  revision 1
 
   bottle do
-    sha256 "1535792487e4dac0085d045d9e141b0cc6df7c1333c2993582e120d1624353f8" => :high_sierra
-    sha256 "6becf98b25216574f41c4bc0d70e615fb327073f417233a7f3ee4594c97516fc" => :sierra
-    sha256 "b308fa83eb1c3bcd5046366104bf3b87f2448b7baaf98a01a0a4370c6374e932" => :el_capitan
+    cellar :any
+    rebuild 1
+    sha256 "df3a4bb92f24256d2fdd61c1d8bf0e99df2e5d3ff5caa8e4b9a5fab86335a264" => :mojave
+    sha256 "0278e7cbdbdb3115090a0a27cb7328ededbd8b3952d71b9568060db5c1b60198" => :high_sierra
+    sha256 "af8b60ddb40832e09b435e12a5e2d047ef36dcb7ac1cb0ae4c3a0577c19dcb7d" => :sierra
+    sha256 "3b15fdd123e16bddd846335e4e1d473770fb337007ef88ffa33fc6de90052e7b" => :el_capitan
   end
 
   depends_on "pkg-config" => :build
-  depends_on "libarchive"
   depends_on "gtk+3"
+  depends_on "libarchive"
 
   def install
     ENV.delete "SDKROOT"

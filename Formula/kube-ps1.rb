@@ -7,22 +7,17 @@ class KubePs1 < Formula
 
   bottle :unneeded
 
-  depends_on "kubernetes-cli" => :recommended
+  depends_on "kubernetes-cli"
 
   def install
     share.install "kube-ps1.sh"
   end
 
   def caveats; <<~EOS
-    Make sure kube-ps1 is loaded from your ~/.zshrc or ~/.bashrc:
-      For zsh:
+    Make sure kube-ps1 is loaded from your ~/.zshrc and/or ~/.bashrc:
       source "#{opt_share}/kube-ps1.sh"
-      PROMPT='$(kube_ps1)'$PROMPT
-
-      For Bash:
-      source "#{opt_share}/kube-ps1.sh"
-      PS1="[\$(kube_ps1)]\$ "
-    EOS
+      PS1='$(kube_ps1)'$PS1
+  EOS
   end
 
   test do

@@ -1,36 +1,32 @@
 class OpenMpi < Formula
   desc "High performance message passing library"
   homepage "https://www.open-mpi.org/"
-  url "https://www.open-mpi.org/software/ompi/v3.0/downloads/openmpi-3.0.0.tar.bz2"
-  sha256 "f699bff21db0125d8cccfe79518b77641cd83628725a1e1ed3e45633496a82d7"
-  revision 2
+  url "https://download.open-mpi.org/release/open-mpi/v3.1/openmpi-3.1.2.tar.bz2"
+  sha256 "c654ed847f34a278c52a15c98add40402b4a90f0c540779f1ae6c489af8a76c5"
 
   bottle do
-    sha256 "6d88511d80f47ff79a45588138a62e96a258913d25499ee4dc749fd22e8ae795" => :high_sierra
-    sha256 "7cdc9f6ea9d69ed78d822712794c6f843d426acd7fbdce7ea56cd0d7b2b287c2" => :sierra
-    sha256 "fb76532094bf33f984f7d1573f97942c0d2a5f46a02525dfdc67e4edf142e878" => :el_capitan
+    sha256 "09dd9c512eaa10461506dc9485253e2c202cf1a63ece9a8c0732ea33a3cbdfbb" => :mojave
+    sha256 "98887a827636d5611624a0b62cf444815481e893b6ab60b7c1372f18b1c97303" => :high_sierra
+    sha256 "32f6346af5d336a1509ec79b84894ea9ed1a898c1a9b013f38c649b1f1da97d5" => :sierra
+    sha256 "30a4804d11cc46e96aa0a625a0c70fc5a7d6905d9a3b7cb5e36b6d4cbe9aca80" => :el_capitan
   end
 
   head do
     url "https://github.com/open-mpi/ompi.git"
-    depends_on "automake" => :build
     depends_on "autoconf" => :build
+    depends_on "automake" => :build
     depends_on "libtool" => :build
   end
 
   option "with-mpi-thread-multiple", "Enable MPI_THREAD_MULTIPLE"
   option "with-cxx-bindings", "Enable C++ MPI bindings (deprecated as of MPI-3.0)"
-  option "without-fortran", "Do not build the Fortran bindings"
 
-  deprecated_option "disable-fortran" => "without-fortran"
   deprecated_option "enable-mpi-thread-multiple" => "with-mpi-thread-multiple"
 
-  depends_on "gcc" if build.with? "fortran"
-  depends_on :java => :optional
+  depends_on "gcc"
   depends_on "libevent"
 
   conflicts_with "mpich", :because => "both install MPI compiler wrappers"
-  conflicts_with "lcdf-typetools", :because => "both install same set of binaries"
 
   needs :cxx11
 
@@ -49,9 +45,7 @@ class OpenMpi < Formula
       --with-sge
     ]
     args << "--with-platform-optimized" if build.head?
-    args << "--disable-mpi-fortran" if build.without? "fortran"
     args << "--enable-mpi-thread-multiple" if build.with? "mpi-thread-multiple"
-    args << "--enable-mpi-java" if build.with? "java"
     args << "--enable-mpi-cxx" if build.with? "cxx-bindings"
 
     system "./autogen.pl" if build.head?
@@ -60,9 +54,9 @@ class OpenMpi < Formula
     system "make", "check"
     system "make", "install"
 
-    # If Fortran bindings were built, there will be stray `.mod` files
-    # (Fortran header) in `lib` that need to be moved to `include`.
-    include.install Dir["#{lib}/*.mod"] if build.with? "fortran"
+    # Fortran bindings install stray `.mod` files (Fortran modules) in `lib`
+    # that need to be moved to `include`.
+    include.install Dir["#{lib}/*.mod"]
   end
 
   test do

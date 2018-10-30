@@ -1,8 +1,9 @@
 class Sbt < Formula
   desc "Build tool for Scala projects"
   homepage "https://www.scala-sbt.org/"
-  url "https://github.com/sbt/sbt/releases/download/v1.1.1/sbt-1.1.1.tgz"
-  sha256 "8a9072155578f06c861be406e7f9fe989b3770d8da4069dd3cb5ad6c6d25c03b"
+  url "https://github.com/sbt/sbt/releases/download/v1.2.6/sbt-1.2.6.tgz"
+  mirror "https://sbt-downloads.cdnedge.bluemix.net/releases/v1.2.6/sbt-1.2.6.tgz"
+  sha256 "96597d4310ef1332aed439bf7d3edfd52ce8b8417688b01646e3c22de4c868db"
 
   bottle :unneeded
 
@@ -28,13 +29,10 @@ class Sbt < Formula
   end
 
   def caveats;  <<~EOS
-    You can use $SBT_OPTS to pass additional JVM options to SBT:
-       SBT_OPTS="-XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256M"
-
-    This formula uses the standard Lightbend sbt launcher script.
+    You can use $SBT_OPTS to pass additional JVM options to sbt.
     Project specific options should be placed in .sbtopts in the root of your project.
     Global settings should be placed in #{etc}/sbtopts
-    EOS
+  EOS
   end
 
   test do

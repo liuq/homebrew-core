@@ -1,19 +1,20 @@
 class Netcdf < Formula
   desc "Libraries and data formats for array-oriented scientific data"
   homepage "https://www.unidata.ucar.edu/software/netcdf"
-  url "https://www.unidata.ucar.edu/downloads/netcdf/ftp/netcdf-4.6.0.tar.gz"
-  mirror "https://www.gfd-dennou.org/library/netcdf/unidata-mirror/netcdf-4.6.0.tar.gz"
-  sha256 "4bf05818c1d858224942ae39bfd9c4f1330abec57f04f58b9c3c152065ab3825"
+  url "https://www.unidata.ucar.edu/downloads/netcdf/ftp/netcdf-4.6.1.tar.gz"
+  mirror "https://www.gfd-dennou.org/library/netcdf/unidata-mirror/netcdf-4.6.1.tar.gz"
+  sha256 "89c7957458740b763ae828c345240b8a1d29c2c1fed0f065f99b73181b0b2642"
+  revision 4
 
   bottle do
-    sha256 "a3c393c2a8bab002e8570c9c3d6d04a62396f88a05da2030979fe80c1cd57f0d" => :high_sierra
-    sha256 "9882c5ed2bbdf0bebffc27ca03481194dd3637b06b6aaccb936eb78eb344e4fd" => :sierra
-    sha256 "cbefb57d4fe56331e5bd7216f57c9f39b69c5489cda775543d007d1034d7fca7" => :el_capitan
+    sha256 "0793b0144a96f4bf868e128ab067a05bdf6179d3ec583c6fc13f91907094bc3a" => :mojave
+    sha256 "cdf8f97173cd694b475b94c27087a9f0e091ddb93e97663f399238096c146a77" => :high_sierra
+    sha256 "f7440c79e7717507181e624d89c2d4a10ec3c41c315130b9a21ae1cd382d5385" => :sierra
   end
 
   depends_on "cmake" => :build
-  depends_on "hdf5"
   depends_on "gcc" # for gfortran
+  depends_on "hdf5"
 
   resource "cxx" do
     url "https://github.com/Unidata/netcdf-cxx4/archive/v4.3.0.tar.gz"
@@ -134,7 +135,7 @@ class Netcdf < Formula
           if (status /= nf90_noerr) call abort
         end subroutine check
       end program test
-      EOS
+    EOS
     system "gfortran", "test.f90", "-L#{lib}", "-I#{include}", "-lnetcdff",
                        "-o", "testf"
     system "./testf"

@@ -1,8 +1,8 @@
 class Elasticsearch < Formula
   desc "Distributed search & analytics engine"
   homepage "https://www.elastic.co/products/elasticsearch"
-  url "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.2.tar.gz"
-  sha256 "b26e3546784b39ce3eacc10411e68ada427c5764bcda3064e9bb284eca907983"
+  url "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-6.4.2.tar.gz"
+  sha256 "c59aa00fd4ee03e45ac35a739b072558d8a63f06a9c34d4e38630c7ce3e3e486"
 
   head do
     url "https://github.com/elasticsearch/elasticsearch.git"
@@ -66,6 +66,8 @@ class Elasticsearch < Formula
     ln_s etc/"elasticsearch", libexec/"config"
     (var/"elasticsearch/plugins").mkpath
     ln_s var/"elasticsearch/plugins", libexec/"plugins"
+    # fix test not being able to create keystore because of sandbox permissions
+    system bin/"elasticsearch-keystore", "create" unless (etc/"elasticsearch/elasticsearch.keystore").exist?
   end
 
   def caveats

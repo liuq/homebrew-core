@@ -1,33 +1,33 @@
 class NodeAT8 < Formula
   desc "Platform built on V8 to build network applications"
   homepage "https://nodejs.org/"
-  url "https://nodejs.org/dist/v8.10.0/node-v8.10.0.tar.xz"
-  sha256 "b72d4e71618d6bcbd039b487b51fa7543631a4ac3331d7caf69bdf55b5b2901a"
-  head "https://github.com/nodejs/node.git", :branch => "v8.x-staging"
+  url "https://nodejs.org/dist/v8.12.0/node-v8.12.0.tar.xz"
+  sha256 "5a9dff58016c18fb4bf902d963b124ff058a550ebcd9840c677757387bce419a"
 
   bottle do
-    sha256 "e737c61870d5a320b81d97346037fb9d91f65dcf3f3bb6c9aa3cbb2cc233889e" => :high_sierra
-    sha256 "e8e1f9baa66f7ba57078ba1566b20a57e6e4ba7999eef591a2983eb328e8b1a9" => :sierra
-    sha256 "43f77dc6882cc921d389a2e6c121959dc55e971cdd9200c6cc8feedc0845f2e9" => :el_capitan
+    rebuild 1
+    sha256 "46b430483d0541dd6b8d5f4bc834fcba14719c53233dfd59d9a9e24283c0f80e" => :mojave
+    sha256 "2c13559186878d8562fe5acea407aa9f1a57dd33a5b147b3e3f0aac61661f2fd" => :high_sierra
+    sha256 "60c20bd219f2dab1593a3624749b8f6fa1db25fb0a17c4a79e0b762f6f2407f0" => :sierra
+    sha256 "e24f5ad36356819ce8728108440a3cd1e1b6938cc2beaa9a86516cf7fe8ea2d0" => :el_capitan
   end
 
   keg_only :versioned_formula
 
-  option "with-debug", "Build with debugger hooks"
   option "with-openssl", "Build against Homebrew's OpenSSL instead of the bundled OpenSSL"
   option "without-npm", "npm will not be installed"
   option "without-completion", "npm bash completion will not be installed"
   option "without-icu4c", "Build with small-icu (English only) instead of system-icu (all locales)"
 
-  depends_on "python@2" => :build if MacOS.version <= :snow_leopard
   depends_on "pkg-config" => :build
+  depends_on "python@2" => :build
   depends_on "icu4c" => :recommended
   depends_on "openssl" => :optional
 
   # Per upstream - "Need g++ 4.8 or clang++ 3.4".
   fails_with :clang if MacOS.version <= :snow_leopard
   fails_with :gcc_4_0
-  fails_with :gcc
+  fails_with :gcc_4_2
   ("4.3".."4.7").each do |n|
     fails_with :gcc => n
   end
@@ -35,10 +35,8 @@ class NodeAT8 < Formula
   def install
     args = ["--prefix=#{prefix}"]
     args << "--without-npm" if build.without? "npm"
-    args << "--debug" if build.with? "debug"
     args << "--with-intl=system-icu" if build.with? "icu4c"
-    args << "--shared-openssl" if build.with? "openssl"
-    args << "--tag=head" if build.head?
+    args << "--shared-openssl" << "--openssl-use-def-ca-store" if build.with? "openssl"
 
     system "./configure", *args
     system "make", "install"
@@ -46,11 +44,7 @@ class NodeAT8 < Formula
 
   def post_install
     return if build.without? "npm"
-
-    (lib/"node_modules/npm/npmrc").atomic_write <<~EOS
-      prefix = #{HOMEBREW_PREFIX}
-      python = /usr/bin/python
-    EOS
+    (lib/"node_modules/npm/npmrc").atomic_write("prefix = #{HOMEBREW_PREFIX}\n")
   end
 
   def caveats
@@ -85,7 +79,7 @@ class NodeAT8 < Formula
       assert_predicate bin/"npm", :executable?, "npm must be executable"
       npm_args = ["-ddd", "--cache=#{HOMEBREW_CACHE}/npm_cache", "--build-from-source"]
       system "#{bin}/npm", *npm_args, "install", "npm@latest"
-      system "#{bin}/npm", *npm_args, "install", "bignum" unless head?
+      system "#{bin}/npm", *npm_args, "install", "bignum"
       assert_predicate bin/"npx", :exist?, "npx must exist"
       assert_predicate bin/"npx", :executable?, "npx must be executable"
       assert_match "< hello >", shell_output("#{bin}/npx cowsay hello")

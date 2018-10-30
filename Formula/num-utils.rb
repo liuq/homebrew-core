@@ -1,12 +1,13 @@
 class NumUtils < Formula
   desc "Programs for dealing with numbers from the command-line"
-  homepage "http://suso.suso.org/programs/num-utils/"
-  url "http://suso.suso.org/programs/num-utils/downloads/num-utils-0.5.tar.gz"
+  homepage "https://suso.suso.org/programs/num-utils/"
+  url "https://suso.suso.org/programs/num-utils/downloads/num-utils-0.5.tar.gz"
   mirror "https://mirrors.kernel.org/debian/pool/main/n/num-utils/num-utils_0.5.orig.tar.gz"
   sha256 "03592760fc7844492163b14ddc9bb4e4d6526e17b468b5317b4a702ea7f6c64e"
 
   bottle do
     cellar :any_skip_relocation
+    sha256 "ed2b66381fa6949dbf99e34e2fcf1b4b0519c892d44d8472af1f8abfa94c1c91" => :mojave
     sha256 "0fb446d9d8068e05f3144c22261672b7ad22589e55b3a6d15d65f6bebabf9a14" => :high_sierra
     sha256 "37c24f625dae12d9db8592de4dc9003d4ce267a7a0bb6076e156f54d8ec990d1" => :sierra
     sha256 "f2021913b67fe8ece09b204aa2715a4c8067121908695cee830b363a52a987eb" => :el_capitan

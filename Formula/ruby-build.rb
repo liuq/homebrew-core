@@ -1,15 +1,15 @@
 class RubyBuild < Formula
   desc "Install various Ruby versions and implementations"
   homepage "https://github.com/rbenv/ruby-build"
-  url "https://github.com/rbenv/ruby-build/archive/v20180224.tar.gz"
-  sha256 "5e3f80489b1deda4232b9b0f9b956e275647862500d1901f0e5859ff23bde7ac"
+  url "https://github.com/rbenv/ruby-build/archive/v20181019.tar.gz"
+  sha256 "5ac5838e81ac06478aa23de79aefc4196f7d1ba8aa1a3cc03bc6e81708463a9e"
   head "https://github.com/rbenv/ruby-build.git"
 
   bottle :unneeded
 
-  depends_on "autoconf" => [:recommended, :run]
-  depends_on "pkg-config" => [:recommended, :run]
-  depends_on "openssl" => :recommended
+  depends_on "autoconf"
+  depends_on "openssl"
+  depends_on "pkg-config"
 
   def install
     ENV["PREFIX"] = prefix

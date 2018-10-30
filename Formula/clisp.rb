@@ -1,12 +1,13 @@
 class Clisp < Formula
   desc "GNU CLISP, a Common Lisp implementation"
-  homepage "http://www.clisp.org/"
+  homepage "https://clisp.sourceforge.io/"
   url "https://ftp.gnu.org/gnu/clisp/release/2.49/clisp-2.49.tar.bz2"
   mirror "https://ftpmirror.gnu.org/clisp/release/2.49/clisp-2.49.tar.bz2"
   sha256 "8132ff353afaa70e6b19367a25ae3d5a43627279c25647c220641fed00f8e890"
   revision 1
 
   bottle do
+    sha256 "3cc305f1620b8235b6b96b417470a8581fcd6d454a8f2a1e2e87335e8ee69be0" => :mojave
     sha256 "8c545b817e493f5edfb1928ac8fa1d06571cfb3da135094bd701b22e99c6e423" => :high_sierra
     sha256 "dd77ffe7a77e9bdb8cc57a11d923108c4967229feb214e511a5a1866a1f7ec50" => :sierra
     sha256 "c4503ba2f9fcc24cb8415179db6a7437bfa8e1cab25b619fcb7be8e2770e9fe6" => :el_capitan

@@ -1,15 +1,15 @@
 class Z3 < Formula
   desc "High-performance theorem prover"
   homepage "https://github.com/Z3Prover/z3"
-  url "https://github.com/Z3Prover/z3/archive/z3-4.6.0.tar.gz"
-  sha256 "511da31d1f985cf0c79b2de05bda4e057371ba519769d1546ff71e1304fe53c9"
+  url "https://github.com/Z3Prover/z3/archive/z3-4.8.1.tar.gz"
+  sha256 "cc17e23327793defac78071acb9c68969f50e8a8ce3485f06448b65a589bcb71"
   head "https://github.com/Z3Prover/z3.git"
 
   bottle do
     cellar :any
-    sha256 "b8e7d05e007f45e7ac1d1962279db7f32043306441a984715842957e242683db" => :high_sierra
-    sha256 "a0fcd87fa76072a7f8a6fb663c5d2589e8e1395e8c11acfb26150a7867aa6076" => :sierra
-    sha256 "bc1f47e9c9c1bff59983a17e00b00ab6724de6c182147cbecd6115fea377fda8" => :el_capitan
+    sha256 "79fd1b14363382d685f2927131885bee9e45c43bfea1da4bf8d80bd93afba126" => :mojave
+    sha256 "5ef2bfe779aeea034f72d8d91d179938e329bd02bd80ba4373c90092a6d60d3a" => :high_sierra
+    sha256 "2f0f1d4e8dd7c4a17a3837b60bde87ead9a8d32d8ea3463579ae3d2df067200c" => :sierra
   end
 
   option "without-python@2", "Build without python 2 support"
@@ -17,7 +17,7 @@ class Z3 < Formula
   deprecated_option "with-python3" => "with-python"
   deprecated_option "without-python" => "without-python@2"
 
-  depends_on "python@2" => :recommended if MacOS.version <= :snow_leopard
+  depends_on "python@2" => :recommended
   depends_on "python" => :optional
 
   def install

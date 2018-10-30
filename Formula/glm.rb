@@ -1,22 +1,20 @@
 class Glm < Formula
   desc "C++ mathematics library for graphics software"
   homepage "https://glm.g-truc.net/"
-  url "https://github.com/g-truc/glm/releases/download/0.9.8.5/glm-0.9.8.5.zip"
-  sha256 "9f9f520ec7fb8c20c69d6b398ed928a2448c6a3245cbedb8631a56a987c38660"
-
+  url "https://github.com/g-truc/glm/releases/download/0.9.9.2/glm-0.9.9.2.zip"
+  sha256 "209b5943d393925e1a6ecb6734e7507b8f6add25e72a605b25d0d0d382e64fd4"
   head "https://github.com/g-truc/glm.git"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "d4424acb044d7f1de566ab1709d6107ef17f30198a31c988cc80ab80903c257a" => :high_sierra
-    sha256 "44c8742891bf12707b9d3024e4dee0b371e7d91fbd4da12f6e1d21242db6acd5" => :sierra
-    sha256 "44c8742891bf12707b9d3024e4dee0b371e7d91fbd4da12f6e1d21242db6acd5" => :el_capitan
-    sha256 "44c8742891bf12707b9d3024e4dee0b371e7d91fbd4da12f6e1d21242db6acd5" => :yosemite
+    sha256 "1d09df129db16689193b2102111901de81a1eae94efe954320084fcc45c5c184" => :mojave
+    sha256 "5c4d2d3dc01a98ad994550aa0e81f2cff45ea32c22fec5104ef19572a6eb241d" => :high_sierra
+    sha256 "2bd62827e1691e5285195c183cc43fbdd2a39319c5d32d982b628fc7274d804f" => :sierra
+    sha256 "10e0b39c04844526959e11f61b46ad3d99014ab2d4a176e7ebe64573f69842b6" => :el_capitan
   end
 
-  option "with-doxygen", "Build documentation"
-  depends_on "doxygen" => [:build, :optional]
   depends_on "cmake" => :build
+  depends_on "doxygen" => :build
 
   def install
     mkdir "build" do
@@ -24,11 +22,9 @@ class Glm < Formula
       system "make", "install"
     end
 
-    if build.with? "doxygen"
-      cd "doc" do
-        system "doxygen", "man.doxy"
-        man.install "html"
-      end
+    cd "doc" do
+      system "doxygen", "man.doxy"
+      man.install "html"
     end
     doc.install Dir["doc/*"]
   end

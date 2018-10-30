@@ -7,6 +7,7 @@ class Libantlr3c < Formula
 
   bottle do
     cellar :any
+    sha256 "c4df9f53203a7e21abc1fb22bf74256017f646e9177606c7da6c222db16dd3cb" => :mojave
     sha256 "2de7942e4bc89830c0d92bfda55e60a4ad82723430bcc7477abb5d1b1ade7f86" => :high_sierra
     sha256 "a5e779c431e16bdaab829c774468ce11f8e7ea359412800e294433b011704541" => :sierra
     sha256 "fea1cde8ae732cdbbffa6a6d329239b1da067d2b69424d53178e60309748c403" => :el_capitan
@@ -15,21 +16,19 @@ class Libantlr3c < Formula
     sha256 "e734361de9f3f5d81b0a0224cfcb561806fed5b1d5dbeeb86bd2131754aa993d" => :mountain_lion
   end
 
-  option "without-exceptions", "Compile without support for exception handling"
-
   def install
     args = ["--disable-dependency-tracking",
             "--disable-antlrdebug",
             "--prefix=#{prefix}"]
     args << "--enable-64bit" if MacOS.prefer_64_bit?
     system "./configure", *args
-    if build.with? "exceptions"
-      inreplace "Makefile" do |s|
-        cflags = s.get_make_var "CFLAGS"
-        cflags = cflags << " -fexceptions"
-        s.change_make_var! "CFLAGS", cflags
-      end
+
+    inreplace "Makefile" do |s|
+      cflags = s.get_make_var "CFLAGS"
+      cflags = cflags << " -fexceptions"
+      s.change_make_var! "CFLAGS", cflags
     end
+
     system "make", "install"
   end
 

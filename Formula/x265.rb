@@ -1,15 +1,15 @@
 class X265 < Formula
   desc "H.265/HEVC encoder"
   homepage "http://x265.org"
-  url "https://bitbucket.org/multicoreware/x265/downloads/x265_2.7.tar.gz"
-  sha256 "d5e75fa62ffe6ed49e691f8eb8ab8c1634ffcc0725dd553c6fdb4d5443b494a2"
+  url "https://bitbucket.org/multicoreware/x265/downloads/x265_2.9.tar.gz"
+  sha256 "ebae687c84a39f54b995417c52a2fdde65a4e2e7ebac5730d251471304b91024"
   head "https://bitbucket.org/multicoreware/x265", :using => :hg
 
   bottle do
     cellar :any
-    sha256 "f9b6134b34ed997045878939856d597e56e07d3890d68c1ac898212aaa4b5c46" => :high_sierra
-    sha256 "59160e9a1fdc822c79ecf6e025d94eade6d6170b8d6d272c3530eadf55824075" => :sierra
-    sha256 "52f20eade03e90e9a7223171923615588f6437f5da95b705797603609425a83d" => :el_capitan
+    sha256 "982f8dece959c9c038221760d17d2dd178724e34e111d19493553829dd87b980" => :mojave
+    sha256 "bd0fd78068d55876865a3d0d8425538f6936b55e9de970bf32ef389635ca7c16" => :high_sierra
+    sha256 "81634b022f895e6a06959d18a26f7b4ce3266091493f907cb1bff290458b0492" => :sierra
   end
 
   depends_on "cmake" => :build

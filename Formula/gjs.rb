@@ -1,35 +1,37 @@
 class Gjs < Formula
   desc "JavaScript Bindings for GNOME"
   homepage "https://wiki.gnome.org/Projects/Gjs"
-  url "https://download.gnome.org/sources/gjs/1.50/gjs-1.50.4.tar.xz"
-  sha256 "b336e8709347e3c94245f6cbc3465f9a49f3ae491a25f49f8a97268f5235b93a"
+  url "https://download.gnome.org/sources/gjs/1.54/gjs-1.54.2.tar.xz"
+  sha256 "6f2ddbff4557879b1ea8b0ee710d27201c3a5ae12dc19b88238a6eaaa1ad865f"
 
   bottle do
-    sha256 "1ae796e16241d6279b1e544a6764849a18b34a8e606538163705468be9abcfcb" => :high_sierra
-    sha256 "08cc80f957768dff4345b5cc2cb4ddc582c3f91b650725f2843e1c4ebc9833d4" => :sierra
-    sha256 "a64eae5f4566c1d1f9e75841b7a4799a8bc83af8df322f825c1c7dbeabe0077d" => :el_capitan
+    sha256 "4d37fb6fcab1ac204139554c77abde10c848a7736f3051967d1bd703e4f5ee0b" => :mojave
+    sha256 "bd3e0fe2cb22aa27b03b731930f25aa823580fdff72f1143ce3c022e87556c7e" => :high_sierra
+    sha256 "dbdabc17bcd3031e423a8c69313a193fcb030c1cace3e08c82c85f260c6a0f65" => :sierra
   end
 
-  depends_on "pkg-config" => :build
   depends_on "autoconf@2.13" => :build
+  depends_on "pkg-config" => :build
   depends_on "gobject-introspection"
+  depends_on "gtk+3"
   depends_on "nspr"
   depends_on "readline"
-  depends_on "gtk+3" => :recommended
+
+  resource "mozjs60" do
+    url "https://archive.mozilla.org/pub/firefox/releases/60.1.0esr/source/firefox-60.1.0esr.source.tar.xz"
+    sha256 "a4e7bb80e7ebab19769b2b8940966349136a99aabd497034662cffa54ea30e40"
+  end
 
   needs :cxx11
-
-  resource "mozjs52" do
-    url "https://archive.mozilla.org/pub/firefox/releases/52.3.0esr/source/firefox-52.3.0esr.source.tar.xz"
-    sha256 "c16bc86d6cb8c2199ed1435ab80a9ae65f9324c820ea0eeb38bf89a97d253b5b"
-  end
 
   def install
     ENV.cxx11
     ENV["_MACOSX_DEPLOYMENT_TARGET"] = ENV["MACOSX_DEPLOYMENT_TARGET"]
 
-    resource("mozjs52").stage do
-      inreplace "config/rules.mk", "-install_name $(_LOADER_PATH)/$(SHARED_LIBRARY) ", "-install_name #{lib}/$(SHARED_LIBRARY) "
+    resource("mozjs60").stage do
+      inreplace "config/rules.mk",
+                "-install_name $(_LOADER_PATH)/$(SHARED_LIBRARY) ",
+                "-install_name #{lib}/$(SHARED_LIBRARY) "
       inreplace "old-configure", "-Wl,-executable_path,${DIST}/bin", ""
       mkdir("build") do
         ENV["PYTHON"] = "python"
@@ -43,10 +45,10 @@ class Gjs < Formula
                               "--enable-optimize",
                               "--enable-pie",
                               "--enable-release",
-                              "--without-intl-api"
+                              "--with-intl-api",
+                              "--disable-jemalloc"
         system "make"
         system "make", "install"
-        lib.install "./mozglue/build/libmozglue.dylib"
         rm Dir["#{bin}/*"]
       end
       # headers were installed as softlinks, which is not acceptable
@@ -58,7 +60,6 @@ class Gjs < Formula
         end
       end
       ENV.append_path "PKG_CONFIG_PATH", "#{lib}/pkgconfig"
-      # remove mozjs static lib
       rm "#{lib}/libjs_static.ajs"
     end
 
@@ -66,6 +67,7 @@ class Gjs < Formula
                           "--disable-dependency-tracking",
                           "--disable-silent-rules",
                           "--without-dbus-tests",
+                          "--disable-profiler",
                           "--prefix=#{prefix}"
     system "make", "install"
   end

@@ -6,13 +6,14 @@ class Thrift < Formula
 
   bottle do
     cellar :any
+    sha256 "a26c4c6e39b346dc74c5d29ba271b9f64c537914eb3228e446e0ae2e34fa106b" => :mojave
     sha256 "d1c648d84f21b567f1468625523b78d496d49954a3f5f28ce127f3eca7c0e2e4" => :high_sierra
     sha256 "710f79cf150713e4e24ce03b605fcd3ea56651b58bb7afe64d8b4a948842616f" => :sierra
     sha256 "e6f40c95f93331dda62d7cbfe0ce4f467c17e73e4a4a05f859e29a58533b52d8" => :el_capitan
   end
 
   head do
-    url "https://git-wip-us.apache.org/repos/asf/thrift.git"
+    url "https://github.com/apache/thrift.git"
 
     depends_on "autoconf" => :build
     depends_on "automake" => :build
@@ -76,9 +77,10 @@ class Thrift < Formula
   def caveats; <<~EOS
     To install Ruby binding:
       gem install thrift
-
-    To install PHP extension for e.g. PHP 5.5:
-      brew install homebrew/php/php55-thrift
   EOS
+  end
+
+  test do
+    system "#{bin}/thrift", "--version"
   end
 end

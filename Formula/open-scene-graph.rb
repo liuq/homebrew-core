@@ -1,43 +1,29 @@
 class OpenSceneGraph < Formula
   desc "3D graphics toolkit"
   homepage "https://github.com/openscenegraph/OpenSceneGraph"
-  url "https://github.com/openscenegraph/OpenSceneGraph/archive/OpenSceneGraph-3.5.9.tar.gz"
-  sha256 "e18bd54d7046ea73525941244ef4f77b38b2a90bdf21d81468ac3874c41e9448"
+  url "https://github.com/openscenegraph/OpenSceneGraph/archive/OpenSceneGraph-3.6.2.tar.gz"
+  sha256 "762c6601f32a761c7a0556766097558f453f23b983dd75bcf90f922e2d077a34"
   head "https://github.com/openscenegraph/OpenSceneGraph.git"
 
   bottle do
-    sha256 "e29e28e5812042f63f2225549191b00306ca1f428538d2150453bd69789c97aa" => :high_sierra
-    sha256 "90b2999887964f4392d2467fab2ee178e372d9b85ee969d3da428a5a116375bd" => :sierra
-    sha256 "51ae8250fb6131a510c052969e6e4834bb5b69ec40b85b184b575595453be2cd" => :el_capitan
+    rebuild 1
+    sha256 "811df5828f6426af5a8be1087312aad206e854f69799b5458f93043dd8996158" => :mojave
+    sha256 "40ecbb33bfc6ff7a08e1f67ff5684d5e8ed53c72d7982fdc8a59e69df938f7cd" => :high_sierra
+    sha256 "e2a38c6ff89dad5770b5084f1cd9a8cc2972f7e473a14935dc13eade4e4b2fc3" => :sierra
   end
 
-  option "with-docs", "Build the documentation with Doxygen and Graphviz"
-
-  deprecated_option "docs" => "with-docs"
-
   depends_on "cmake" => :build
+  depends_on "doxygen" => :build
+  depends_on "graphviz" => :build
   depends_on "pkg-config" => :build
-  depends_on "jpeg"
-  depends_on "gtkglext"
   depends_on "freetype"
+  depends_on "gtkglext"
+  depends_on "jpeg"
   depends_on "sdl"
-  depends_on "gdal" => :optional
-  depends_on "jasper" => :optional
-  depends_on "openexr" => :optional
-  depends_on "dcmtk" => :optional
-  depends_on "librsvg" => :optional
-  depends_on "collada-dom" => :optional
-  depends_on "gnuplot" => :optional
-  depends_on "ffmpeg" => :optional
 
   # patch necessary to ensure support for gtkglext-quartz
   # filed as an issue to the developers https://github.com/openscenegraph/osg/issues/34
   patch :DATA
-
-  if build.with? "docs"
-    depends_on "doxygen" => :build
-    depends_on "graphviz" => :build
-  end
 
   def install
     # Fix "fatal error: 'os/availability.h' file not found" on 10.11 and
@@ -47,38 +33,22 @@ class OpenSceneGraph < Formula
     end
 
     args = std_cmake_args
-    # Disable opportunistic linkage
-    args << "-DCMAKE_DISABLE_FIND_PACKAGE_GDAL=ON" if build.without? "gdal"
-    args << "-DCMAKE_DISABLE_FIND_PACKAGE_Jasper=ON" if build.without? "jasper"
-    args << "-DCMAKE_DISABLE_FIND_PACKAGE_OpenEXR=ON" if build.without? "openexr"
-    args << "-DCMAKE_DISABLE_FIND_PACKAGE_DCMTK=ON" if build.without? "dcmtk"
-    args << "-DCMAKE_DISABLE_FIND_PACKAGE_RSVG=ON" if build.without? "librsvg"
-    args << "-DCMAKE_DISABLE_FIND_PACKAGE_COLLADA=ON" if build.without? "collada-dom"
-    args << "-DCMAKE_DISABLE_FIND_PACKAGE_FFmpeg=ON" if build.without? "ffmpeg"
-    args << "-DCMAKE_DISABLE_FIND_PACKAGE_cairo=ON"
+    args << "-DBUILD_DOCUMENTATION=ON"
+    args << "-DCMAKE_DISABLE_FIND_PACKAGE_FFmpeg=ON"
+    args << "-DCMAKE_DISABLE_FIND_PACKAGE_GDAL=ON"
     args << "-DCMAKE_DISABLE_FIND_PACKAGE_TIFF=ON"
-
-    args << "-DBUILD_DOCUMENTATION=" + (build.with?("docs") ? "ON" : "OFF")
+    args << "-DCMAKE_DISABLE_FIND_PACKAGE_cairo=ON"
     args << "-DCMAKE_CXX_FLAGS=-Wno-error=narrowing" # or: -Wno-c++11-narrowing
-
-    if MacOS.prefer_64_bit?
-      args << "-DCMAKE_OSX_ARCHITECTURES=#{Hardware::CPU.arch_64_bit}"
-      args << "-DOSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX=imageio"
-      args << "-DOSG_WINDOWING_SYSTEM=Cocoa"
-    else
-      args << "-DCMAKE_OSX_ARCHITECTURES=#{Hardware::CPU.arch_32_bit}"
-    end
-
-    if build.with? "collada-dom"
-      args << "-DCOLLADA_INCLUDE_DIR=#{Formula["collada-dom"].opt_include}/collada-dom2.4"
-    end
+    args << "-DCMAKE_OSX_ARCHITECTURES=#{Hardware::CPU.arch_64_bit}"
+    args << "-DOSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX=imageio"
+    args << "-DOSG_WINDOWING_SYSTEM=Cocoa"
 
     mkdir "build" do
       system "cmake", "..", *args
       system "make"
-      system "make", "doc_openscenegraph" if build.with? "docs"
+      system "make", "doc_openscenegraph"
       system "make", "install"
-      doc.install Dir["#{prefix}/doc/OpenSceneGraphReferenceDocs/*"] if build.with? "docs"
+      doc.install Dir["#{prefix}/doc/OpenSceneGraphReferenceDocs/*"]
     end
   end
 

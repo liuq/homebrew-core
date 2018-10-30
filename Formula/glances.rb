@@ -1,31 +1,33 @@
 class Glances < Formula
   desc "Alternative to top/htop"
   homepage "https://nicolargo.github.io/glances/"
-  url "https://github.com/nicolargo/glances/archive/v2.11.1.tar.gz"
-  sha256 "446a0ee6e13c0c7ceb4bc0d4868add8a02d5e3ff866de8e880bdb33dce6ab3fc"
+  url "https://github.com/nicolargo/glances/archive/v3.0.2.tar.gz"
+  sha256 "76a793a8e0fbdce11ad7fb35000695fdb70750f937db41f820881692d5b0a29c"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "ff4cdbbf531f93187e9b32047ce0ce33b9fe25d3d689bd475303b3ce5a0634c5" => :high_sierra
-    sha256 "bfdfdacd387c866e575bc05febd92e131097856b54e3d24f4db84450ddab2508" => :sierra
-    sha256 "03cb45f3f3333af6789292890b1a2ea23825a3a77f02f3ebf735c90708818166" => :el_capitan
+    rebuild 1
+    sha256 "11d86d403e42adfb03e86ee8ad4ea526590309e6f685f699ee6382c292dbdf48" => :mojave
+    sha256 "b8b2b0c5ed5697b37b7891405fdd4af2cf04aa14dafb284620d846fe805dc564" => :high_sierra
+    sha256 "cb288ba5bcf489c4e2eac0e26a67ac2d7546f13b4e245eb032961df9f66e5b2c" => :sierra
   end
 
-  depends_on "python@2" if MacOS.version <= :snow_leopard
+  depends_on "python"
 
   resource "psutil" do
-    url "https://files.pythonhosted.org/packages/e2/e1/600326635f97fee89bf8426fef14c5c29f4849c79f68fd79f433d8c1bd96/psutil-5.4.3.tar.gz"
-    sha256 "e2467e9312c2fa191687b89ff4bc2ad8843be4af6fb4dc95a7cc5f7d7a327b18"
+    url "https://files.pythonhosted.org/packages/7d/9a/1e93d41708f8ed2b564395edfa3389f0fd6d567597401c2e5e2775118d8b/psutil-5.4.7.tar.gz"
+    sha256 "5b6322b167a5ba0c5463b4d30dfd379cd4ce245a1162ebf8fc7ab5c5ffae4f3b"
   end
 
   def install
-    ENV.prepend_create_path "PYTHONPATH", libexec/"vendor/lib/python2.7/site-packages"
+    xy = Language::Python.major_minor_version "python3"
+    ENV.prepend_create_path "PYTHONPATH", libexec/"vendor/lib/python#{xy}/site-packages"
     resource("psutil").stage do
-      system "python", *Language::Python.setup_install_args(libexec/"vendor")
+      system "python3", *Language::Python.setup_install_args(libexec/"vendor")
     end
 
-    ENV.prepend_create_path "PYTHONPATH", libexec/"lib/python2.7/site-packages"
-    system "python", *Language::Python.setup_install_args(libexec)
+    ENV.prepend_create_path "PYTHONPATH", libexec/"lib/python#{xy}/site-packages"
+    system "python3", *Language::Python.setup_install_args(libexec)
 
     bin.install Dir[libexec/"bin/*"]
     bin.env_script_all_files(libexec/"bin", :PYTHONPATH => ENV["PYTHONPATH"])
@@ -37,7 +39,7 @@ class Glances < Formula
     begin
       read, write = IO.pipe
       pid = fork do
-        exec bin/"glances", "-q", "--export-csv", "/dev/stdout", :out => write
+        exec bin/"glances", "-q", "--export", "csv", "--export-csv", "/dev/stdout", :out => write
       end
       header = read.gets
       assert_match "timestamp", header

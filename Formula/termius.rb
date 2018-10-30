@@ -3,24 +3,25 @@ class Termius < Formula
 
   desc "CLI tool for termius.com (aka serverauditor.com)"
   homepage "https://termius.com"
-  url "https://github.com/Crystalnix/termius-cli/archive/v1.2.8.tar.gz"
-  sha256 "65d95ae4cb6f07f703cfe1d360e5bd29be1d354732fe75b51ee2f17bf4dfa18f"
+  url "https://github.com/Crystalnix/termius-cli/archive/v1.2.11.tar.gz"
+  sha256 "cc8553c9786274de828fc2fc71509e525ef1d8befebb0c74728de59f721912d6"
+  revision 1
   head "https://github.com/Crystalnix/termius-cli.git", :branch => "master"
 
   bottle do
     cellar :any
-    sha256 "8de16ff6802e9b239a79cffab3c3726314e71c9fcf1e578cd8ff9f7cd61cfc69" => :high_sierra
-    sha256 "ab3d673f249b8d683bcc490c1083f78453d968f0712c6c12b66d0ee4988469a4" => :sierra
-    sha256 "efb92919390b5d3766c50b528dea76096c9223870fabd02cc43965bda809f7b1" => :el_capitan
+    sha256 "282eda73f7577b057f5e02594370262155b6bc2e8415831ad6db0e5bd3a85df1" => :mojave
+    sha256 "11caefdfa58dc01f65251fbb8d2d7158bfa88f294d84fb0a7f16af829426f009" => :high_sierra
+    sha256 "495c0c709c331514900d5f0805da1f25a28353808fc4e6634ba3f5aacfc4256c" => :sierra
   end
 
-  depends_on "python@2" if MacOS.version <= :snow_leopard
+  depends_on "bash-completion"
   depends_on "openssl"
-  depends_on "bash-completion" => :recommended
-  depends_on "zsh-completions" => :recommended
+  depends_on "python"
+  depends_on "zsh-completions"
 
   def install
-    venv = virtualenv_create(libexec)
+    venv = virtualenv_create(libexec, "python3")
     system libexec/"bin/pip", "install", "-v", "--no-binary", ":all:",
                               "--ignore-installed", buildpath
     system libexec/"bin/pip", "uninstall", "-y", "termius"

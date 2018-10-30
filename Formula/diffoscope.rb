@@ -1,24 +1,24 @@
 class Diffoscope < Formula
   desc "In-depth comparison of files, archives, and directories"
   homepage "https://diffoscope.org"
-  url "https://files.pythonhosted.org/packages/64/80/1413948097065ab467d6ea43fa10a0957ca073a8958b11b00114c86180c0/diffoscope-91.tar.gz"
-  sha256 "17fe87134a501ebbb3eab3a83fac74f424fb3409689880e83f32e892c13c9093"
+  url "https://files.pythonhosted.org/packages/fc/b2/3bb5d8e35dc8139e7ad3106d74c2b06fd38494ed96473630d09437348182/diffoscope-104.tar.gz"
+  sha256 "0def4a971733b6fedc1db5976b0ede728b295153bc520175808fb78db785ce6e"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "5ca86018e67d467acb7fab1108c89d1031d3af0512e3161ec641e649f53778ec" => :high_sierra
-    sha256 "5ca86018e67d467acb7fab1108c89d1031d3af0512e3161ec641e649f53778ec" => :sierra
-    sha256 "5ca86018e67d467acb7fab1108c89d1031d3af0512e3161ec641e649f53778ec" => :el_capitan
+    sha256 "7f13e0d868fcbfb027bfa7711c9e244494c82838ea28834da045e1e2a6ac8894" => :mojave
+    sha256 "2ebdbcdb069704d4dc9b6b345eafc72e20f382b90e0156b4cb6961d0aac56343" => :high_sierra
+    sha256 "a4add936a936e9f51502670515a109039b31b0c19bb61433fe0b41599438dd72" => :sierra
   end
 
-  depends_on "libmagic"
-  depends_on "libarchive"
   depends_on "gnu-tar"
+  depends_on "libarchive"
+  depends_on "libmagic"
   depends_on "python"
 
   resource "libarchive-c" do
-    url "https://files.pythonhosted.org/packages/1f/4a/7421e8db5c7509cf75e34b92a32b69c506f2b6f6392a909c2f87f3e94ad2/libarchive-c-2.7.tar.gz"
-    sha256 "56eadbc383c27ec9cf6aad3ead72265e70f80fa474b20944328db38bab762b04"
+    url "https://files.pythonhosted.org/packages/b9/2c/c975b3410e148dab00d14471784a743268614e21121e50e4e00b13f38370/libarchive-c-2.8.tar.gz"
+    sha256 "06d44d5b9520bdac93048c72b7ed66d11a6626da16d2086f9aad079674d8e061"
   end
 
   resource "python-magic" do
@@ -42,7 +42,7 @@ class Diffoscope < Formula
     system "python3", *Language::Python.setup_install_args(libexec)
     bin.install Dir[libexec/"bin/*"]
     libarchive = Formula["libarchive"].opt_lib/"libarchive.dylib"
-    bin.env_script_all_files(libexec+"bin", :PYTHONPATH => ENV["PYTHONPATH"],
+    bin.env_script_all_files(libexec/"bin", :PYTHONPATH => ENV["PYTHONPATH"],
                                             :LIBARCHIVE => libarchive)
   end
 

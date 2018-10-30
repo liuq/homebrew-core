@@ -1,14 +1,14 @@
 class MongodbAT34 < Formula
   desc "High-performance, schema-free, document-oriented database"
   homepage "https://www.mongodb.org/"
-
-  url "https://fastdl.mongodb.org/src/mongodb-src-r3.4.13.tar.gz"
-  sha256 "be80bd8a183ed2cf3c1cf06d473addedd8b270356182881e6a9e93eb7f700172"
+  url "https://fastdl.mongodb.org/src/mongodb-src-r3.4.17.tar.gz"
+  sha256 "6044e4c811a87bffd512a96fd2a4e4af9513af12f407bf7cd7c6281ccfb46484"
 
   bottle do
-    sha256 "c45ec7320622f812935905f44c2ec115b32ed13bfaac4185fcd1a78909f3dcd8" => :high_sierra
-    sha256 "4ff139beac47ea2f463774030ec27aaa113089c28e9e1b9b5b9080bfbac901c3" => :sierra
-    sha256 "10f50b5c3d1b06c3250ab224ce5a733c252a809877c4a215511e530cdf2ba600" => :el_capitan
+    sha256 "11173a5fea9cad93d1403d56be3e4e7ab23a74633b5d824455dd05751f2d12aa" => :mojave
+    sha256 "8594cd085d34d119a68af057286470cfc77ec788cc53f4f54bd12cf531fe09c8" => :high_sierra
+    sha256 "510ba4ba3c09de4e7c24c263331566bd2213f088f64e9cb5df3d3274c735f965" => :sierra
+    sha256 "53a845e7697c3fb54b3b663424c2ac67c8c80fd5ef925bbac5b82190e70008e7" => :el_capitan
   end
 
   keg_only :versioned_formula
@@ -16,11 +16,12 @@ class MongodbAT34 < Formula
   option "with-boost", "Compile using installed boost, not the version shipped with mongodb"
   option "with-sasl", "Compile with SASL support"
 
-  depends_on "boost" => :optional
   depends_on "go" => :build
-  depends_on :macos => :mountain_lion
+  depends_on "pkg-config" => :build
   depends_on "scons" => :build
+  depends_on :macos => :mountain_lion
   depends_on "openssl" => :recommended
+  depends_on "boost" => :optional
 
   needs :cxx11
 
@@ -97,7 +98,7 @@ class MongodbAT34 < Formula
       dbPath: #{var}/mongodb
     net:
       bindIp: 127.0.0.1
-    EOS
+  EOS
   end
 
   plist_options :manual => "mongod --config #{HOMEBREW_PREFIX}/etc/mongod.conf"
@@ -137,7 +138,7 @@ class MongodbAT34 < Formula
       </dict>
     </dict>
     </plist>
-    EOS
+  EOS
   end
 
   test do

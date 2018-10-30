@@ -1,15 +1,15 @@
 class Scipy < Formula
   desc "Software for mathematics, science, and engineering"
   homepage "https://www.scipy.org"
-  url "https://github.com/scipy/scipy/releases/download/v1.0.0/scipy-1.0.0.tar.xz"
-  sha256 "06b23f2a5db5418957facc86ead86b7752147c0461f3156f88a3da87f3dc6739"
-  revision 3
+  url "https://files.pythonhosted.org/packages/07/76/7e844757b9f3bf5ab9f951ccd3e4a8eed91ab8720b0aac8c2adcc2fdae9f/scipy-1.1.0.tar.gz"
+  sha256 "878352408424dffaa695ffedf2f9f92844e116686923ed9aa8626fc30d32cfd1"
+  revision 2
   head "https://github.com/scipy/scipy.git"
 
   bottle do
-    sha256 "392b0e6898425a895441cbc4919c4bba87e83151513805ff8ee48393b4dd20db" => :high_sierra
-    sha256 "5d5216c4309757143271fdb1b40ea32d7c1ae02c7769d730ff167d5857e14e6d" => :sierra
-    sha256 "a1275a19e2a7576e99539961b3da753751678b86ad4d6aceb34eee7884861924" => :el_capitan
+    sha256 "97694c988ed2e5a54541b9d02eea9ac0e3c66cd71623d9fb2a9e878ae0602da9" => :mojave
+    sha256 "b9aa124f11010404630efb06d85f8a21f3874d89c3ca84c7a8cf4552f7febd6e" => :high_sierra
+    sha256 "06612e7f069ac12563e03b8dad4e788c71132832d4b86173b146f5470f5cc219" => :sierra
   end
 
   option "without-python", "Build without python2 support"
@@ -17,20 +17,29 @@ class Scipy < Formula
   depends_on "swig" => :build
   depends_on "gcc" # for gfortran
   depends_on "numpy"
-  depends_on "python@2" => :recommended if MacOS.version <= :snow_leopard
+  depends_on "openblas"
   depends_on "python" => :recommended
+  depends_on "python@2" => :recommended
 
   cxxstdlib_check :skip
 
   # https://github.com/Homebrew/homebrew-python/issues/110
   # There are ongoing problems with gcc+accelerate.
-  fails_with :gcc
+  fails_with :gcc_4_2
 
   def install
+    openblas = Formula["openblas"].opt_prefix
+    ENV["ATLAS"] = "None" # avoid linking against Accelerate.framework
+    ENV["BLAS"] = ENV["LAPACK"] = "#{openblas}/lib/libopenblas.dylib"
+
     config = <<~EOS
       [DEFAULT]
       library_dirs = #{HOMEBREW_PREFIX}/lib
       include_dirs = #{HOMEBREW_PREFIX}/include
+      [openblas]
+      libraries = openblas
+      library_dirs = #{openblas}/lib
+      include_dirs = #{openblas}/include
     EOS
 
     Pathname("site.cfg").write config

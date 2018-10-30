@@ -4,27 +4,26 @@ class KibanaAT56 < Formula
   desc "Analytics and search dashboard for Elasticsearch"
   homepage "https://www.elastic.co/products/kibana"
   url "https://github.com/elastic/kibana.git",
-      :tag => "v5.6.8",
-      :revision => "f5df7657dd0477ab65412f2841fa5470a012459f"
-  head "https://github.com/elastic/kibana.git"
+      :tag => "v5.6.12",
+      :revision => "a07347478b7a3b1661cfb77c149fd15bdeb8921d"
 
   bottle do
-    sha256 "fdaddd269104f7bcecc6b07df677c6d8334624665cee0ea430ef406958e5de9c" => :high_sierra
-    sha256 "78e4288ca2f237a3ca54c922f688562acfff888be5019435f0c64ea61aba8918" => :sierra
-    sha256 "f72a017cd9fea97650a835f3a409acd92c3d0f4b07a3200ed5ff67658189f41e" => :el_capitan
+    sha256 "25b60e1afd2cbdbd01a61f46ec620af7c94280eeae677da6283575f067a3b9ce" => :mojave
+    sha256 "cd12bca1bb794724a50dfa60122b63883c3b043dfb24eed3004b979daaa6ca3a" => :high_sierra
+    sha256 "6f44dc9fb908caa817d5266bb4c4c4b2a67e197597056fab2c38b02474fae0bc" => :sierra
+    sha256 "1a8bc314a1fcf867c63ab700ffda0b3593f524c3038d684445d603b8204fbab0" => :el_capitan
   end
 
   keg_only :versioned_formula
 
   resource "node" do
-    url "https://nodejs.org/dist/v6.11.1/node-v6.11.1.tar.xz"
-    sha256 "6f6655b85919aa54cb045a6d69a226849802fcc26491d0db4ce59873e41cc2b8"
+    url "https://nodejs.org/dist/v6.14.4/node-v6.14.4.tar.xz"
+    sha256 "9a4bfc99787f8bdb07d5ae8b1f00ec3757e7b09c99d11f0e8a5e9a16a134ec0f"
   end
 
   def install
     resource("node").stage do
       system "./configure", "--prefix=#{libexec}/node"
-      system "make", "test"
       system "make", "install"
     end
 
@@ -62,7 +61,7 @@ class KibanaAT56 < Formula
     If you wish to preserve your plugins upon upgrade, make a copy of
     #{opt_prefix}/plugins before upgrading, and copy it into the
     new keg location after upgrading.
-    EOS
+  EOS
   end
 
   plist_options :manual => "kibana"

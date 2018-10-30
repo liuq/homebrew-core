@@ -3,26 +3,22 @@ class Libstfl < Formula
   homepage "http://www.clifford.at/stfl/"
   url "http://www.clifford.at/stfl/stfl-0.24.tar.gz"
   sha256 "d4a7aa181a475aaf8a8914a8ccb2a7ff28919d4c8c0f8a061e17a0c36869c090"
-  revision 6
+  revision 7
 
   bottle do
     cellar :any
-    sha256 "6b5656c0ec03676968efed42dfdd87c2ab27b37638461274fed870f131ae1321" => :high_sierra
-    sha256 "8e0258e39c281826514ba49c3add732ada3ae097cd6f840bf5e22849016e5a7d" => :sierra
-    sha256 "88971ef99df357abe7189391d3c6fe559dcd24c3faaf0e0b22d91a94ccbbeefb" => :el_capitan
+    sha256 "ace4fa76ccad7fe7606186d750f26c59ef44fbba4608b5015210b239d1518225" => :mojave
+    sha256 "a0221f95e58fee2ff79d011ed8daacf4522b8b430435035ed9afda1a64346b76" => :high_sierra
+    sha256 "460e280720231a9a4141508378faea220bb5ef70a9aa6b86a3af13f3e848ec1a" => :sierra
+    sha256 "6b6bc9bf835c1ea33fd9183034a4c8a6c719e00ead5d66fa4fbc4c3cfbc00350" => :el_capitan
   end
 
-  option "without-perl", "Build without Perl support"
-  option "without-python", "Build without Python 2 support"
-  option "without-ruby", "Build without Ruby support"
-
-  depends_on "ruby" => :recommended if MacOS.version <= :mountain_lion
-  depends_on "swig" => :build if build.with?("python") || build.with?("ruby") || build.with?("perl")
+  depends_on "swig" => :build
+  depends_on "ruby"
 
   def install
     ENV.append "LDLIBS", "-liconv"
-    ENV.append "LIBS", "-lncurses -liconv"
-    ENV.append "LIBS", "-lruby" if build.with? "ruby"
+    ENV.append "LIBS", "-lncurses -liconv -lruby"
 
     %w[
       stfl.pc.in
@@ -39,31 +35,25 @@ class Libstfl < Formula
       s.gsub! "-Wl,-soname,$(SONAME)", "-Wl"
       s.gsub! "libstfl.so.$(VERSION)", "libstfl.$(VERSION).dylib"
       s.gsub! "libstfl.so", "libstfl.dylib"
-      s.gsub! "include perl5/Makefile.snippet", "" if build.without? "perl"
-      s.gsub! "include python/Makefile.snippet", "" if build.without? "python"
-      s.gsub! "include ruby/Makefile.snippet", "" if build.without? "ruby"
     end
 
-    if build.with? "python"
-      inreplace "python/Makefile.snippet" do |s|
-        # Install into the site-packages in the Cellar (so uninstall works)
-        s.change_make_var! "PYTHON_SITEARCH", lib/"python2.7/site-packages"
-        s.gsub! "lib-dynload/", ""
-        s.gsub! "ncursesw", "ncurses"
-        s.gsub! "gcc", "gcc -undefined dynamic_lookup #{`python-config --cflags`.chomp}"
-        s.gsub! "-lncurses", "-lncurses -liconv"
-      end
-
-      # Fails race condition of test:
-      #   ImportError: dynamic module does not define init function (init_stfl)
-      #   make: *** [python/_stfl.so] Error 1
-      ENV.deparallelize
+    inreplace "python/Makefile.snippet" do |s|
+      # Install into the site-packages in the Cellar (so uninstall works)
+      s.change_make_var! "PYTHON_SITEARCH", lib/"python2.7/site-packages"
+      s.gsub! "lib-dynload/", ""
+      s.gsub! "ncursesw", "ncurses"
+      s.gsub! "gcc", "gcc -undefined dynamic_lookup #{`python-config --cflags`.chomp}"
+      s.gsub! "-lncurses", "-lncurses -liconv"
     end
+
+    # Fails race condition of test:
+    #   ImportError: dynamic module does not define init function (init_stfl)
+    #   make: *** [python/_stfl.so] Error 1
+    ENV.deparallelize
 
     system "make"
 
-    inreplace "perl5/Makefile", "Network/Library", libexec/"lib/perl5" if build.with? "perl"
-
+    inreplace "perl5/Makefile", "Network/Library", libexec/"lib/perl5"
     system "make", "install", "prefix=#{prefix}"
   end
 

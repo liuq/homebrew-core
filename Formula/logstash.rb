@@ -1,8 +1,8 @@
 class Logstash < Formula
   desc "Tool for managing events and logs"
   homepage "https://www.elastic.co/products/logstash"
-  url "https://artifacts.elastic.co/downloads/logstash/logstash-6.2.2.tar.gz"
-  sha256 "40ec30d14e14dde4664a625f410d9d93b1d80abb4235334bf680a35f1f0c4b9d"
+  url "https://artifacts.elastic.co/downloads/logstash/logstash-oss-6.4.2.tar.gz"
+  sha256 "3f53fae9397a9aad5d2710d592c81d1ed9c0b7f6be402356f4f4f43d28164d7a"
   head "https://github.com/elastic/logstash.git"
 
   bottle :unneeded
@@ -19,9 +19,16 @@ class Logstash < Formula
       cd "tar"
     end
 
-    inreplace %w[bin/logstash], %r{^\. "\$\(cd `dirname \${SOURCEPATH}`\/\.\.; pwd\)\/bin\/logstash\.lib\.sh\"}, ". #{libexec}/bin/logstash.lib.sh"
-    inreplace %w[bin/logstash-plugin], %r{^\. "\$\(cd `dirname \$0`\/\.\.; pwd\)\/bin\/logstash\.lib\.sh\"}, ". #{libexec}/bin/logstash.lib.sh"
-    inreplace %w[bin/logstash.lib.sh], /^LOGSTASH_HOME=.*$/, "LOGSTASH_HOME=#{libexec}"
+    inreplace "bin/logstash",
+              %r{^\. "\$\(cd `dirname \${SOURCEPATH}`\/\.\.; pwd\)\/bin\/logstash\.lib\.sh\"},
+              ". #{libexec}/bin/logstash.lib.sh"
+    inreplace "bin/logstash-plugin",
+              %r{^\. "\$\(cd `dirname \$0`\/\.\.; pwd\)\/bin\/logstash\.lib\.sh\"},
+              ". #{libexec}/bin/logstash.lib.sh"
+    inreplace "bin/logstash.lib.sh",
+              /^LOGSTASH_HOME=.*$/,
+              "LOGSTASH_HOME=#{libexec}"
+
     libexec.install Dir["*"]
     bin.install libexec/"bin/logstash", libexec/"bin/logstash-plugin"
     bin.env_script_all_files(libexec/"bin", Language::Java.java_home_env("1.8"))
@@ -30,7 +37,7 @@ class Logstash < Formula
   def caveats; <<~EOS
     Please read the getting started guide located at:
       https://www.elastic.co/guide/en/logstash/current/getting-started-with-logstash.html
-    EOS
+  EOS
   end
 
   plist_options :manual => "logstash"
@@ -67,16 +74,22 @@ class Logstash < Formula
 
   test do
     # workaround https://github.com/elastic/logstash/issues/6378
-    mkdir testpath/"config"
-    ["jvm.options", "log4j2.properties", "startup.options"].each { |f| cp prefix/"libexec/config/#{f}", testpath/"config" }
+    (testpath/"config").mkpath
+    ["jvm.options", "log4j2.properties", "startup.options"].each do |f|
+      cp prefix/"libexec/config/#{f}", testpath/"config"
+    end
     (testpath/"config/logstash.yml").write <<~EOS
       path.queue: #{testpath}/queue
     EOS
-    mkdir testpath/"data"
-    mkdir testpath/"logs"
-    mkdir testpath/"queue"
+    (testpath/"data").mkpath
+    (testpath/"logs").mkpath
+    (testpath/"queue").mkpath
 
-    output = pipe_output("#{bin}/logstash -e '' --path.data=#{testpath}/data --path.logs=#{testpath}/logs --path.settings=#{testpath}/config --log.level=fatal", "hello world\n")
-    assert_match /hello world/, output
+    data = "--path.data=#{testpath}/data"
+    logs = "--path.logs=#{testpath}/logs"
+    settings = "--path.settings=#{testpath}/config"
+
+    output = pipe_output("#{bin}/logstash -e '' #{data} #{logs} #{settings} --log.level=fatal", "hello world\n")
+    assert_match "hello world", output
   end
 end

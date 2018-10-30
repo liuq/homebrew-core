@@ -1,24 +1,26 @@
 class Mongodb < Formula
   desc "High-performance, schema-free, document-oriented database"
   homepage "https://www.mongodb.org/"
-
-  url "https://fastdl.mongodb.org/src/mongodb-src-r3.6.3.tar.gz"
-  sha256 "df2d5c05c569ca93eacf88b68e0feb3ff52ffbfc8ccd8736ff20d86850db207c"
+  url "https://fastdl.mongodb.org/src/mongodb-src-r4.0.3.tar.gz"
+  sha256 "fbbe840e62376fe850775e98eb10fdf40594a023ecf308abec6dcec44d2bce0c"
 
   bottle do
-    sha256 "d243b8524d03bf5002439c0be367c02012ad078d8b37ce37c54c1ecada2a515d" => :high_sierra
-    sha256 "4d471fb6d3cb3f5f1caa5b2a52594298327519bc67099cd8ea94998e14398483" => :sierra
+    sha256 "e69d3b476cae2c11cc133e0ef14a6449738fa4adbaa47feacdccab5f3ec3d506" => :mojave
+    sha256 "3036bebd4570b76b12d6418ef70984e65310506add560345b8acafda1dd8298c" => :high_sierra
+    sha256 "a48d12fa04c7f3bb80d2d0c7febd653cc081b9a19d7e4431b0ed189f8e311e4f" => :sierra
   end
 
   option "with-boost", "Compile using installed boost, not the version shipped with mongodb"
   option "with-sasl", "Compile with SASL support"
 
-  depends_on :xcode => ["8.3.2", :build]
-  depends_on "boost" => :optional
   depends_on "go" => :build
-  depends_on :macos => :mountain_lion
+  depends_on "pkg-config" => :build
   depends_on "scons" => :build
+  depends_on :xcode => ["8.3.2", :build]
+  depends_on :macos => :mountain_lion
+  depends_on "python@2"
   depends_on "openssl" => :recommended
+  depends_on "boost" => :optional
 
   resource "Cheetah" do
     url "https://files.pythonhosted.org/packages/cd/b0/c2d700252fc251e91c08639ff41a8a5203b627f4e0a2ae18a6b662ab32ea/Cheetah-2.4.4.tar.gz"
@@ -26,13 +28,13 @@ class Mongodb < Formula
   end
 
   resource "PyYAML" do
-    url "https://files.pythonhosted.org/packages/4a/85/db5a2df477072b2902b0eb892feb37d88ac635d36245a72a6a69b23b383a/PyYAML-3.12.tar.gz"
-    sha256 "592766c6303207a20efc445587778322d7f73b161bd994f227adaa341ba212ab"
+    url "https://files.pythonhosted.org/packages/9e/a3/1d13970c3f36777c583f136c136f804d70f500168edc1edea6daa7200769/PyYAML-3.13.tar.gz"
+    sha256 "3ef3092145e9b70e3ddd2c7ad59bdd0252a94dfe3949721633e41344de00a6bf"
   end
 
   resource "typing" do
-    url "https://files.pythonhosted.org/packages/ec/cc/28444132a25c113149cec54618abc909596f0b272a74c55bab9593f8876c/typing-3.6.4.tar.gz"
-    sha256 "d400a9344254803a2368533e4533a4200d21eb7b6b729c173bc38201a74db3f2"
+    url "https://files.pythonhosted.org/packages/bf/9b/2bf84e841575b633d8d91ad923e198a415e3901f228715524689495b4317/typing-3.6.6.tar.gz"
+    sha256 "4027c5f6127a6267a435201981ba156de91ad0d1d98e9ddc2aa173453453492d"
   end
 
   needs :cxx11
@@ -119,7 +121,7 @@ class Mongodb < Formula
       dbPath: #{var}/mongodb
     net:
       bindIp: 127.0.0.1
-    EOS
+  EOS
   end
 
   plist_options :manual => "mongod --config #{HOMEBREW_PREFIX}/etc/mongod.conf"
@@ -159,7 +161,7 @@ class Mongodb < Formula
       </dict>
     </dict>
     </plist>
-    EOS
+  EOS
   end
 
   test do

@@ -1,16 +1,15 @@
 class FaasCli < Formula
   desc "CLI for templating and/or deploying FaaS functions"
-  homepage "http://docs.get-faas.com/"
+  homepage "https://docs.get-faas.com/"
   url "https://github.com/openfaas/faas-cli.git",
-      :tag => "0.6.3",
-      :revision => "7997a467e0d1a49eae5417b8190ae0f5f5e87bac"
+      :tag => "0.7.7",
+      :revision => "70ebebb71f015f4edb0c3e1f03ef3d262b1d84f6"
 
   bottle do
     cellar :any_skip_relocation
-    rebuild 1
-    sha256 "d7ac1ebad2441bb2919d6b35a48630af17beef6132ba7f9381ceb0b01e9f8836" => :high_sierra
-    sha256 "002f96108cecb3b845c0efdde2a9ac4f68f31ab3354e075fc82d2c9339863408" => :sierra
-    sha256 "bbf7c1a375766664c71efae2a31ca7bc080c623bad0f758097b6889cb102c994" => :el_capitan
+    sha256 "ab892b670061720a6affb1b69408c901bbf28069499a60c3f9d6fcae263381e0" => :mojave
+    sha256 "945309dfc29988861589e3215f72e06c91a4e91b3060204959d0f6160846e50c" => :high_sierra
+    sha256 "56c2ba4e761a23c21dc9ecc36f00387c2f36d6eb026640fcb7138367e2f2add9" => :sierra
   end
 
   depends_on "go" => :build
@@ -27,7 +26,6 @@ class FaasCli < Formula
              "-s -w -X #{project}/version.GitCommit=#{commit} -X #{project}/version.Version=#{version}", "-a",
              "-installsuffix", "cgo", "-o", bin/"faas-cli"
       bin.install_symlink "faas-cli" => "faas"
-      pkgshare.install "template"
       prefix.install_metafiles
     end
   end
@@ -72,13 +70,6 @@ class FaasCli < Formula
     EOS
 
     begin
-      cp_r pkgshare/"template", testpath
-
-      output = shell_output("#{bin}/faas-cli deploy -yaml test.yml")
-      assert_equal expected, output.chomp
-
-      rm_rf "template"
-
       output = shell_output("#{bin}/faas-cli deploy -yaml test.yml 2>&1", 1)
       assert_match "stat ./template/python/template.yml", output
 

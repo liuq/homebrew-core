@@ -7,16 +7,11 @@ class Aspell < Formula
   revision 1
 
   bottle do
+    sha256 "f0264ded1cf174eb37c8a4175bc5f900d8abbe2d06e7f8109aa96106dd044f25" => :mojave
     sha256 "d5927b312520252d7634902269336fe28148dac0d986e7bb0883327233462f01" => :high_sierra
     sha256 "69c2de621e5d6c0a18ca7bf43b153deefef24eaa65d8ae3f5939a106d52948ce" => :sierra
     sha256 "d107e964156e9932303a3569cbfc489d96593d67c5a724e70c45dbe2ed961516" => :el_capitan
     sha256 "4a50a1b26bcbaa10dc4968332d03ce3e24772a60ec7b1561ab23102d0f46052a" => :yosemite
-  end
-
-  devel do
-    url "https://alpha.gnu.org/gnu/aspell/aspell-0.60.7-rc1.tar.gz"
-    sha256 "86b5662f24316142f70c5890787bdc5596625ca3604dfe85926ee61f27f2365e"
-    version "0.60.7-20170129"
   end
 
   # Dictionaries installed by default: en, de, es, fr
@@ -317,13 +312,6 @@ class Aspell < Formula
     sha256 "523912082848d891746dbb233f2ddb2cdbab6750dc76c38b3f6e000c9eb37308"
   end
 
-  option "with-lang-is", "Install is dictionary"
-  resource "is" do
-    url "https://ftp.gnu.org/gnu/aspell/dict/is/aspell-is-0.51.1-0.tar.bz2"
-    mirror "https://ftpmirror.gnu.org/aspell/dict/is/aspell-is-0.51.1-0.tar.bz2"
-    sha256 "3035bd29dad929ce66e6acdc7c29670df458e0d13fe178241b212f481111e3d6"
-  end
-
   option "with-lang-it", "Install it dictionary"
   resource "it" do
     url "https://ftp.gnu.org/gnu/aspell/dict/it/aspell6-it-2.2_20050523-0.tar.bz2"
@@ -427,13 +415,6 @@ class Aspell < Formula
     url "https://ftp.gnu.org/gnu/aspell/dict/mt/aspell-mt-0.50-0.tar.bz2"
     mirror "https://ftpmirror.gnu.org/aspell/dict/mt/aspell-mt-0.50-0.tar.bz2"
     sha256 "e00fcaad60a90cfed687ba02f62be8c27b8650457dd3c5bdcb064b476da059b4"
-  end
-
-  option "with-lang-nb", "Install nb dictionary"
-  resource "nb" do
-    url "https://ftp.gnu.org/gnu/aspell/dict/nb/aspell-nb-0.50.1-0.tar.bz2"
-    mirror "https://ftpmirror.gnu.org/aspell/dict/nb/aspell-nb-0.50.1-0.tar.bz2"
-    sha256 "e7746e8b617b2df576c1172399544818084524504202b16c747f52db5e5d228a"
   end
 
   option "with-lang-nds", "Install nds dictionary"
@@ -687,6 +668,15 @@ class Aspell < Formula
         system "make", "install"
       end
     end
+  end
+
+  def caveats
+    <<~EOS
+      Installation of the 'is' (Icelandic) and 'nb' (Norwegian) dictionaries is
+      currently broken. They can be installed manually.
+
+      See: https://github.com/Homebrew/homebrew-core/issues/28074
+    EOS
   end
 
   test do

@@ -1,13 +1,14 @@
 class Geoipupdate < Formula
   desc "Automatic updates of GeoIP2 and GeoIP Legacy databases"
   homepage "https://github.com/maxmind/geoipupdate"
-  url "https://github.com/maxmind/geoipupdate/releases/download/v2.5.0/geoipupdate-2.5.0.tar.gz"
-  sha256 "5119fd0e338cd083e886228b26679c64bcbaade8a815be092aecf865a610ab26"
+  url "https://github.com/maxmind/geoipupdate/releases/download/v3.1.1/geoipupdate-3.1.1.tar.gz"
+  sha256 "3de22e3fe3282024288a00807bbea9a1ffa2d1e8fe9c611f4b14a5b4d8ebe08a"
 
   bottle do
-    sha256 "22feb6fb330b62c077482b443ac637c2fa3f60626b4113d815fc0fd85a255ee2" => :high_sierra
-    sha256 "d28503bce47a42732d54cece163675f6c6169539327a95bb8d4bbdfd16aa9e35" => :sierra
-    sha256 "ab7981329380d9bf0fee2efe0bfed2a1745cc3ecf681356ba21a02cd6604acf2" => :el_capitan
+    sha256 "9cf68c91a00193bed2bd55b3c2d8add1fa937433a429af7c01829b14a58eb7fa" => :mojave
+    sha256 "1e45c489ab5d3022b71e00adca105287de4175ae999552a1f0f62981a16cbf4c" => :high_sierra
+    sha256 "d13fd47dd374265af81e2824335b714bd647359671f82ed6643ae988722647fc" => :sierra
+    sha256 "a8fdd107eca63868f7ae9e216f3ecab4bb1c0ce635d9bda0fdb03d35f37d1380" => :el_capitan
   end
 
   head do

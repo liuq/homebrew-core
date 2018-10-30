@@ -1,14 +1,14 @@
 class Bazel < Formula
   desc "Google's own build tool"
   homepage "https://bazel.build/"
-  url "https://github.com/bazelbuild/bazel/releases/download/0.11.0/bazel-0.11.0-dist.zip"
-  sha256 "abfeccc94728cb46be8dbb3507a23ccffbacef9fbda96a977ef4ea8d6ab0d384"
+  url "https://github.com/bazelbuild/bazel/releases/download/0.18.0/bazel-0.18.0-dist.zip"
+  sha256 "d0e86d2f7881ec8742a9823a986017452d2da0dfe4e989111da787cb89257155"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "c09333bef1ac1fa20b81d854660849224634599dd631dbf6bfb99e91bf5ff51d" => :high_sierra
-    sha256 "953052b36ad2daee330d7611900ed191951a7edaa3c535aea239150d512899fd" => :sierra
-    sha256 "404d2e3769433e1eae6ece7f4afe0fe75aed65570ffcd393614fc32166c3a30e" => :el_capitan
+    sha256 "7360b538438b92a875b46470b3f0a677917252e3b4e070b5cc7a0d6a7a05ff17" => :mojave
+    sha256 "0b1f98a379e433b88ee3270d9e62614137cf9bed4ab51122dd5271ad24644e2f" => :high_sierra
+    sha256 "2d0d0b81b801212fddc912f934c8f1327306021786231f9a80e4ae42589f3f76" => :sierra
   end
 
   depends_on :java => "1.8"

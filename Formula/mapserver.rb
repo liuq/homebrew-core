@@ -1,15 +1,14 @@
 class Mapserver < Formula
   desc "Publish spatial data and interactive mapping apps to the web"
-  homepage "http://mapserver.org/"
-  url "https://download.osgeo.org/mapserver/mapserver-7.0.7.tar.gz"
-  sha256 "37a8c3008328bae0fea05109d6d544a3284f756a23956e8a2f5ec10a6b5fef67"
-  revision 1
+  homepage "https://mapserver.org/"
+  url "https://download.osgeo.org/mapserver/mapserver-7.2.1.tar.gz"
+  sha256 "9459a7057d5a85be66a41096a5d804f74665381186c37077c94b56e784db6102"
 
   bottle do
     cellar :any
-    sha256 "bc574e4eef7bb4bba5a30da2b176d9c834fd7fffaafb07ee7f7ac2694c95fd59" => :high_sierra
-    sha256 "16dc614cf8972ac732509c193176b71a7ded79637df5361646df306a1fc66ec1" => :sierra
-    sha256 "02388357fd386a933901fef592feacd3d75c7b86f1c2e45efa31c3e08a5c5341" => :el_capitan
+    sha256 "283f73045165ca1674b10a9e2b9b48aec93c5d097a2fe01c547464cd6213f36f" => :mojave
+    sha256 "0dfd0efc69c78bc629dca2afe0f891a2ea0a0835c3c6c3e08449f9ec76defb8d" => :high_sierra
+    sha256 "8efdeb9599cbde78e4202c26e8d450a176f46fda7d21ba9806824633a70dbe71" => :sierra
   end
 
   option "with-fastcgi", "Build with fastcgi support"
@@ -17,19 +16,20 @@ class Mapserver < Formula
   option "with-php", "Build PHP MapScript module"
   option "with-postgresql", "Build support for PostgreSQL as a data source"
 
-  depends_on "pkg-config" => :build
   depends_on "cmake" => :build
+  depends_on "pkg-config" => :build
   depends_on "swig" => :build
+  depends_on "fcgi" if build.with? "fastcgi"
   depends_on "freetype"
-  depends_on "libpng"
-  depends_on "giflib"
   depends_on "gd"
-  depends_on "proj"
   depends_on "gdal"
+  depends_on "giflib"
+  depends_on "libpng"
+  depends_on "proj"
+  depends_on "protobuf-c"
+  depends_on "cairo" => :optional
   depends_on "geos" => :optional
   depends_on "postgresql" => :optional unless MacOS.version >= :lion
-  depends_on "cairo" => :optional
-  depends_on "fcgi" if build.with? "fastcgi"
 
   def install
     # Harfbuzz support requires fribidi and fribidi support requires
@@ -47,7 +47,7 @@ class Mapserver < Formula
       -DWITH_WFS=ON
       -DWITH_FRIBIDI=OFF
       -DWITH_HARFBUZZ=OFF
-      -DPYTHON_EXECUTABLE:FILEPATH=#{which("python")}
+      -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python
     ]
 
     # Install within our sandbox.
@@ -105,11 +105,11 @@ class Mapserver < Formula
         extension="#{opt_lib}/php/extensions/php_mapscript.so"
       * Execute "php -m"
       * You should see MapScript in the module list
-    EOS
+  EOS
   end
 
   test do
     assert_match version.to_s, shell_output("#{bin}/mapserv -v")
-    system "python", "-c", "import mapscript"
+    system "python2.7", "-c", "import mapscript"
   end
 end

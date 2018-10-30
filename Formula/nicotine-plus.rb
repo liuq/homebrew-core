@@ -5,21 +5,22 @@ class NicotinePlus < Formula
   homepage "https://www.nicotine-plus.org/"
   url "https://github.com/Nicotine-Plus/nicotine-plus/archive/1.4.1.tar.gz"
   sha256 "1b38ef196d981e4eb96fa990cc463143289784f988f559c4400b1d461497b7d6"
-  revision 1
+  revision 2
   head "https://github.com/Nicotine-Plus/nicotine-plus.git"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "6b5dd433020abad54fbc279a575d9072ca5859d825242a87f259ab38129e1570" => :high_sierra
-    sha256 "095cd0a9e4bcec03ccb539df2d17b08e26a2480efcd76053c91eb1341f4b0da7" => :sierra
-    sha256 "ed1c27fc1158ed8240f295df6cbb3defe6524050f329df6364daf1b6af3ab6db" => :el_capitan
+    sha256 "4a771717f5d69be309916cb9016edbdbd5ff55a66d0fe6db89e78bf3aae78a1d" => :mojave
+    sha256 "35e7bf104f3d38a0d04611bf55190e47cc0b37628c820b6a94a4793c1a3bf451" => :high_sierra
+    sha256 "7fc8c5bfd9f131df9cc30887240a064129d65794a1a2cde8205f4eda88548cce" => :sierra
+    sha256 "c8243dedb84548dee2f8c663bd3cd4211885b2a1a928bc733a2ee663a9f63fe0" => :el_capitan
   end
 
-  depends_on "python@2" if MacOS.version <= :snow_leopard
+  depends_on "geoip"
   depends_on "gtk+"
+  depends_on "miniupnpc"
   depends_on "pygtk"
-  depends_on "geoip" => :recommended
-  depends_on "miniupnpc" => :recommended
+  depends_on "python@2"
 
   resource "mutagen" do
     url "https://files.pythonhosted.org/packages/14/d5/51f49f345d4490a9a6a04677ab136f78e4e0c64ed142e48b4ed818c13c96/mutagen-1.37.tar.gz"
@@ -39,8 +40,8 @@ class NicotinePlus < Formula
   def install
     venv = virtualenv_create(libexec)
     venv.pip_install "mutagen"
-    venv.pip_install "miniupnpc" if build.with? "miniupnpc"
-    venv.pip_install "python-geoip" if build.with? "geoip"
+    venv.pip_install "miniupnpc"
+    venv.pip_install "python-geoip"
     venv.pip_install_and_link buildpath
   end
 

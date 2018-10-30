@@ -1,34 +1,45 @@
 class Tbb < Formula
   desc "Rich and complete approach to parallelism in C++"
   homepage "https://www.threadingbuildingblocks.org/"
-  url "https://github.com/01org/tbb/archive/2018_U2.tar.gz"
-  version "2018_U2"
-  sha256 "78bb9bae474736d213342f01fe1a6d00c6939d5c75b367e2e43e7bf29a6d8eca"
+  url "https://github.com/01org/tbb/archive/2018_U6.tar.gz"
+  version "2018_U6"
+  sha256 "d3e5fbca3cc643d03bf332d576ff85e19aa774b483f148f95cd7d09958372109"
 
   bottle do
-    sha256 "ac31698064d5177e6d72f8f57a8b359b523b4f1cc824d16bdc1ef9c6ed654361" => :high_sierra
-    sha256 "1f200261fcf061bb022503be5cf5e6a69b5c359c64ea475a0ff7698035909d9e" => :sierra
-    sha256 "1b3f01c4baee65f4c321023646cf03ef5cae1aa7dd2ba8b1bfa069bda19c4777" => :el_capitan
+    sha256 "64c662e4a6785ba1b7e3740676971835a981fc75ff94e02a7acb95507cfba00e" => :mojave
+    sha256 "d59e82c49fc0988e0a52d8a7d854f058cda395ca5aa43b5ee39cce3bce7fe6f8" => :high_sierra
+    sha256 "3bf7cb0a93415f3e4afeeb3ca9a4bff2a63ef5682b9ea49679684ca8b02b26a0" => :sierra
   end
 
+  depends_on "cmake" => :build
+  depends_on "swig" => :build
   # requires malloc features first introduced in Lion
   # https://github.com/Homebrew/homebrew/issues/32274
   depends_on :macos => :lion
-  depends_on "python@2" if MacOS.version <= :snow_leopard
-  depends_on "swig" => :build
+  depends_on "python@2"
 
   def install
     compiler = (ENV.compiler == :clang) ? "clang" : "gcc"
-    args = %W[tbb_build_prefix=BUILDPREFIX compiler=#{compiler}]
-
-    system "make", *args
+    system "make", "tbb_build_prefix=BUILDPREFIX", "compiler=#{compiler}"
     lib.install Dir["build/BUILDPREFIX_release/*.dylib"]
+
+    # Build and install static libraries
+    system "make", "tbb_build_prefix=BUILDPREFIX", "compiler=#{compiler}",
+                   "extra_inc=big_iron.inc"
+    lib.install Dir["build/BUILDPREFIX_release/*.a"]
     include.install "include/tbb"
 
     cd "python" do
       ENV["TBBROOT"] = prefix
       system "python", *Language::Python.setup_install_args(prefix)
     end
+
+    system "cmake", "-DTBB_ROOT=#{prefix}",
+                    "-DTBB_OS=Darwin",
+                    "-DSAVE_TO=lib/cmake/TBB",
+                    "-P", "cmake/tbb_config_generator.cmake"
+
+    (lib/"cmake"/"TBB").install Dir["lib/cmake/TBB/*.cmake"]
   end
 
   test do

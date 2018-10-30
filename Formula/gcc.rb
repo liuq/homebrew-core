@@ -1,31 +1,25 @@
 class Gcc < Formula
   desc "GNU compiler collection"
   homepage "https://gcc.gnu.org/"
-  head "svn://gcc.gnu.org/svn/gcc/trunk"
+  head "https://gcc.gnu.org/git/gcc.git"
 
   stable do
-    url "https://ftp.gnu.org/gnu/gcc/gcc-7.3.0/gcc-7.3.0.tar.xz"
-    mirror "https://ftpmirror.gnu.org/gcc/gcc-7.3.0/gcc-7.3.0.tar.xz"
-    sha256 "832ca6ae04636adbb430e865a1451adf6979ab44ca1c8374f61fba65645ce15c"
+    url "https://ftp.gnu.org/gnu/gcc/gcc-8.2.0/gcc-8.2.0.tar.xz"
+    mirror "https://ftpmirror.gnu.org/gcc/gcc-8.2.0/gcc-8.2.0.tar.xz"
+    sha256 "196c3c04ba2613f893283977e6011b2345d1cd1af9abeac58e916b1aab3e0080"
+
+    # isl 0.20 compatibility
+    # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=86724
+    patch :DATA
   end
 
   bottle do
     rebuild 1
-    sha256 "d09669e3679bb54448f00cda4bf520e631f7487f132ebfe6e0d2f6ecdcd5f6e0" => :high_sierra
-    sha256 "25cc9378b872c87e94d40b12eae550a5fcd0c4e8dfc86bd8e3e90a25bfbdf875" => :sierra
-    sha256 "69f32570d96ecc1a5365cbfe864f9cea68ae650854f1db1b11d8a6bcde1fd7bb" => :el_capitan
+    sha256 "362ece7c7a43571fce42243890d7fd4df21c453e5997bf72165d7855aa48f254" => :mojave
+    sha256 "f65f583746746494db1b02bb8a8d53ef54089ff8564d88d886527148794e9eef" => :high_sierra
+    sha256 "0fa57f7f5dbbc6360c5894b987a37d829b4984dfe51a91ba26f48d6c97d1f370" => :sierra
+    sha256 "5a51d9f6ab8d14a0b2a37783225cc356f3d68a074f1b814124f00c739475c655" => :el_capitan
   end
-
-  option "with-jit", "Build just-in-time compiler"
-  option "with-nls", "Build with native language support (localization)"
-
-  depends_on "gmp"
-  depends_on "libmpc"
-  depends_on "mpfr"
-  depends_on "isl"
-
-  # GCC bootstraps itself, so it is OK to have an incompatible C++ stdlib
-  cxxstdlib_check :skip
 
   # The bottles are built on systems with the CLT installed, and do not work
   # out of the box on Xcode-only systems due to an incorrect sysroot.
@@ -34,30 +28,22 @@ class Gcc < Formula
     satisfy { MacOS::CLT.installed? }
   end
 
+  option "with-jit", "Build just-in-time compiler"
+  option "with-nls", "Build with native language support (localization)"
+
+  depends_on "gmp"
+  depends_on "isl"
+  depends_on "libmpc"
+  depends_on "mpfr"
+
+  # GCC bootstraps itself, so it is OK to have an incompatible C++ stdlib
+  cxxstdlib_check :skip
+
   def version_suffix
     if build.head?
       "HEAD"
     else
       version.to_s.slice(/\d/)
-    end
-  end
-
-  # Fix for libgccjit.so linkage on Darwin
-  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=64089
-  # https://github.com/Homebrew/homebrew-core/issues/1872#issuecomment-225625332
-  # https://github.com/Homebrew/homebrew-core/issues/1872#issuecomment-225626490
-  patch do
-    url "https://raw.githubusercontent.com/Homebrew/formula-patches/e9e0ee09389a54cc4c8fe1c24ebca3cd765ed0ba/gcc/6.1.0-jit.patch"
-    sha256 "863957f90a934ee8f89707980473769cff47ca0663c3906992da6afb242fb220"
-  end
-
-  # Fix parallel build on APFS filesystem
-  # Remove for 7.4.0 and later
-  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81797
-  if MacOS.version >= :high_sierra
-    patch do
-      url "https://raw.githubusercontent.com/Homebrew/formula-patches/df0465c02a/gcc/apfs.patch"
-      sha256 "f7772a6ba73f44a6b378e4fe3548e0284f48ae2d02c701df1be93780c1607074"
     end
   end
 
@@ -96,24 +82,31 @@ class Gcc < Formula
     args << "--disable-nls" if build.without? "nls"
     args << "--enable-host-shared" if build.with?("jit")
 
+    # Xcode 10 dropped 32-bit support
+    args << "--disable-multilib" if DevelopmentTools.clang_build_version >= 1000
+
     # Ensure correct install names when linking against libgcc_s;
-    # see discussion in https://github.com/Homebrew/homebrew/pull/34303
+    # see discussion in https://github.com/Homebrew/legacy-homebrew/pull/34303
     inreplace "libgcc/config/t-slibgcc-darwin", "@shlib_slibdir@", "#{HOMEBREW_PREFIX}/lib/gcc/#{version_suffix}"
 
     mkdir "build" do
-      unless MacOS::CLT.installed?
-        # For Xcode-only systems, we need to tell the sysroot path.
-        # "native-system-headers" will be appended
+      if !MacOS::CLT.installed?
+        # For Xcode-only systems, we need to tell the sysroot path
         args << "--with-native-system-header-dir=/usr/include"
         args << "--with-sysroot=#{MacOS.sdk_path}"
+      elsif MacOS.version >= :mojave
+        # System headers are no longer located in /usr/include
+        args << "--with-native-system-header-dir=/usr/include"
+        args << "--with-sysroot=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
       end
 
       system "../configure", *args
 
       make_args = []
       # Use -headerpad_max_install_names in the build,
-      # otherwise lto1 load commands cannot be edited on El Capitan
-      if MacOS.version == :el_capitan
+      # otherwise updated load commands won't fit in the Mach-O header.
+      # This is needed because `gcc` avoids the superenv shim.
+      if build.bottle?
         make_args << "BOOT_LDFLAGS=-Wl,-headerpad_max_install_names"
       end
 
@@ -176,3 +169,17 @@ class Gcc < Formula
     assert_equal "Done\n", `./test`
   end
 end
+
+__END__
+diff --git a/gcc/graphite.h b/gcc/graphite.h
+index 4e0e58c..be0a22b 100644
+--- a/gcc/graphite.h
++++ b/gcc/graphite.h
+@@ -37,6 +37,8 @@ along with GCC; see the file COPYING3.  If not see
+ #include <isl/schedule.h>
+ #include <isl/ast_build.h>
+ #include <isl/schedule_node.h>
++#include <isl/id.h>
++#include <isl/space.h>
+
+ typedef struct poly_dr *poly_dr_p;

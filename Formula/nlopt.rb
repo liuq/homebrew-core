@@ -7,6 +7,7 @@ class Nlopt < Formula
 
   bottle do
     cellar :any
+    sha256 "9b08f332287446d6eb32c7b6fdf3732b1459dae9b9d04af3bf11d7924d549ebc" => :mojave
     sha256 "8b24f8a85b1b9e553cfd97a88fb22093926fe787bbeeaa598636baf7adfb1ea3" => :high_sierra
     sha256 "183d661c2b34ff468162b4bcc3bc7c287bcab47ff1bd4b902ea00fe188db1e52" => :sierra
     sha256 "cfb26ea39b36e9a9ad472e2600864d040f02531ba2c922798f82455a25b73a30" => :el_capitan
@@ -45,7 +46,7 @@ class Nlopt < Formula
   end
 
   test do
-    # Based on http://ab-initio.mit.edu/wiki/index.php/NLopt_Tutorial#Example_in_C.2FC.2B.2B
+    # Based on https://nlopt.readthedocs.io/en/latest/NLopt_Tutorial/#Example_in_C.2FC.2B.2B
     (testpath/"test.c").write <<~EOS
       #include <math.h>
       #include <nlopt.h>
@@ -87,7 +88,7 @@ class Nlopt < Formula
         nlopt_destroy(opt);
       }
     EOS
-    system ENV.cc, "test.c", "-o", "test", "-lnlopt", "-lm"
+    system ENV.cc, "test.c", "-o", "test", "-L#{opt_lib}", "-lnlopt", "-lm"
     assert_match "found minimum", shell_output("./test")
   end
 end

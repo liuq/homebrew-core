@@ -1,30 +1,29 @@
 class Evince < Formula
   desc "GNOME document viewer"
   homepage "https://wiki.gnome.org/Apps/Evince"
-  url "https://download.gnome.org/sources/evince/3.26/evince-3.26.0.tar.xz"
-  sha256 "79567bdb743cf0c3ed7b638da32afc9b850298f9b4edd532455df4a7e2a4c9d8"
-  revision 2
+  url "https://download.gnome.org/sources/evince/3.30/evince-3.30.2.tar.xz"
+  sha256 "a95bbdeb452c9cc910bba751e7c782ce60ffe7972c461bccbe8bbcdb8ca5f24c"
 
   bottle do
-    sha256 "eb7e178a0b7620ff754e8ab9f606b778ca89b263e940a48e750c7323b6320f67" => :high_sierra
-    sha256 "401f46ef6d3f028659d397c6eeda644643a78c2acc1aede32161fc9d14a83748" => :sierra
-    sha256 "489c7a761077e80815c3878918a3c77254b70532b0a7d968f1ea525791789d08" => :el_capitan
+    sha256 "79376de9e7e365c98d51ec709de00966aed241ea33eeb2996284849b05361dd6" => :mojave
+    sha256 "00e766f45adca27bb77a032eb7e51d5e0aaafe11e1ad0356f88e1c273611ceb8" => :high_sierra
+    sha256 "8b260fa7c0da0fbd2ff4585689049b90fe3cb88260099bf4fc5742ac01dcf32e" => :sierra
   end
 
-  depends_on "pkg-config" => :build
+  depends_on "gobject-introspection" => :build
   depends_on "intltool" => :build
   depends_on "itstool" => :build
-  depends_on "poppler"
-  depends_on "libxml2"
+  depends_on "pkg-config" => :build
+  depends_on "adwaita-icon-theme"
+  depends_on "djvulibre"
+  depends_on "gspell"
   depends_on "gtk+3"
   depends_on "hicolor-icon-theme"
-  depends_on "adwaita-icon-theme"
   depends_on "libsecret"
   depends_on "libspectre"
-  depends_on "gobject-introspection"
-  depends_on "shared-mime-info"
-  depends_on "djvulibre"
-  depends_on "python@2" if MacOS.version <= :snow_leopard
+  depends_on "libxml2"
+  depends_on "poppler"
+  depends_on "python@2"
 
   def install
     # Fix build failure "ar: illegal option -- D"
@@ -52,7 +51,6 @@ class Evince < Formula
   def post_install
     system "#{Formula["glib"].opt_bin}/glib-compile-schemas", "#{HOMEBREW_PREFIX}/share/glib-2.0/schemas"
     system "#{Formula["gtk+3"].opt_bin}/gtk3-update-icon-cache", "-f", "-t", "#{HOMEBREW_PREFIX}/share/icons/hicolor"
-    system "#{Formula["shared-mime-info"].opt_bin}/update-mime-database", "#{HOMEBREW_PREFIX}/share/mime"
   end
 
   test do

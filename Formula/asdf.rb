@@ -1,15 +1,16 @@
 class Asdf < Formula
   desc "Extendable version manager with support for Ruby, Node.js, Erlang & more"
   homepage "https://github.com/asdf-vm"
-  url "https://github.com/asdf-vm/asdf/archive/v0.4.2.tar.gz"
-  sha256 "10edd15e156d1d63e616a77f96170fe8d509289ddcefb2220bcaab09cf095db2"
+  url "https://github.com/asdf-vm/asdf/archive/v0.6.0.tar.gz"
+  sha256 "a17a198b1581fb8f26dadf03985b71287989f0cfc5da40f5c9e1937ec8f9f74b"
+  head "https://github.com/asdf-vm/asdf.git"
 
   bottle :unneeded
 
-  depends_on "autoconf" => :run
-  depends_on "automake" => :run
-  depends_on "libtool" => :run
+  depends_on "autoconf"
+  depends_on "automake"
   depends_on "coreutils"
+  depends_on "libtool"
   depends_on "libyaml"
   depends_on "openssl"
   depends_on "readline"
@@ -32,10 +33,11 @@ class Asdf < Formula
 
     If you use Fish shell, add the following line to your fish config (e.g. ~/.config/fish/config.fish)
          source #{opt_prefix}/asdf.fish
-    EOS
+  EOS
   end
 
   test do
-    system "#{bin}/asdf", "plugin-list"
+    output = shell_output("#{bin}/asdf plugin-list 2>&1", 1)
+    assert_match "Oohes nooes ~! No plugins installed", output
   end
 end

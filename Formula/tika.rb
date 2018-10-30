@@ -1,16 +1,16 @@
 class Tika < Formula
   desc "Content analysis toolkit"
   homepage "https://tika.apache.org/"
-  url "https://www.apache.org/dyn/closer.cgi?path=tika/tika-app-1.16.jar"
-  sha256 "4f377b42e122f92c3f1f3b4702029cf0642c7d6f3ce872a0dfb1472eac65be44"
+  url "https://www.apache.org/dyn/closer.cgi?path=tika/tika-app-1.19.1.jar"
+  sha256 "7b2c6a8baf14e4974b4ba26c01e162ec78fb9fea1fc625ee4d7ca054d9778c89"
 
   bottle :unneeded
 
   depends_on :java => "1.7+"
 
   resource "server" do
-    url "https://search.maven.org/remotecontent?filepath=org/apache/tika/tika-server/1.16/tika-server-1.16.jar"
-    sha256 "d25c1851b3d448cc025666a6193cc1636ab412ecc5bea40e31431a16fe472fed"
+    url "https://www.apache.org/dyn/closer.cgi?path=tika/tika-server-1.19.1.jar"
+    sha256 "76d607df16cd85af35d40d6a2098ed1523b6c0b9f7dad885e289121e6207c11b"
   end
 
   def install
@@ -19,18 +19,6 @@ class Tika < Formula
 
     libexec.install resource("server")
     bin.write_jar_script libexec/"tika-server-#{version}.jar", "tika-rest-server"
-  end
-
-  def caveats; <<~EOS
-    To run Tika:
-      tika
-
-    To run Tika's REST server:
-      tika-rest-server
-
-    See the Tika homepage for more documentation:
-      brew home tika
-    EOS
   end
 
   test do

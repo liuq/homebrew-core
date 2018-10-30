@@ -1,14 +1,15 @@
 class Gocryptfs < Formula
   desc "Encrypted overlay filesystem written in Go"
   homepage "https://nuetzlich.net/gocryptfs/"
-  url "https://github.com/rfjakob/gocryptfs/releases/download/v1.4.3/gocryptfs_v1.4.3_src-deps.tar.gz"
-  version "1.4.3"
-  sha256 "adf55824fd6ca8e258e9207217c52206953293c6ff86e68b58874b6d195e5b11"
+  url "https://github.com/rfjakob/gocryptfs/releases/download/v1.6/gocryptfs_v1.6_src-deps.tar.gz"
+  version "1.6"
+  sha256 "98ff3bc0497ca195f65fa5912ebab33a0f80aa27205b0b35e73908d23dcefbe6"
 
   bottle do
-    sha256 "e78575f894959fc13b4a30e01a9f8fdb22d4774ee1d3b69293842f0f3a9593cf" => :high_sierra
-    sha256 "a172e3b1016cf339d46cb78b18a0fe0b1a1bd08fc2ec991bce9a5798b4d9ecaf" => :sierra
-    sha256 "6b59252b280b9dfa60bb0437cebf4ef6d1bdea4d333e22becb76ed63ffcbe545" => :el_capitan
+    sha256 "469f801ad3ce794b6d767857bc21e6222d7a29a1bd166f105533dbd376eee719" => :mojave
+    sha256 "f98594b49df6d4912f50b5c5509d9e5be845e29b81e9638489460702a68eb1b1" => :high_sierra
+    sha256 "57378b7bd53f5f5305869d0208a1787b72367bac65226794fde1385cf7841643" => :sierra
+    sha256 "a0f5dff1c83b5b6906d24b6de9dba72d4a9d3dde641987d95b0233fa86ac8c91" => :el_capitan
   end
 
   depends_on "go" => :build

@@ -3,13 +3,14 @@ require "language/go"
 class MongodbAT32 < Formula
   desc "High-performance, schema-free, document-oriented database"
   homepage "https://www.mongodb.org/"
-  url "https://fastdl.mongodb.org/src/mongodb-src-r3.2.19.tar.gz"
-  sha256 "a36551e1e6d6d256ec4d1d6bad110f3f762c901536d94880de0b961960ce5d49"
+  url "https://fastdl.mongodb.org/src/mongodb-src-r3.2.21.tar.gz"
+  sha256 "8263befc10319809ea14e5cbf230c55113de7b38510b42a6ad27125dfa674371"
 
   bottle do
-    sha256 "8a28e51cfe9578d76f8a3cb2a6bad6349bfebd0b3df56720b76ca20ddd81f7df" => :high_sierra
-    sha256 "d7290078780d7e9f6ee6af5cb9e0595b016f8e07341b116c34f99011110cd17d" => :sierra
-    sha256 "3ca894e3ebd3fe11a4438a5e7cad782245fb90f86c74d2898cc111cc87f9affc" => :el_capitan
+    sha256 "6068932526af487dd50264aa1ead11dc199ed2bab849fd0adc04b67f90a89113" => :mojave
+    sha256 "3cc0ca816b495f169afc2d5f4b92463808424f5993ee9d3ec3f8b70354a89fcd" => :high_sierra
+    sha256 "d36d4031c58cee0a35b3f0445f995efad701eb519da8e3b66cf8eeb558092e6e" => :sierra
+    sha256 "8fc6948abb95eca2ecdfdf4411e9ff958616dc5a917376786546e981222852c8" => :el_capitan
   end
 
   keg_only :versioned_formula
@@ -17,15 +18,15 @@ class MongodbAT32 < Formula
   option "with-boost", "Compile using installed boost, not the version shipped with mongodb"
   option "with-sasl", "Compile with SASL support"
 
-  depends_on "boost" => :optional
   depends_on "go" => :build
-  depends_on :macos => :mountain_lion
   depends_on "scons" => :build
+  depends_on :macos => :mountain_lion
   depends_on "openssl" => :recommended
+  depends_on "boost" => :optional
 
   go_resource "github.com/mongodb/mongo-tools" do
     url "https://github.com/mongodb/mongo-tools.git",
-        :tag => "r3.2.19",
+        :tag => "r3.2.21",
         :revision => "f207093c46939fd42f12980a058370c013c26338",
         :shallow => false
   end
@@ -34,7 +35,6 @@ class MongodbAT32 < Formula
 
   def install
     ENV.cxx11 if MacOS.version < :mavericks
-    ENV.libcxx if build.devel?
 
     # New Go tools have their own build script but the server scons "install" target is still
     # responsible for installing them.
@@ -96,7 +96,7 @@ class MongodbAT32 < Formula
       dbPath: #{var}/mongodb
     net:
       bindIp: 127.0.0.1
-    EOS
+  EOS
   end
 
   plist_options :manual => "mongod --config #{HOMEBREW_PREFIX}/etc/mongod.conf"
@@ -136,7 +136,7 @@ class MongodbAT32 < Formula
       </dict>
     </dict>
     </plist>
-    EOS
+  EOS
   end
 
   test do

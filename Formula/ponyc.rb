@@ -1,22 +1,16 @@
 class Ponyc < Formula
   desc "Object-oriented, actor-model, capabilities-secure programming language"
   homepage "https://www.ponylang.org/"
-  url "https://github.com/ponylang/ponyc/archive/0.21.3.tar.gz"
-  sha256 "ef618f80dd793f27293695a3b8dc3a94415838dacf2e736d3d17a655081ac872"
+  url "https://github.com/ponylang/ponyc/archive/0.25.0.tar.gz"
+  sha256 "8420d84f178db325934d77dc407a7f98d6bd14b8cf8036e17b41f886f5820cb2"
   head "https://github.com/ponylang/ponyc.git"
 
   bottle do
     cellar :any
-    sha256 "8a99715f5b17a32146e24705f7f868830897aa77bcb940c856f32ad1f636defa" => :high_sierra
-    sha256 "e7c1e0c2d07f0f4e77d8edb85271408e1348dcea18ee5a4eb4d8dd990db92229" => :sierra
-    sha256 "e4921999ee11c6a59f774fecc763bb3574af53350b567e38688975acb599c062" => :el_capitan
+    sha256 "2dae291b0e2aaafb6864b0cc96b04b9c1eab4187dfd55b2f720c86e9c5f2af83" => :mojave
+    sha256 "b0d92521cc7b31c809de94b392940ea3c526f21db1c18e384e3e4a1275882665" => :high_sierra
+    sha256 "f516cf4cf8d1bdf3ee8c82adf5b3d58184ad0105722b354e851c78b152b1f97d" => :sierra
   end
-
-  depends_on :macos => :yosemite
-  depends_on "llvm@3.9"
-  depends_on "libressl"
-  depends_on "pcre2"
-  needs :cxx11
 
   # https://github.com/ponylang/ponyc/issues/1274
   # https://github.com/Homebrew/homebrew-core/issues/5346
@@ -27,10 +21,18 @@ class Ponyc < Formula
     satisfy { DevelopmentTools.clang_build_version >= 800 }
   end
 
+  depends_on "libressl"
+  depends_on "llvm@3.9"
+  depends_on :macos => :yosemite
+  depends_on "pcre2"
+
+  needs :cxx11
+
   def install
     ENV.cxx11
     ENV["LLVM_CONFIG"] = "#{Formula["llvm@3.9"].opt_bin}/llvm-config"
-    system "make", "config=release", "destdir=#{prefix}", "install", "verbose=1"
+    system "make", "install", "verbose=1", "config=release",
+           "ponydir=#{prefix}", "prefix="
   end
 
   test do

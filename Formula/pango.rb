@@ -1,30 +1,39 @@
 class Pango < Formula
   desc "Framework for layout and rendering of i18n text"
-  homepage "http://www.pango.org/"
-  url "https://download.gnome.org/sources/pango/1.40/pango-1.40.14.tar.xz"
-  sha256 "90af1beaa7bf9e4c52db29ec251ec4fd0a8f2cc185d521ad1f88d01b3a6a17e3"
+  homepage "https://www.pango.org/"
+  url "https://download.gnome.org/sources/pango/1.42/pango-1.42.4.tar.xz"
+  sha256 "1d2b74cd63e8bd41961f2f8d952355aa0f9be6002b52c8aa7699d9f5da597c9d"
 
   bottle do
-    sha256 "b475f7b4ff1d51d8b224b626fd53ed85a9945b4afd1ae4f3817295bd8dded8de" => :high_sierra
-    sha256 "3f79d4e771ad92bf6f36a9ab01b87e3ad86011a0c0b2d10761dc0e1d24c0bcd0" => :sierra
-    sha256 "01dc17241762d6a4a7cbc8fad532b69dc4cde941dd5123a6d9624ef0bed62a9d" => :el_capitan
+    sha256 "2e0b04d458fc0c856d41d14642af4cde2da7e98c241c40ed5188a803710d3921" => :mojave
+    sha256 "724efe4176988ca7dd3d5668929064d0a1ec9ed95de56cea5050c4b349a509b8" => :high_sierra
+    sha256 "707e4f73f2cb17cf3584312a7f768de4b2b7b1868b1620826f0ed93072b0a321" => :sierra
+    sha256 "63181347fdcedd1a797121b93126ed3e4a45907c39efa693b2803da112487f73" => :el_capitan
   end
 
   head do
-    url "https://git.gnome.org/browse/pango.git"
+    url "https://gitlab.gnome.org/GNOME/pango.git"
 
-    depends_on "automake" => :build
     depends_on "autoconf" => :build
-    depends_on "libtool" => :build
+    depends_on "automake" => :build
     depends_on "gtk-doc" => :build
+    depends_on "libtool" => :build
   end
 
+  depends_on "gobject-introspection" => :build
   depends_on "pkg-config" => :build
   depends_on "cairo"
   depends_on "fontconfig"
+  depends_on "fribidi"
   depends_on "glib"
-  depends_on "gobject-introspection"
   depends_on "harfbuzz"
+
+  # This fixes a font-size problem in gtk
+  # For discussion, see https://bugzilla.gnome.org/show_bug.cgi?id=787867
+  patch do
+    url "https://raw.githubusercontent.com/Homebrew/formula-patches/e0aa10/pango/pango_font_size.patch"
+    sha256 "d5ece753cf393ef507dd2b0415721b4381159da5e2f40793c6d85741b1b163bc"
+  end
 
   def install
     system "./autogen.sh" if build.head?
@@ -33,7 +42,6 @@ class Pango < Formula
                           "--prefix=#{prefix}",
                           "--with-html-dir=#{share}/doc",
                           "--enable-introspection=yes",
-                          "--enable-man",
                           "--enable-static",
                           "--without-xft"
 

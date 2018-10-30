@@ -1,25 +1,31 @@
 class GitSecret < Formula
   desc "Bash-tool to store the private data inside a git repo"
   homepage "https://sobolevn.github.io/git-secret/"
-  url "https://github.com/sobolevn/git-secret/archive/v0.2.3.tar.gz"
-  sha256 "c821c25865ce7e13a67453debb6d60a8c1730102ecfc4c4b4c4858a02201ab26"
   head "https://github.com/sobolevn/git-secret.git"
+
+  stable do
+    url "https://github.com/sobolevn/git-secret/archive/v0.2.4.tar.gz"
+    sha256 "dd9962935f242a94bb00af6a31171de0fdba357171a6c626efc2635751d52bc4"
+
+    # Remove for > 0.2.4
+    # Upstream PR from 12 Jun 2018 "Revert 'migrate from bats to bats-core'"
+    patch do
+      url "https://github.com/sobolevn/git-secret/pull/203.patch?full_index=1"
+      sha256 "ee4e263b9725aee59f8b52196d4749a09791dbb4c745a9e81da523d27fcf3f09"
+    end
+  end
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "a8734dbaefc324f280a58a404b44b1acf1d658dfe768f05f16f684a2671163d1" => :high_sierra
-    sha256 "a8734dbaefc324f280a58a404b44b1acf1d658dfe768f05f16f684a2671163d1" => :sierra
-    sha256 "a8734dbaefc324f280a58a404b44b1acf1d658dfe768f05f16f684a2671163d1" => :el_capitan
+    rebuild 1
+    sha256 "0fb8db338cf111c40a9ddd2a4d02dcb7779c2f50c88364b118d7cb9442bdfb22" => :mojave
+    sha256 "d7a78350338c3f42505215eb1c4d7e48309bf8e5495d1bb91b8517c05ba6398c" => :high_sierra
+    sha256 "d7a78350338c3f42505215eb1c4d7e48309bf8e5495d1bb91b8517c05ba6398c" => :sierra
+    sha256 "d7a78350338c3f42505215eb1c4d7e48309bf8e5495d1bb91b8517c05ba6398c" => :el_capitan
   end
 
   depends_on "gawk"
   depends_on "gnupg" => :recommended
-
-  # Upstream PR from 13 Jan 2018 "Make checksum command operating system based"
-  patch do
-    url "https://github.com/sobolevn/git-secret/pull/127.patch?full_index=1"
-    sha256 "0f711bb7f2cd91e0770a92371ea50541aa8ae606c0542c164af7fc280dd956db"
-  end
 
   def install
     system "make", "build"

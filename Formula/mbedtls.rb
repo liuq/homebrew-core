@@ -1,15 +1,16 @@
 class Mbedtls < Formula
   desc "Cryptographic & SSL/TLS library"
   homepage "https://tls.mbed.org/"
-  url "https://tls.mbed.org/download/mbedtls-2.7.0-apache.tgz"
-  sha256 "aeb66d6cd43aa1c79c145d15845c655627a7fc30d624148aaafbb6c36d7f55ef"
+  url "https://tls.mbed.org/download/mbedtls-2.13.0-apache.tgz"
+  sha256 "593b4e4d2e1629fc407ab4750d69fa309a0ddb66565dc3deb5b60eddbdeb06da"
   head "https://github.com/ARMmbed/mbedtls.git", :branch => "development"
 
   bottle do
     cellar :any
-    sha256 "dca503826b9183c68dcdbdf620a2b687b49c18ff18d60f8386c1f15af33bda44" => :high_sierra
-    sha256 "ec1d4762f786b3633c4ad8e6443fecb195c9c87fae16275c7232c9c686f3f4ac" => :sierra
-    sha256 "2f1daabe90f5a505b8fc145ce5134e4773cb73e017f9edd2ab5bf2b0f169cee0" => :el_capitan
+    sha256 "feccdb1c6eddee9925758aee4a1ffbab89d4ac43cd4c290feab8cec3f3f88197" => :mojave
+    sha256 "3f923b072ceb1f9a08321a333336bcfb45a5cac718f79a5533f8580735063838" => :high_sierra
+    sha256 "1ed5d87a59cff97897698d96e4bc99e59128d67b837aedff69c0dee1034e224a" => :sierra
+    sha256 "178b322e81d96190b004a71984be2ecd9af4daa1e35b7c4e2a8f9c0137374dc3" => :el_capitan
   end
 
   depends_on "cmake" => :build

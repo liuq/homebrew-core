@@ -2,10 +2,13 @@ class Hfsutils < Formula
   desc "Tools for reading and writing Macintosh volumes"
   homepage "https://www.mars.org/home/rob/proj/hfs/"
   url "ftp://ftp.mars.org/pub/hfs/hfsutils-3.2.6.tar.gz"
+  mirror "https://fossies.org/linux/misc/old/hfsutils-3.2.6.tar.gz"
+  mirror "https://ftp.osuosl.org/pub/clfs/conglomeration/hfsutils/hfsutils-3.2.6.tar.gz"
   sha256 "bc9d22d6d252b920ec9cdf18e00b7655a6189b3f34f42e58d5bb152957289840"
 
   bottle do
     cellar :any_skip_relocation
+    sha256 "980dd894478cfc6b12f76b56dfd12996218af2ea7aa4a14503e11865364b2cab" => :mojave
     sha256 "1a0fd0b0ac3529aac6c79b1f3b15fbeefa2cf05838de439929b8c5c61d49c077" => :high_sierra
     sha256 "4b9c18851c1fd5ce7049946cb583d4f8336c29bd48c76690df707c768a2879fd" => :sierra
     sha256 "61847361f9dac3c719ae8fb464fb9e45d7b64054c7d3c2ff23b37a698546f63d" => :el_capitan

@@ -1,33 +1,31 @@
 class Harfbuzz < Formula
   desc "OpenType text shaping engine"
   homepage "https://wiki.freedesktop.org/www/Software/HarfBuzz/"
-  url "https://www.freedesktop.org/software/harfbuzz/release/harfbuzz-1.7.5.tar.bz2"
-  sha256 "84574e1b1f65ca694cb8fb6905309665c0368af18a312357f8ff886ee2f29563"
+  url "https://www.freedesktop.org/software/harfbuzz/release/harfbuzz-2.0.2.tar.bz2"
+  sha256 "f6de6c9dc89a56909227ac3e3dc9b18924a0837936ffd9633d13e981bcbd96e0"
 
   bottle do
-    sha256 "0a43f2277203cdbab4b0509d483593514bb8cee51dc52d28958e06d4822c85e5" => :high_sierra
-    sha256 "e16c0e72ce780ab1a17d6d8448b957cb4187332554aabf193b7c21a20a565e70" => :sierra
-    sha256 "c2089227532d4471a8e2bdc9e875c6b40a3d0feea1dc02ce63727c85d36fc9b8" => :el_capitan
+    sha256 "4f514986680444c185163b4c85d4934586fea15ac9ec17e7316d4fc1b842ee5e" => :mojave
+    sha256 "2b97d47dbc12ef48adf1b6154548ff57dbf8536accd55906cd3a0bf855624a0b" => :high_sierra
+    sha256 "582bfcda358181a8e00eca36bd7932604e714b18dcf94dfdb3e25e018c550309" => :sierra
   end
 
   head do
     url "https://github.com/behdad/harfbuzz.git"
 
-    depends_on "ragel" => :build
     depends_on "autoconf" => :build
     depends_on "automake" => :build
     depends_on "libtool" => :build
+    depends_on "ragel" => :build
   end
 
-  option "with-cairo", "Build command-line utilities that depend on Cairo"
-
+  depends_on "gobject-introspection" => :build
   depends_on "pkg-config" => :build
-  depends_on "freetype" => :recommended
-  depends_on "glib" => :recommended
-  depends_on "gobject-introspection" => :recommended
-  depends_on "graphite2" => :recommended
-  depends_on "icu4c" => :recommended
-  depends_on "cairo" => :optional
+  depends_on "cairo"
+  depends_on "freetype"
+  depends_on "glib"
+  depends_on "graphite2"
+  depends_on "icu4c"
 
   resource "ttf" do
     url "https://github.com/behdad/harfbuzz/raw/fc0daafab0336b847ac14682e581a8838f36a0bf/test/shaping/fonts/sha1sum/270b89df543a7e48e206a2d830c0e10e5265c630.ttf"
@@ -38,45 +36,16 @@ class Harfbuzz < Formula
     args = %W[
       --disable-dependency-tracking
       --prefix=#{prefix}
-      --with-coretext=yes
+      --enable-introspection=yes
       --enable-static
+      --with-cairo=yes
+      --with-coretext=yes
+      --with-freetype=yes
+      --with-glib=yes
+      --with-gobject=yes
+      --with-graphite2=yes
+      --with-icu=yes
     ]
-
-    if build.with? "cairo"
-      args << "--with-cairo=yes"
-    else
-      args << "--with-cairo=no"
-    end
-
-    if build.with? "freetype"
-      args << "--with-freetype=yes"
-    else
-      args << "--with-freetype=no"
-    end
-
-    if build.with? "glib"
-      args << "--with-glib=yes"
-    else
-      args << "--with-glib=no"
-    end
-
-    if build.with? "gobject-introspection"
-      args << "--with-gobject=yes" << "--enable-introspection=yes"
-    else
-      args << "--with-gobject=no" << "--enable-introspection=no"
-    end
-
-    if build.with? "graphite2"
-      args << "--with-graphite2=yes"
-    else
-      args << "--with-graphite2=no"
-    end
-
-    if build.with? "icu4c"
-      args << "--with-icu=yes"
-    else
-      args << "--with-icu=no"
-    end
 
     system "./autogen.sh" if build.head?
     system "./configure", *args

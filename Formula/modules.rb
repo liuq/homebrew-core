@@ -1,16 +1,16 @@
 class Modules < Formula
   desc "Dynamic modification of a user's environment via modulefiles"
   homepage "https://modules.sourceforge.io/"
-  url "https://downloads.sourceforge.net/project/modules/Modules/modules-4.1.1/modules-4.1.1.tar.bz2"
-  sha256 "63ba8dacafa42ccebebe5d518e2be3b6b3683b9e384ab756133cc6d1d4d8f214"
+  url "https://downloads.sourceforge.net/project/modules/Modules/modules-4.1.4/modules-4.1.4.tar.bz2"
+  sha256 "7eaf26b66cbf3ba101ec5a693b7bfb3a47f3c86cad09e47c4126f3d785864c55"
 
   bottle do
-    sha256 "d3fe866d8837a344b2b716ee60c3b58eab43d33f1231be08f0148636fe5da299" => :high_sierra
-    sha256 "1956c56f45992bdb7ef63ead14b780da874d9f474cccbb136cec662432b72470" => :sierra
-    sha256 "f5a161686c6217bedea75dc0d21a277414232d569feaf48cb6fbf1dd430ffbd4" => :el_capitan
+    sha256 "1bfdf504b019fa4c8ffe7db7d9cef79a1a2c23e381b04d7eed98f041b3507987" => :mojave
+    sha256 "29eacb986d942b621d5aa161952c962250cc6d96acb9929425d8a5284f7a6ca2" => :high_sierra
+    sha256 "4e45ab192bad2a47c3b63e7de10d61c701a1f8a70a011956b21203074dee8418" => :sierra
+    sha256 "b3a8d7c48c0b6c56a706357da2a0b6087c593f2254acd7b84956e6870053b8e1" => :el_capitan
   end
 
-  depends_on "coreutils" => :build # assumes GNU cp options are available
   depends_on "grep" => :build # configure checks for ggrep
   depends_on :x11 => :optional
 
@@ -37,7 +37,7 @@ class Modules < Formula
       source #{opt_prefix}/init/zsh
     You will also need to reload your .zshrc:
       source ~/.zshrc
-    EOS
+  EOS
   end
 
   test do

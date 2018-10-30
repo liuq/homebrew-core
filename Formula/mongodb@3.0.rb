@@ -8,6 +8,7 @@ class MongodbAT30 < Formula
 
   bottle do
     cellar :any_skip_relocation
+    sha256 "053e7f96eac6cbc5201683fdc0e06f2fa6c8fdd903ed73ec63aadbcb52198b8f" => :mojave
     sha256 "a3c4c9fcf5c44c34f96395923937c65e7cf6cb52bd937ef2878afe91633672fe" => :high_sierra
     sha256 "51f78308884b822d7406e12c897b613445cd0cb41add89b4835a203190c658d5" => :sierra
     sha256 "3a8d91eba9e8342e325e6fe1643b63687429ce2866c61a27bef836928b264c6b" => :el_capitan
@@ -17,12 +18,10 @@ class MongodbAT30 < Formula
 
   option "with-boost", "Compile using installed boost, not the version shipped with mongodb"
 
-  needs :cxx11
-
-  depends_on "boost" => :optional
   depends_on "go" => :build
-  depends_on :macos => :mountain_lion
   depends_on "scons" => :build
+  depends_on :macos => :mountain_lion
+  depends_on "boost" => :optional
   depends_on "openssl" => :optional
 
   go_resource "github.com/mongodb/mongo-tools" do
@@ -30,6 +29,8 @@ class MongodbAT30 < Formula
       :tag => "r3.0.15",
       :revision => "86d15daf966ce58f5ce01985db07a7a5a3641ecb"
   end
+
+  needs :cxx11
 
   def install
     ENV.cxx11 if MacOS.version < :mavericks
@@ -86,7 +87,7 @@ class MongodbAT30 < Formula
       dbPath: #{var}/mongodb
     net:
       bindIp: 127.0.0.1
-    EOS
+  EOS
   end
 
   plist_options :manual => "mongod --config #{HOMEBREW_PREFIX}/etc/mongod.conf"
@@ -126,7 +127,7 @@ class MongodbAT30 < Formula
       </dict>
     </dict>
     </plist>
-    EOS
+  EOS
   end
 
   test do

@@ -1,39 +1,34 @@
 class Mackup < Formula
+  include Language::Python::Virtualenv
+
   desc "Keep your Mac's application settings in sync"
   homepage "https://github.com/lra/mackup"
-  url "https://github.com/lra/mackup/archive/0.8.16.tar.gz"
-  sha256 "d50a19be1c6a5b6a777ddfb4abbc6c76a361b3edce266f1618947ad38a100331"
-
+  url "https://github.com/lra/mackup/archive/0.8.19.tar.gz"
+  sha256 "28c1318a716acd6e9b3ec6ccf5c8a0087dbeb8c46ccef78d1891479dd4ccf31a"
   head "https://github.com/lra/mackup.git"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "6d1cc4fb525c44c885f69c02d49f314e95d1a0c439e00266b5f514e8a5233c4d" => :high_sierra
-    sha256 "c441d37b9dd7aa951287d0300fe8905340b909d6858ae90dd8e8618b189eefd5" => :sierra
-    sha256 "6e40fe830045c93763c5e9eeede0581629f5ae20b09870f0ea280f847da289aa" => :el_capitan
-    sha256 "bb4a930f0d5dc90cfc028219f78078a461eba4c1b2092af266d7c4acecbcae24" => :yosemite
+    sha256 "dfe1fb259e9cda1064679090ed2f89d9d322c1c7441018771846eb84798ed1ce" => :mojave
+    sha256 "38e9363152bcc1d8f7ce243b9e9dcce4d63600fe475419a82cb1b484b7e34d42" => :high_sierra
+    sha256 "f21da8393f19e057358e980add91d6f8aeb0918e9edccc1aac0936c4e2fb61d7" => :sierra
+    sha256 "81006d60c39fe62a30f6de76f000d027414e936351b5e571d6e55006c959246c" => :el_capitan
   end
 
-  depends_on "python@2" if MacOS.version <= :snow_leopard
+  depends_on "python"
 
   resource "docopt" do
-    url "https://files.pythonhosted.org/packages/source/d/docopt/docopt-0.6.2.tar.gz"
+    url "https://files.pythonhosted.org/packages/a2/55/8f8cab2afd404cf578136ef2cc5dfb50baa1761b68c9da1fb1e4eed343c9/docopt-0.6.2.tar.gz"
     sha256 "49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"
   end
 
+  resource "six" do
+    url "https://files.pythonhosted.org/packages/16/d8/bc6316cf98419719bd59c91742194c111b6f2e85abac88e496adefaf7afe/six-1.11.0.tar.gz"
+    sha256 "70e8a77beed4562e7f14fe23a786b54f6296e34344c23bc42f07b15018ff98e9"
+  end
+
   def install
-    ENV.prepend_create_path "PYTHONPATH", libexec/"vendor/lib/python2.7/site-packages"
-    %w[docopt].each do |r|
-      resource(r).stage do
-        system "python", *Language::Python.setup_install_args(libexec/"vendor")
-      end
-    end
-
-    ENV.prepend_create_path "PYTHONPATH", libexec/"lib/python2.7/site-packages"
-    system "python", *Language::Python.setup_install_args(libexec)
-
-    bin.install Dir[libexec/"bin/*"]
-    bin.env_script_all_files(libexec/"bin", :PYTHONPATH => ENV["PYTHONPATH"])
+    virtualenv_install_with_resources
   end
 
   test do

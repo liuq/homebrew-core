@@ -1,22 +1,23 @@
 class PerconaServerAT56 < Formula
   desc "Drop-in MySQL replacement"
   homepage "https://www.percona.com"
-  url "https://www.percona.com/downloads/Percona-Server-5.6/Percona-Server-5.6.39-83.1/source/tarball/percona-server-5.6.39-83.1.tar.gz"
-  version "5.6.39-83.1"
-  sha256 "48939062738cd5e7769381e31ec581492317ff48c19d0b7ce362e0e61b5d01e2"
+  url "https://www.percona.com/downloads/Percona-Server-5.6/Percona-Server-5.6.41-84.1/source/tarball/percona-server-5.6.41-84.1.tar.gz"
+  version "5.6.41-84.1"
+  sha256 "8c24f8f19d19f06b9e77c6e952198dfc7c652ce413263dccb4c48225e943a45d"
 
   bottle do
-    sha256 "4721a4848f088e8dc1c9d5d2b922b90c28855894a60ebcbb25a41a366fcf854c" => :high_sierra
-    sha256 "2eeb81c41ddf49663247c3c966b34d6bb05383a8f059fb2aa48a09ef6a7c15e0" => :sierra
-    sha256 "0f0fd06fe7616b708756f208954557deb3cf0c39c3731ae1a886243ab88653dc" => :el_capitan
+    sha256 "b67b0429e73964427c4267ba14e5c47eb17aea239a5d7fba8ce1610ef9404515" => :mojave
+    sha256 "fd5c4c759c72edc1b5dca683ab860c2f74178a10bf09b3029b35e3dca4879632" => :high_sierra
+    sha256 "9b8a05eb87f8bd0bc1f09dcc38ede084b889b548c3dea810edd293839ec3a875" => :sierra
+    sha256 "aa90a2216314fefbe8d7774e54ba2dcfd8e30bb13be48c786dd68f756b7f385b" => :el_capitan
+  end
+
+  pour_bottle? do
+    reason "The bottle needs a var/mysql datadir (yours is var/percona)."
+    satisfy { datadir == var/"mysql" }
   end
 
   keg_only :versioned_formula
-
-  option "with-test", "Build with unit tests"
-  option "with-embedded", "Build the embedded server"
-  option "with-memcached", "Build with InnoDB Memcached plugin"
-  option "with-local-infile", "Build with local infile loading support"
 
   depends_on "cmake" => :build
   depends_on "pidof" unless MacOS.version >= :mountain_lion
@@ -27,11 +28,6 @@ class PerconaServerAT56 < Formula
   # shared with the mysql and mariadb formulae.
   def datadir
     @datadir ||= (var/"percona").directory? ? var/"percona" : var/"mysql"
-  end
-
-  pour_bottle? do
-    reason "The bottle needs a var/mysql datadir (yours is var/percona)."
-    satisfy { datadir == var/"mysql" }
   end
 
   def install
@@ -55,6 +51,7 @@ class PerconaServerAT56 < Formula
       -DDEFAULT_COLLATION=utf8_general_ci
       -DCOMPILATION_COMMENT=Homebrew
       -DWITH_EDITLINE=system
+      -DWITH_UNIT_TESTS=OFF
       -DCMAKE_FIND_FRAMEWORK=LAST
       -DCMAKE_VERBOSE_MAKEFILE=ON
     ]
@@ -69,22 +66,6 @@ class PerconaServerAT56 < Formula
     # TokuDB is broken on MacOsX
     # https://bugs.launchpad.net/percona-server/+bug/1531446
     args.concat %w[-DWITHOUT_TOKUDB=1]
-
-    # To enable unit testing at build, we need to download the unit testing suite
-    if build.with? "test"
-      args << "-DENABLE_DOWNLOADS=ON"
-    else
-      args << "-DWITH_UNIT_TESTS=OFF"
-    end
-
-    # Build the embedded server
-    args << "-DWITH_EMBEDDED_SERVER=ON" if build.with? "embedded"
-
-    # Build with InnoDB Memcached plugin
-    args << "-DWITH_INNODB_MEMCACHED=ON" if build.with? "memcached"
-
-    # Build with local infile loading support
-    args << "-DENABLED_LOCAL_INFILE=1" if build.with? "local-infile"
 
     system "cmake", ".", *std_cmake_args, *args
     system "make"
@@ -138,7 +119,7 @@ class PerconaServerAT56 < Formula
 
     To connect:
         mysql -uroot
-    EOS
+  EOS
   end
 
   plist_options :manual => "mysql.server start"
@@ -160,7 +141,7 @@ class PerconaServerAT56 < Formula
       <string>#{var}</string>
     </dict>
     </plist>
-    EOS
+  EOS
   end
 
   test do

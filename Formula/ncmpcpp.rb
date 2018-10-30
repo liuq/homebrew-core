@@ -1,15 +1,16 @@
 class Ncmpcpp < Formula
   desc "Ncurses-based client for the Music Player Daemon"
   homepage "https://rybczak.net/ncmpcpp/"
-  url "https://rybczak.net/ncmpcpp/stable/ncmpcpp-0.8.1.tar.bz2"
-  sha256 "4df9570a1db4ba2dc9b759aab88b283c00806fb5d2bce5f5d27a2eb10e6888ff"
+  url "https://rybczak.net/ncmpcpp/stable/ncmpcpp-0.8.2.tar.bz2"
+  sha256 "650ba3e8089624b7ad9e4cc19bc1ac6028edb7523cc111fa1686ea44c0921554"
   revision 1
 
   bottle do
     cellar :any
-    sha256 "36c74f63fa67f4dc84efdcd203d56f0918d35c2d6923de359f127b564c99308f" => :high_sierra
-    sha256 "343c653c3ec11828500c31c6a5cc5aed9eda846b6cc5f74ddac9ad87c71b97a1" => :sierra
-    sha256 "4c05fa5f8db01f70c7392cf6102639abe45a375de0992fe074d3b28f5d37ba47" => :el_capitan
+    sha256 "bdda3cff6eee0d982d5a9b3a8fbac647d333a36dab2471c5af502b1c0482be2c" => :mojave
+    sha256 "0d0f6753db53a1244b735d337511549feb336a1d616b11dec253cfffa80d060d" => :high_sierra
+    sha256 "862b17bef067d8ad9467aff89e1fddd18f2128daed8b8ac4cf53bb7ded9d85bb" => :sierra
+    sha256 "f55716214e49a713a0a9c5c341750d34ad8f3f47b16cc76e235c8d7dc8a72c01" => :el_capitan
   end
 
   head do
@@ -20,21 +21,21 @@ class Ncmpcpp < Formula
     depends_on "libtool" => :build
   end
 
-  deprecated_option "outputs" => "with-outputs"
-  deprecated_option "visualizer" => "with-visualizer"
-  deprecated_option "clock" => "with-clock"
-
   option "with-outputs", "Compile with mpd outputs control"
   option "with-visualizer", "Compile with built-in visualizer"
   option "with-clock", "Compile with optional clock tab"
 
+  deprecated_option "outputs" => "with-outputs"
+  deprecated_option "visualizer" => "with-visualizer"
+  deprecated_option "clock" => "with-clock"
+
   depends_on "pkg-config" => :build
   depends_on "boost"
+  depends_on "fftw" if build.with? "visualizer"
   depends_on "libmpdclient"
   depends_on "ncurses"
   depends_on "readline"
   depends_on "taglib"
-  depends_on "fftw" if build.with? "visualizer"
 
   needs :cxx11
 

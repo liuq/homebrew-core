@@ -7,6 +7,7 @@ class Libnids < Formula
   bottle do
     cellar :any
     rebuild 1
+    sha256 "bbbec23c0bd3f33933c06611e7c2f1cc5a233286dfbda3066c35318539374145" => :mojave
     sha256 "07675f5eebae5b27ff1b632a927e456c2c4b26435fd01c9556860973652caf1d" => :high_sierra
     sha256 "5803aac7ddece4e3a430d16d5557721d540f73e23e7a33a67f2ac2f6449a862e" => :sierra
     sha256 "75494ad58d4718de0ba012866ccde060e494293a93f575d42e95b57f7bbe9cc7" => :el_capitan
@@ -15,15 +16,12 @@ class Libnids < Formula
     sha256 "e88e84cda8a3bad62118791243f4642572fa19b9656f30bcdda08c510fd6b366" => :mountain_lion
   end
 
-  deprecated_option "disable-libnet" => "without-libnet"
-  deprecated_option "disable-libglib" => "without-glib"
-
-  depends_on "pkg-config" => :build
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
-  depends_on "libnet" => :recommended
-  depends_on "glib" => :recommended
+  depends_on "pkg-config" => :build
+  depends_on "glib"
+  depends_on "libnet"
 
   # Patch fixes -soname and .so shared library issues. Unreported.
   patch :DATA
@@ -31,11 +29,8 @@ class Libnids < Formula
   def install
     # autoreconf the old 2005 era code for sanity.
     system "autoreconf", "-ivf"
-    args = ["--prefix=#{prefix}", "--mandir=#{man}", "--enable-shared"]
-    args << "--disable-libnet" if build.without? "libnet"
-    args << "--disable-libglib" if build.without? "glib"
-
-    system "./configure", *args
+    system "./configure", "--prefix=#{prefix}", "--mandir=#{man}",
+                          "--enable-shared"
     system "make", "install"
   end
 end

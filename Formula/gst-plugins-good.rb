@@ -1,18 +1,19 @@
 class GstPluginsGood < Formula
   desc "GStreamer plugins (well-supported, under the LGPL)"
   homepage "https://gstreamer.freedesktop.org/"
+  revision 1
 
   stable do
-    url "https://gstreamer.freedesktop.org/src/gst-plugins-good/gst-plugins-good-1.12.4.tar.xz"
-    sha256 "649f49bec60892d47ee6731b92266974c723554da1c6649f21296097715eb957"
+    url "https://gstreamer.freedesktop.org/src/gst-plugins-good/gst-plugins-good-1.14.4.tar.xz"
+    sha256 "5f8b553260cb0aac56890053d8511db1528d53cae10f0287cfce2cb2acc70979"
 
     depends_on "check" => :optional
   end
 
   bottle do
-    sha256 "57a5ba70df834a004a14fda8f60c3d2ac60941c2c4be0568971f389f7540e3be" => :high_sierra
-    sha256 "ffbb8cda0ae0b6b40f2e8fc72c5e35f2edcd57312482cb03520d75a17934c78b" => :sierra
-    sha256 "1ca27cf1d8d5e9ade20a8f1eaecd84cb6b1af06dbb5906bea7e7127ce8618229" => :el_capitan
+    sha256 "b064a88166dde9a0728e2b4931265c36331fe04763cd86a374f7e871970154b7" => :mojave
+    sha256 "4690c041a027f7f8a4d50a50b704bf4474c457bf6d5587d4f6d00b02e0ae9770" => :high_sierra
+    sha256 "a992fea0e10e1227d9747bfac9a8df892a63e1e23efe753e65a8e9a93f363c34" => :sierra
   end
 
   head do
@@ -25,33 +26,30 @@ class GstPluginsGood < Formula
   end
 
   depends_on "pkg-config" => :build
+  depends_on "cairo"
+  depends_on "flac"
   depends_on "gettext"
   depends_on "gst-plugins-base"
+  depends_on "jpeg"
+  depends_on "libpng"
+  depends_on "libshout"
   depends_on "libsoup"
-
-  depends_on :x11 => :optional
+  depends_on "libvpx"
+  depends_on "orc"
+  depends_on "speex"
+  depends_on "taglib"
 
   # Dependencies based on the intersection of
   # https://cgit.freedesktop.org/gstreamer/gst-plugins-good/tree/REQUIREMENTS
   # and Homebrew formulae.
-  depends_on "jpeg" => :recommended
-  depends_on "orc" => :recommended
-  depends_on "gdk-pixbuf" => :optional
   depends_on "aalib" => :optional
-  depends_on "cairo" => :optional
-  depends_on "flac" => [:optional, "with-libogg"]
+  depends_on "gdk-pixbuf" => :optional
+  depends_on "gtk+3" => :optional
+  depends_on "jack" => :optional
   depends_on "libcaca" => :optional
   depends_on "libdv" => :optional
-  depends_on "libpng" => :optional
-  depends_on "libshout" => :optional
-  depends_on "speex" => :optional
-  depends_on "taglib" => :optional
-
-  depends_on "libvpx" => :optional
   depends_on "pulseaudio" => :optional
-  depends_on "jack" => :optional
-
-  depends_on "libogg" if build.with? "flac"
+  depends_on :x11 => :optional
 
   def install
     args = %W[
@@ -63,6 +61,8 @@ class GstPluginsGood < Formula
       --disable-dependency-tracking
       --disable-silent-rules
     ]
+
+    args << "--enable-gtk3" if build.with? "gtk+3"
 
     if build.with? "x11"
       args << "--with-x"

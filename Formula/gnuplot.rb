@@ -1,14 +1,13 @@
 class Gnuplot < Formula
   desc "Command-driven, interactive function plotting"
   homepage "http://www.gnuplot.info/"
-  url "https://downloads.sourceforge.net/project/gnuplot/gnuplot/5.2.2/gnuplot-5.2.2.tar.gz"
-  sha256 "a416d22f02bdf3873ef82c5eb7f8e94146795811ef808e12b035ada88ef7b1a1"
-  revision 1
+  url "https://downloads.sourceforge.net/project/gnuplot/gnuplot/5.2.5/gnuplot-5.2.5.tar.gz"
+  sha256 "039db2cce62ddcfd31a6696fe576f4224b3bc3f919e66191dfe2cdb058475caa"
 
   bottle do
-    sha256 "1523a40b075f76d80ac32274a4b896ba5d11075e5cd0601fbdb8c524f9f8d8cb" => :high_sierra
-    sha256 "bd4e2e49fec4afa21df5c5d9c976818eb8928376a2d482c493c6d2098c034e16" => :sierra
-    sha256 "2c2689aee797c5539bfee0fefef7e11cdbe3c8c063ca4057a8a2261087d380cf" => :el_capitan
+    sha256 "eaf80b9ce3cf64e57e005af62067e526d57755ef26b3ee0596581f2caf070692" => :mojave
+    sha256 "1faefa9ab294f7e29d977c3a3d2234ac2ae3cfb414a1987d8bfb287e445ef6ba" => :high_sierra
+    sha256 "b6e37f6657837216d5214e96ad4d2024e5b38ec12f12aac0ea1c97b9d06ee10e" => :sierra
   end
 
   head do
@@ -19,23 +18,19 @@ class Gnuplot < Formula
     depends_on "libtool" => :build
   end
 
-  option "with-cairo", "Build the Cairo based terminals"
-  option "without-lua", "Build without the lua/TikZ terminal"
-  option "with-wxmac", "Build wxmac support. Need with-cairo to build wxt terminal"
   option "with-aquaterm", "Build with AquaTerm support"
+  option "with-wxmac", "Build with wxmac support"
 
-  deprecated_option "with-x" => "with-x11"
-  deprecated_option "wx" => "with-wxmac"
   deprecated_option "qt" => "with-qt"
   deprecated_option "with-qt5" => "with-qt"
-  deprecated_option "cairo" => "with-cairo"
-  deprecated_option "nolua" => "without-lua"
+  deprecated_option "with-x" => "with-x11"
+  deprecated_option "wx" => "with-wxmac"
 
   depends_on "pkg-config" => :build
   depends_on "gd"
+  depends_on "lua"
+  depends_on "pango"
   depends_on "readline"
-  depends_on "lua" => :recommended
-  depends_on "pango" if build.with?("cairo") || build.with?("wxmac")
   depends_on "qt" => :optional
   depends_on "wxmac" => :optional
   depends_on :x11 => :optional
@@ -60,7 +55,9 @@ class Gnuplot < Formula
       ENV.prepend "LDFLAGS", "-F/Library/Frameworks"
     end
 
-    # Build libcerf
+    # gnuplot is not yet compatible with More recent libcerf:
+    # https://sourceforge.net/p/gnuplot/bugs/2077/
+    # In next release, we can remove this and depend on the libcerf formula.
     resource("libcerf").stage do
       system "./configure", "--prefix=#{buildpath}/libcerf", "--enable-static", "--disable-shared"
       system "make", "install"
@@ -75,19 +72,9 @@ class Gnuplot < Formula
       --without-tutorial
     ]
 
-    if build.without? "wxmac"
-      args << "--disable-wxwidgets"
-      args << "--without-cairo" if build.without? "cairo"
-    end
-
-    if build.with? "qt"
-      args << "--with-qt"
-    else
-      args << "--with-qt=no"
-    end
-
-    args << "--without-lua" if build.without? "lua"
+    args << "--disable-wxwidgets" if build.without? "wxmac"
     args << (build.with?("aquaterm") ? "--with-aquaterm" : "--without-aquaterm")
+    args << (build.with?("qt") ? "--with-qt" : "--with-qt=no")
     args << (build.with?("x11") ? "--with-x" : "--without-x")
 
     system "./prepare" if build.head?

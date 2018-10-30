@@ -6,14 +6,35 @@ class Geeqie < Formula
   # Unfortunately this means that the tarball can't be used to build;
   # this is documented in the makefile.
   url "https://github.com/BestImageViewer/geeqie.git",
-    :tag => "v1.4",
-    :shallow => false
+      :tag => "v1.4",
+      :revision => "7c9b41e7c9be8cfc9b4f0a2459c0a1e0e4aaea5b",
+      :shallow => false
+  revision 1
 
   bottle do
-    sha256 "22c6779d5231e0894f169a188ffc574445c07742a5d54af4b202ace7eea3903b" => :high_sierra
-    sha256 "fad24d3faf8795f79e8106b4b3d84b73e071fc3812a90df4e30105df013f3d9b" => :sierra
-    sha256 "823241d4dc829606f8f685af49b35b2da23217cc8c215d0fd5d8aa615f77ab2e" => :el_capitan
+    sha256 "a559b5497adfaadb9ae785d47abf74f856ee0aa34126325a380565a0ec6836ad" => :mojave
+    sha256 "0bf35c40d3d0fc9a3bb6d69cd079e7e3f9aae4d1c050cead01aca59bea009d22" => :high_sierra
+    sha256 "54a1af6f886c7a95b3f66ea0996a6acfa1531b940d274921a84cdef57c1fc54f" => :sierra
+    sha256 "2f84465d9d6eba2db0031c71033b735d33a6d6294dd2a15fd13d65674b60783b" => :el_capitan
   end
+
+  depends_on "autoconf" => :build
+  depends_on "automake" => :build
+  depends_on "intltool" => :build
+  depends_on "pkg-config" => :build
+  depends_on "adwaita-icon-theme"
+  depends_on "atk"
+  depends_on "cairo"
+  depends_on "exiv2"
+  depends_on "gdk-pixbuf"
+  depends_on "gettext"
+  depends_on "glib"
+  depends_on "gtk+3"
+  depends_on "imagemagick"
+  depends_on "jpeg"
+  depends_on "libtiff"
+  depends_on "little-cms2"
+  depends_on "pango"
 
   # Fixes the build on OS X by assigning a value to a variable
   # before passing to WEXITVALUE.
@@ -22,24 +43,6 @@ class Geeqie < Formula
     url "https://raw.githubusercontent.com/Homebrew/patches/9cacfd49be1db430d7a956132d6521e23fc85f77/geeqie/wexitstatus_fix.diff"
     sha256 "00bad28d46aafaaed99965a5c054bf04679c100c6f4f13ee82cf83c2782de349"
   end
-
-  depends_on "pkg-config" => :build
-  depends_on "autoconf" => :build
-  depends_on "automake" => :build
-  depends_on "intltool" => :build
-  depends_on "gettext"
-  depends_on "gtk+3"
-  depends_on "gdk-pixbuf"
-  depends_on "pango"
-  depends_on "cairo"
-  depends_on "libtiff"
-  depends_on "jpeg"
-  depends_on "atk"
-  depends_on "glib"
-  depends_on "imagemagick"
-  depends_on "exiv2"
-  depends_on "little-cms2"
-  depends_on "adwaita-icon-theme"
 
   def install
     ENV["NOCONFIGURE"] = "yes"

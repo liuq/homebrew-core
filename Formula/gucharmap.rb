@@ -1,20 +1,20 @@
 class Gucharmap < Formula
   desc "GNOME Character Map, based on the Unicode Character Database"
-  homepage "https://live.gnome.org/Gucharmap"
-  url "https://download.gnome.org/sources/gucharmap/10.0/gucharmap-10.0.3.tar.xz"
-  sha256 "ac07d75924e2d8f436d9492e8f7d54cf109404d34de06886a3967563cd1726a4"
+  homepage "https://wiki.gnome.org/Apps/Gucharmap"
+  url "https://download.gnome.org/sources/gucharmap/11.0/gucharmap-11.0.3.tar.xz"
+  sha256 "6fe4405aa4d2edeedf412befa3cdf423211c80f8836085c4c8c56679658e37fa"
 
   bottle do
-    sha256 "955aebc4a270c7a845f59e2843bbdf76a6e3bfd071a4090640da99a6bde5fec9" => :high_sierra
-    sha256 "0c08f6630129f2a630a171e5113c16edd830f241d19758cee349ccdddf833c06" => :sierra
-    sha256 "abe32c50a7e60d8040a5755c9f026e34fb509727f7146c97dcd85f6304447db6" => :el_capitan
+    sha256 "9c378f03cd0812959ea940e8014acfc38aa21dbebc47b443badb53fc7fe2020a" => :mojave
+    sha256 "5b26d5e330593770c86ddc82183224d05cb78ce36cd89c71e9be5eb48ce63910" => :high_sierra
+    sha256 "d902d39d58d1cdb90365d23dada129747b6a5ac3e494c24897ab70d306cf4ba8" => :sierra
   end
 
-  depends_on "pkg-config" => :build
+  depends_on "coreutils" => :build
+  depends_on "desktop-file-utils" => :build
   depends_on "intltool" => :build
   depends_on "itstool" => :build
-  depends_on "desktop-file-utils" => :build
-  depends_on "coreutils" => :build
+  depends_on "pkg-config" => :build
   depends_on "gtk+3"
 
   def install

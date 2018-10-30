@@ -1,21 +1,22 @@
 class Pdal < Formula
   desc "Point data abstraction library"
   homepage "https://www.pdal.io/"
-  url "https://github.com/PDAL/PDAL/archive/1.6.tar.gz"
-  sha256 "66baf8510225b34ee24021731758251cd70657dd578c210ae86c78d158f283eb"
-  revision 1
+  url "https://github.com/PDAL/PDAL/archive/1.7.2.tar.gz"
+  sha256 "cedfefbe54ca61cbb33d100d619c53873d84f480ff53deec2cf6dd91580f6a61"
+  revision 2
   head "https://github.com/PDAL/PDAL.git"
 
   bottle do
-    sha256 "5d709651475f4c2588623540bf3c760e9e6ca023fc055bd82cb08b99cb978390" => :high_sierra
-    sha256 "33f66b42d167f8b682fe0a5ca175206cdf004195487225e861d61573eeb84d64" => :sierra
-    sha256 "e8b51690f071595820a99997e0b123ed70a3802e8d29538621834290b4002447" => :el_capitan
+    sha256 "06bed1a1dda903df81d12c393f346a7aac4159e63ef0e678ac3de3ad6ae214b5" => :mojave
+    sha256 "406e104871bd025e62e71d241d49e1604cb3d8d478243c9bac2b8605f0b0949f" => :high_sierra
+    sha256 "0b0d11adbbf27034504c1273e5a95323a461782ec872900fbc716fbeddf57e88" => :sierra
   end
 
   depends_on "cmake" => :build
   depends_on "gdal"
   depends_on "hdf5"
   depends_on "laszip"
+  depends_on "numpy"
   depends_on "pcl"
   depends_on "postgresql"
 

@@ -3,53 +3,49 @@ class Ledger < Formula
   homepage "https://ledger-cli.org/"
   url "https://github.com/ledger/ledger/archive/v3.1.1.tar.gz"
   sha256 "90f06561ab692b192d46d67bc106158da9c6c6813cc3848b503243a9dfd8548a"
-  revision 9
+  revision 10
   head "https://github.com/ledger/ledger.git"
 
   bottle do
-    sha256 "e6484af199c0949610b731e509b804c402409a0375248e397ae8d14dbaadbb47" => :high_sierra
-    sha256 "12fe51de977dda4a32693836c1e0e7d23b3f39ccc77b5df4a9f412e72bd03ae5" => :sierra
-    sha256 "46edcc360e32148b23b244882bfcd5aec961bd05a92ba337895ab737cc09eb0c" => :el_capitan
+    rebuild 1
+    sha256 "d2c238504e5005df224cd9b4f08c83b9b40d6afe36bf227989b41fc7ecdd909b" => :mojave
+    sha256 "5fc114039587b7ae79924097ab60cd8b8e7166b4d4154ebbec3223c9baf4fbc8" => :high_sierra
+    sha256 "bdb1698d718fc58741f052504d8c3fe6dcb87b857a8c8322c82ad6dbd54aa48d" => :sierra
   end
-
-  deprecated_option "debug" => "with-debug"
-
-  option "with-debug", "Build with debugging symbols enabled"
-  option "with-docs", "Build HTML documentation"
-  option "without-python@2", "Build without python support"
-
-  deprecated_option "without-python" => "without-python@2"
 
   depends_on "cmake" => :build
   depends_on "boost"
+  depends_on "boost-python"
   depends_on "gmp"
   depends_on "mpfr"
-  depends_on "python@2" => :recommended if MacOS.version <= :snow_leopard
-  depends_on "boost-python" if build.with? "python@2"
+  depends_on "python@2"
 
   needs :cxx11
 
   def install
     ENV.cxx11
 
-    flavor = build.with?("debug") ? "debug" : "opt"
+    # Boost >= 1.67 Python components require a Python version suffix
+    inreplace "CMakeLists.txt", "set(BOOST_PYTHON python)",
+                                "set(BOOST_PYTHON python27)"
 
     args = %W[
       --jobs=#{ENV.make_jobs}
       --output=build
       --prefix=#{prefix}
       --boost=#{Formula["boost"].opt_prefix}
+      --python
+      --
+      -DBUILD_DOCS=1
+      -DBUILD_WEB_DOCS=1
     ]
-    args << "--python" if build.with? "python@2"
-    args += %w[-- -DBUILD_DOCS=1]
-    args << "-DBUILD_WEB_DOCS=1" if build.with? "docs"
-    system "./acprep", flavor, "make", *args
-    system "./acprep", flavor, "make", "doc", *args
-    system "./acprep", flavor, "make", "install", *args
+    system "./acprep", "opt", "make", *args
+    system "./acprep", "opt", "make", "doc", *args
+    system "./acprep", "opt", "make", "install", *args
 
     (pkgshare/"examples").install Dir["test/input/*.dat"]
     pkgshare.install "contrib"
-    pkgshare.install "python/demo.py" if build.with? "python@2"
+    pkgshare.install "python/demo.py"
     elisp.install Dir["lisp/*.el", "lisp/*.elc"]
     bash_completion.install pkgshare/"contrib/ledger-completion.bash"
   end
@@ -64,6 +60,6 @@ class Ledger < Formula
     assert_equal "          $-2,500.00  Equity", balance.read.chomp
     assert_equal 0, $CHILD_STATUS.exitstatus
 
-    system "python", pkgshare/"demo.py" if build.with? "python@2"
+    system "python", pkgshare/"demo.py"
   end
 end

@@ -3,17 +3,16 @@
 class Mercurial < Formula
   desc "Scalable distributed version control system"
   homepage "https://mercurial-scm.org/"
-  url "https://mercurial-scm.org/release/mercurial-4.5.tar.gz"
-  sha256 "4d9338d9f9d88dc90b836d1227a3677e3347efaf2a118cc97d7fd1f605f1f265"
-  revision 1
+  url "https://mercurial-scm.org/release/mercurial-4.7.2.tar.gz"
+  sha256 "97f0594216f2348a2e37b2ad8a56eade044e741153fee8c584487e9934ca09fb"
 
   bottle do
-    sha256 "d69af6269907e449d223238a9910480e05725db095e1a0877b67268f0e3f3a8d" => :high_sierra
-    sha256 "49db2806abc853f92f57b6647fc76770fed6c2b724e6b59b6bc11defb97083d7" => :sierra
-    sha256 "4a14bff19feba382202f3e5a29e697ad6ac3429c8c0b48cfdd659819537aa6d0" => :el_capitan
+    sha256 "77e028ec2de40e1c4c8b2e7f6e4965a067f921cdfcb950f6f0343e0bcdaff1a9" => :mojave
+    sha256 "8e1fcb7e461ff173217a61baba3b192e9b5e5ecc0208ce90af6847bb26196695" => :high_sierra
+    sha256 "04992ec8e2734a5a99a00861badd118c6813b5145c69e455a5eb940c26ff75eb" => :sierra
   end
 
-  depends_on "python@2"
+  depends_on "python@2" # does not support Python 3
 
   def install
     ENV.prepend_path "PATH", Formula["python@2"].opt_libexec/"bin"

@@ -5,16 +5,17 @@ class Mytop < Formula
   mirror "https://mirrorservice.org/sites/ftp.debian.org/debian/pool/main/m/mytop/mytop_1.9.1.orig.tar.gz"
   mirror "https://mirrors.ocf.berkeley.edu/debian/pool/main/m/mytop/mytop_1.9.1.orig.tar.gz"
   sha256 "179d79459d0013ab9cea2040a41c49a79822162d6e64a7a85f84cdc44828145e"
-  revision 5
+  revision 6
 
   bottle do
     cellar :any
-    sha256 "2d7ea53b0ae27d33d5106259b5c96fa878b4c2681af002e91d6432d151024918" => :high_sierra
-    sha256 "89536e5cdee657d9ea8a82d1940854ba52bfa4cf3e161aa148b31511f5268b14" => :sierra
-    sha256 "a7a00e844c2adb87eb4379faf0d3dd60443f9383cb295688ae2dac47051f3483" => :el_capitan
+    rebuild 1
+    sha256 "873b88c76650758b49e1749e35c765b5179ffd371ab489f146b35da1e3620029" => :mojave
+    sha256 "8d64c44dcfccde35179d48a1698f0108df3c621e68ee7f8716a6d6db35cc1448" => :high_sierra
+    sha256 "26a4812e17d0285a28176d8bd735e06a1196a794c7cefb4837f7ab9a9ed4272d" => :sierra
   end
 
-  depends_on "mysql"
+  depends_on "mysql-client"
   depends_on "openssl"
 
   conflicts_with "mariadb", :because => "both install `mytop` binaries"
@@ -26,13 +27,19 @@ class Mytop < Formula
 
   resource "Config::IniFiles" do
     url "https://cpan.metacpan.org/authors/id/S/SH/SHLOMIF/Config-IniFiles-2.94.tar.gz"
-    mirror "http://search.cpan.org/CPAN/authors/id/S/SH/SHLOMIF/Config-IniFiles-2.94.tar.gz"
     sha256 "d6d38a416da79de874c5f1825221f22e972ad500b6527d190cc6e9ebc45194b4"
+  end
+
+  # In Mojave, this is not part of the system Perl anymore
+  if MacOS.version >= :mojave
+    resource "DBI" do
+      url "https://cpan.metacpan.org/authors/id/T/TI/TIMB/DBI-1.641.tar.gz"
+      sha256 "5509e532cdd0e3d91eda550578deaac29e2f008a12b64576e8c261bb92e8c2c1"
+    end
   end
 
   resource "DBD::mysql" do
     url "https://cpan.metacpan.org/authors/id/C/CA/CAPTTOFU/DBD-mysql-4.046.tar.gz"
-    mirror "http://search.cpan.org/CPAN/authors/id/C/CA/CAPTTOFU/DBD-mysql-4.046.tar.gz"
     sha256 "6165652ec959d05b97f5413fa3dff014b78a44cf6de21ae87283b28378daf1f7"
   end
 

@@ -1,56 +1,45 @@
 class Ffmbc < Formula
   desc "FFmpeg customized for broadcast and professional usage"
   homepage "https://code.google.com/p/ffmbc/"
-  url "https://drive.google.com/uc?export=download&id=0B0jxxycBojSwTEgtbjRZMXBJREU"
-  version "0.7.2"
-  sha256 "caaae2570c747077142db34ce33262af0b6d0a505ffbed5c4bdebce685d72e42"
-  revision 4
+  # Original URL is: https://drive.google.com/uc?export=download&id=0B0jxxycBojSwTEgtbjRZMXBJREU
+  # whose content is identical to the github link below
+  url "https://github.com/darealshinji/ffmbc/archive/v0.7.2.tar.gz"
+  sha256 "0a3807160ba0701225bfe9cfcae8fba662990f46932b2eb105e434c751c8944f"
+  revision 7
 
   bottle do
-    sha256 "93018afba1f0661d6e6a539b189eea0692932a7af0a30b4c81aebadc79332657" => :high_sierra
-    sha256 "5923eee01026353f52122bdc3576a94da1d0315a1838cb19d20af07f66ec9566" => :sierra
-    sha256 "118b7d823df82d0b9eb27544dfe0246f8119aac8f48431e814119448dc47b936" => :el_capitan
+    sha256 "bde01b727ef13b2346619529a7c6f858b188a08934fc88309a830f58eed94693" => :mojave
+    sha256 "7877faa373b469dea3b61a17cef5aae2907abd3f89fee6de08813a578703ab5c" => :high_sierra
+    sha256 "94303932fccd9e4ba19bbee4f1820e8410c5e5a48047c02ae36f69895a266f34" => :sierra
   end
 
-  option "without-x264", "Disable H.264 encoder"
-  option "without-lame", "Disable MP3 encoder"
-  option "without-xvid", "Disable Xvid MPEG-4 video encoder"
-
-  # manpages won't be built without texi2html
-  depends_on "texi2html" => :build if MacOS.version >= :mountain_lion
+  depends_on "texi2html" => :build
   depends_on "yasm" => :build
-
-  depends_on "x264" => :recommended
-  depends_on "faac" => :recommended
-  depends_on "lame" => :recommended
-  depends_on "xvid" => :recommended
-
-  depends_on "freetype" => :optional
-  depends_on "theora" => :optional
-  depends_on "libvorbis" => :optional
-  depends_on "libogg" => :optional
-  depends_on "libvpx" => :optional
+  depends_on "faac"
+  depends_on "lame"
+  depends_on "libvorbis"
+  depends_on "theora"
+  depends_on "x264"
+  depends_on "xvid"
 
   patch :DATA # fix man page generation, fixed in upstream ffmpeg
 
   def install
-    args = ["--prefix=#{prefix}",
-            "--disable-debug",
-            "--disable-shared",
-            "--enable-gpl",
-            "--enable-nonfree",
-            "--cc=#{ENV.cc}"]
-
-    args << "--enable-libx264" if build.with? "x264"
-    args << "--enable-libfaac" if build.with? "faac"
-    args << "--enable-libmp3lame" if build.with? "lame"
-    args << "--enable-libxvid" if build.with? "xvid"
-
-    args << "--enable-libfreetype" if build.with? "freetype"
-    args << "--enable-libtheora" if build.with? "theora"
-    args << "--enable-libvorbis" if build.with? "libvorbis"
-    args << "--enable-libogg" if build.with? "libogg"
-    args << "--enable-libvpx" if build.with? "libvpx"
+    args = %W[
+      --prefix=#{prefix}
+      --cc=#{ENV.cc}
+      --disable-debug
+      --disable-indev=jack
+      --disable-shared
+      --enable-gpl
+      --enable-libfaac
+      --enable-libmp3lame
+      --enable-libtheora
+      --enable-libvorbis
+      --enable-libx264
+      --enable-libxvid
+      --enable-nonfree
+    ]
 
     system "./configure", *args
     system "make"

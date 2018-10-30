@@ -1,7 +1,7 @@
 class Gtkx < Formula
   desc "GUI toolkit"
   homepage "https://gtk.org/"
-  revision 1
+  revision 2
 
   stable do
     url "https://download.gnome.org/sources/gtk+/2.24/gtk+-2.24.32.tar.xz"
@@ -9,29 +9,28 @@ class Gtkx < Formula
   end
 
   bottle do
-    sha256 "d80fe106c4b1da08fcd08b12159a14dcb429a78072849e5c6dc60f4d968d1b11" => :high_sierra
-    sha256 "573bbf5a132131ecee65ca44de1e5df9cba5c937e98a18e633e9981f7e9e2545" => :sierra
-    sha256 "f0dd0031675dbaf07adbd50495af1dadf685033ae9e7e042f4450e6c5c6931b1" => :el_capitan
+    sha256 "1cf12a33a310ade188f96a927d2e916eab0b94785e2c4c98e400a20caa71e213" => :mojave
+    sha256 "f1e4965a3aa5655e628e46c1ffd9421ec1abf9ba4f0757be1ce7b3a8009fec58" => :high_sierra
+    sha256 "77275da434ff045cab02f69e3847b983510bd2f45e022b0af0adb620c6a6821a" => :sierra
+    sha256 "f6117acd04e65a2ec378ad21b8b6519dc0d048f24b398456c09474af74ec2c11" => :el_capitan
   end
 
   head do
-    url "https://git.gnome.org/browse/gtk+.git", :branch => "gtk-2-24"
+    url "https://gitlab.gnome.org/GNOME/gtk.git", :branch => "gtk-2-24"
 
-    depends_on "automake" => :build
     depends_on "autoconf" => :build
-    depends_on "libtool" => :build
+    depends_on "automake" => :build
     depends_on "gtk-doc" => :build
+    depends_on "libtool" => :build
   end
 
-  option "with-quartz-relocation", "Build with quartz relocation support"
-
+  depends_on "gobject-introspection" => :build
   depends_on "pkg-config" => :build
-  depends_on "gdk-pixbuf"
-  depends_on "jasper" => :optional
   depends_on "atk"
-  depends_on "pango"
-  depends_on "gobject-introspection"
+  depends_on "gdk-pixbuf"
   depends_on "hicolor-icon-theme"
+  depends_on "pango"
+  depends_on "jasper" => :optional
 
   # Patch to allow Eiffel Studio to run in Cocoa / non-X11 mode, as well as Freeciv's freeciv-gtk2 client
   # See:
@@ -52,8 +51,6 @@ class Gtkx < Formula
             "--enable-introspection=yes",
             "--with-gdktarget=quartz",
             "--disable-visibility"]
-
-    args << "--enable-quartz-relocation" if build.with?("quartz-relocation")
 
     if build.head?
       inreplace "autogen.sh", "libtoolize", "glibtoolize"
